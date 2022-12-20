@@ -1,9 +1,10 @@
 import { collection, getDocs } from '@firebase/firestore';
-import { Container, Typography } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 import { Inter } from '@next/font/google';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import Head from 'next/head';
 import { useCallback } from 'react';
-import { db } from '../firebase';
+import { auth, db } from '../firebase/clientApp';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
@@ -14,7 +15,14 @@ export default function Home() {
     console.log(
       posterData.docs.map((doc) => ({ ...(doc.data() as any), id: doc.id }))
     );
-  }, []);
+  }, [postersCollectionRef]);
+
+  getPosters();
+  const handleGoogleSignIn = async () => {
+    console.log('clicked');
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
 
   return (
     <>
@@ -27,6 +35,7 @@ export default function Home() {
       <main>
         <Container>
           <Typography>Welcome to Blue print</Typography>
+          <Button onClick={() => handleGoogleSignIn}>SIGN IN!</Button>
         </Container>
       </main>
     </>
