@@ -4,7 +4,7 @@ import { Inter } from '@next/font/google';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import Head from 'next/head';
 import { useCallback } from 'react';
-import { auth, db } from '../firebase/clientApp';
+import { auth, db } from '../firebase/firebaseConfig';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
@@ -16,10 +16,9 @@ export default function Home() {
       posterData.docs.map((doc) => ({ ...(doc.data() as any), id: doc.id }))
     );
   }, [postersCollectionRef]);
+  // getPosters();
 
-  getPosters();
   const handleGoogleSignIn = async () => {
-    console.log('clicked');
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
   };
@@ -35,7 +34,7 @@ export default function Home() {
       <main>
         <Container>
           <Typography>Welcome to Blue print</Typography>
-          <Button onClick={() => handleGoogleSignIn}>SIGN IN!</Button>
+          <Button onClick={handleGoogleSignIn}>SIGN IN!</Button>
         </Container>
       </main>
     </>
