@@ -1,15 +1,16 @@
 import { collection, getDocs } from '@firebase/firestore';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { Inter } from '@next/font/google';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { addDoc, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import Head from 'next/head';
 import { useCallback, useState } from 'react';
-import { auth, db, storage } from '../firebase/firebaseConfig';
+import { useUser } from '../context/UserContext';
+import { db, storage } from '../firebase/firebaseConfig';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+  const { currentUser, handleGoogleSignIn, handleSignOut } = useUser();
   const postersCollectionRef = collection(db, 'posters');
 
   const getPosters = useCallback(async () => {
@@ -19,11 +20,6 @@ export default function Home() {
     );
   }, [postersCollectionRef]);
   // getPosters();
-
-  const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-  };
 
   const [file, setFile] = useState<any>('');
   const [percent, setPercent] = useState<number>(0);
@@ -69,13 +65,10 @@ export default function Home() {
       await addDoc(postersCollectionRef, newPoster)
         .then(() => {
           setPercent(0);
-          //    navigate('/');
-          //    toast.success('din annons har nu publicerats.', {
-          //      position: toast.POSITION.BOTTOM_CENTER,
-          //    });
+          // TODO: add more actions eg toast, navigate etc
         })
         .catch((error) => {
-          //    toast.warning(error, { position: toast.POSITION.BOTTOM_CENTER });
+          console.log(error, error.code); // TODO: add action
         });
     },
     [postersCollectionRef]
@@ -92,7 +85,13 @@ export default function Home() {
       <main>
         <Container>
           <Typography>Welcome to Blue print</Typography>
-          <Button onClick={handleGoogleSignIn}>SIGN IN!</Button>
+          {currentUser ? (
+            <Button onClick={handleSignOut}>
+              You have already signed in. Sign out?
+            </Button>
+          ) : (
+            <Button onClick={handleGoogleSignIn}>Sign me in!</Button>
+          )}
 
           <Box>
             <input type="file" accept="image/*" onChange={handleChange} />
