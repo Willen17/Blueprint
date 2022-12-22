@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { TablerIcon } from '@tabler/icons';
 import { MouseEventHandler } from 'react';
+import { theme } from '../theme';
 
 interface Props {
   text: string;
@@ -13,7 +14,7 @@ const IconWithText = (props: Props) => {
   return (
     <Box
       sx={{
-        color: props.color ? props.color : '#fff',
+        color: props.color ? props.color : theme.palette.primary.contrastText,
         display: 'flex',
         flexDirection: 'row',
         placeItems: 'center',
@@ -24,7 +25,7 @@ const IconWithText = (props: Props) => {
       onClick={props.onClick}
     >
       <props.icon width={15} stroke={1.5} style={{ cursor: 'pointer' }} />
-      <Typography variant="body2">{props.text}</Typography>
+      <Typography variant="body1">{props.text}</Typography>
     </Box>
   );
 };
