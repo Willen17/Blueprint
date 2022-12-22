@@ -1,17 +1,23 @@
-import { Container } from '@mui/system';
+import { Box } from '@mui/material';
 import FrameSection from './sidebar/FrameSection';
+import PosterSection from './sidebar/PosterSection';
 
 const Sidebar = () => {
   return (
-    <Container
+    <Box
       sx={{
         bgcolor: '#FBFBFB',
         height: 'calc(100vh - 50px)',
-        width: 285,
+        maxHeight: 'calc(100vh - 50px)',
+        overflowY: 'scroll',
+        width: 280,
+        minWidth: 280,
+        borderLeft: '1px solid #F1F1F1',
       }}
     >
       <FrameSection />
-    </Container>
+      <PosterSection />
+    </Box>
   );
 };
 

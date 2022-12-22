@@ -8,7 +8,7 @@ import { theme } from '../theme';
 
 const FrameSection = () => {
   // TODO: add logic - how the states change the frame shown on canvas
-  const [selectedFrame, setSelectedFrame] = useState<String>();
+  const [selectedFrame, setSelectedFrame] = useState<String>('');
   const [selectedDimension, setSelectedDimension] = useState<String>('21x30');
 
   // TODO: get dimensions from data instead
@@ -17,7 +17,7 @@ const FrameSection = () => {
   // To be deleted after we have inserted frames from data
   const showMeFrames = () => {
     const arr = [];
-    for (let i = 0; i <= 30; i++) {
+    for (let i = 0; i <= 40; i++) {
       arr.push({ src: frame });
       i++;
     }
@@ -25,7 +25,7 @@ const FrameSection = () => {
   };
 
   return (
-    <Box sx={{ minWidth: 210, pb: 2 }}>
+    <Box sx={{ maxWidth: 280, px: 3, pb: 2 }}>
       <SidebarSubtitle subtitle="Frame Type">
         <Box
           sx={{
@@ -45,19 +45,32 @@ const FrameSection = () => {
           flexWrap: 'wrap',
           gap: 2,
           width: '100%',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
+          maxHeight: 200,
+          overflow: 'scroll',
         }}
       >
         {showMeFrames().map((frame, index) => (
-          <Box key={index} sx={{ position: 'relative', height: 40, width: 40 }}>
+          <Box
+            key={index}
+            sx={{
+              position: 'relative',
+              height: 43,
+              width: 43,
+              boxShadow:
+                selectedFrame === index.toString() // TODO: change to ID
+                  ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
+                  : null,
+            }}
+          >
             <Image
-              width={40}
-              height={40}
+              width={43}
+              height={43}
               alt="TITLE" // TODO: change to title
               src={frame.src}
               onClick={() => setSelectedFrame(index.toString())}
             />
-            {/* TODO: adjust logic */}
+            {/* TODO: adjust logic - this should not be index but id */}
             {selectedFrame === index.toString() ? (
               <IconCheck
                 stroke={1}
@@ -69,15 +82,14 @@ const FrameSection = () => {
                   borderRadius: 50,
                   padding: 2,
                   position: 'absolute',
-                  right: 3,
-                  bottom: 3,
+                  right: 0,
+                  bottom: 0,
                 }}
               />
             ) : null}
           </Box>
         ))}
       </Box>
-
       <SidebarSubtitle subtitle="Size (cm)" />
       <Box
         sx={{
