@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const Layout = (props: Props) => {
+  const router = useRouter();
   return (
     <>
       <Header />
@@ -20,7 +22,7 @@ const Layout = (props: Props) => {
         }}
       >
         <main style={{ width: '100%' }}>{props.children}</main>
-        <Sidebar />
+        {!router.pathname.includes('admin') && <Sidebar />}
       </Box>
     </>
   );
