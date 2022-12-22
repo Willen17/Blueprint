@@ -1,4 +1,5 @@
 import { Container } from '@mui/system';
+import FrameSection from './sidebar/FrameSection';
 
 const Sidebar = () => {
   return (
@@ -9,7 +10,7 @@ const Sidebar = () => {
         width: 285,
       }}
     >
-      This is sidebar
+      <FrameSection />
     </Container>
   );
 };
