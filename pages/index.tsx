@@ -1,5 +1,13 @@
 import { collection, getDocs } from '@firebase/firestore';
-import { Box, Button, Container, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  Radio,
+  Switch,
+  Typography,
+} from '@mui/material';
 import { Inter } from '@next/font/google';
 import { addDoc, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
@@ -85,14 +93,15 @@ export default function Home() {
       <main>
         <Container>
           <Typography>Welcome to Blue print</Typography>
-          {currentUser ? (
-            <Button onClick={handleSignOut}>
-              You have already signed in. Sign out?
-            </Button>
-          ) : (
-            <Button onClick={handleGoogleSignIn}>Sign me in!</Button>
-          )}
-
+          <Typography variant="h1">This is H1</Typography>
+          <Typography variant="h2">This is H2</Typography>
+          <Typography variant="subtitle1">This is H3</Typography>
+          <Typography variant="body1">This is body1</Typography>
+          <Typography variant="body2">This is body2</Typography>
+          <Button>Button</Button>
+          <Checkbox size="small" />
+          <Switch />
+          <Radio size="small" />
           <Box>
             <input type="file" accept="image/*" onChange={handleChange} />
             <Button onClick={handleUpload}>Upload to Firebase</Button>

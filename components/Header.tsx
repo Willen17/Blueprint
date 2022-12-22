@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useUser } from '../context/UserContext';
 import bpLogo from '../public/logo/bp-logo.png';
 import IconWithText from './shared/IconWithText';
+import { theme } from './theme';
 
 const Header = () => {
   const { currentUser, handleGoogleSignIn, handleSignOut } = useUser();
@@ -37,7 +38,7 @@ const Header = () => {
           justifyContent: 'space-between',
           placeItems: 'center',
           px: 3,
-          color: '#fff',
+          color: theme.palette.primary.contrastText,
         }}
       >
         <Image
