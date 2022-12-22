@@ -3,6 +3,7 @@ import { IconCheck } from '@tabler/icons';
 import Image from 'next/image';
 import { useState } from 'react';
 import frame from '../../public/tempImages/frame.png';
+import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const FrameSection = () => {
@@ -25,16 +26,7 @@ const FrameSection = () => {
 
   return (
     <Box sx={{ minWidth: 210, pb: 2 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          placeItems: 'center',
-          py: 2,
-        }}
-      >
-        <Typography variant="subtitle1">Frame Type</Typography>
+      <SidebarSubtitle subtitle="Frame Type">
         <Box
           sx={{
             display: 'flex',
@@ -46,7 +38,7 @@ const FrameSection = () => {
           <Typography variant="body2">Passepassout</Typography>
           <Switch /> {/* TODO: apply logic */}
         </Box>
-      </Box>
+      </SidebarSubtitle>
       <Box
         sx={{
           display: 'flex',
@@ -61,7 +53,7 @@ const FrameSection = () => {
             <Image
               width={40}
               height={40}
-              alt="frame"
+              alt="TITLE" // TODO: change to title
               src={frame.src}
               onClick={() => setSelectedFrame(index.toString())}
             />
@@ -85,17 +77,8 @@ const FrameSection = () => {
           </Box>
         ))}
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          placeItems: 'center',
-          py: 2,
-        }}
-      >
-        <Typography variant="subtitle1">Size (cm)</Typography>
-      </Box>
+
+      <SidebarSubtitle subtitle="Size (cm)" />
       <Box
         sx={{
           display: 'flex',
