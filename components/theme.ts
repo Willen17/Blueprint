@@ -50,10 +50,6 @@ export const theme = createTheme({
             background: '#000',
             color: '#fff',
           },
-          '&:focus': {
-            background: '#000',
-            color: '#fff',
-          },
         },
       },
     },
