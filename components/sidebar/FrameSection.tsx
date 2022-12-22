@@ -54,6 +54,7 @@ const FrameSection = () => {
           <Box
             key={index}
             sx={{
+              cursor: 'pointer',
               position: 'relative',
               height: 43,
               width: 43,
@@ -93,6 +94,7 @@ const FrameSection = () => {
       <SidebarSubtitle subtitle="Size (cm)" />
       <Box
         sx={{
+          mt: -1,
           display: 'flex',
           flexDirection: 'column',
           width: '100%',

@@ -14,7 +14,7 @@ const SidebarSubtitle = (props: Props) => {
         flexDirection: 'row',
         justifyContent: 'space-between',
         placeItems: 'center',
-        py: 1.5,
+        py: 2,
       }}
     >
       <Typography variant="subtitle1">{props.subtitle}</Typography>

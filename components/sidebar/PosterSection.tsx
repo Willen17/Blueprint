@@ -157,6 +157,7 @@ const PosterSection = () => {
           <Box
             key={index}
             sx={{
+              cursor: 'pointer',
               position: 'relative',
               height: poster.orientation === 'Portrait' ? 65 : 55,
               boxShadow:
