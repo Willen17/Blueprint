@@ -43,13 +43,13 @@ const PosterSection = () => {
       arr.push(
         {
           title: 'P1',
-          src: posterP,
+          image: posterP,
           orientation: 'Portrait',
           category: 'Abstract',
         },
         {
           title: 'P2',
-          src: posterL,
+          image: posterL,
           orientation: 'Landscape',
           category: 'Movies',
         }
@@ -150,7 +150,7 @@ const PosterSection = () => {
           justifyContent: 'center',
           my: 2,
           maxHeight: 250,
-          overflow: 'scroll',
+          overflowY: 'scroll',
         }}
       >
         {filteredPosters().map((poster, index) => (
@@ -170,7 +170,7 @@ const PosterSection = () => {
               width={poster.orientation === 'Portrait' ? 55 : 65}
               height={poster.orientation === 'Portrait' ? 65 : 55}
               alt={poster.title} // TODO: change to title
-              src={poster.src}
+              src={poster.image}
               onClick={() => setSelectedPoster(index.toString())}
             />
             {/* TODO: adjust logic - this should not be index but id */}
