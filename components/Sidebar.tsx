@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import BgSection from './sidebar/BgSection';
 import FrameSection from './sidebar/FrameSection';
 import PosterSection from './sidebar/PosterSection';
 
@@ -15,6 +16,7 @@ const Sidebar = () => {
         borderLeft: '1px solid #F1F1F1',
       }}
     >
+      <BgSection />
       <FrameSection />
       <PosterSection />
     </Box>
