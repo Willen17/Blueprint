@@ -21,6 +21,12 @@ export const categories = [
   'Painting',
   'Other',
 ];
-export const posterSizes = ['21x30', '30x40', '40x50', '50x70', '70x100'];
+export const posterSizes = [
+  { width: '21', height: '30' },
+  { width: '30', height: '40' },
+  { width: '40', height: '50' },
+  { width: '50', height: '70' },
+  { width: '70', height: '100' },
+];
 export type PosterData = yup.InferType<typeof schemaPoster>;
 export default schemaPoster;

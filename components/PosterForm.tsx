@@ -15,6 +15,14 @@ import {
   Typography,
 } from '@mui/material';
 import Head from 'next/head';
+import Image from 'next/image';
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import {
   Control,
   Controller,
@@ -31,6 +39,21 @@ interface CreatePosterData {
   formHandleSubmit: UseFormHandleSubmit<PosterData>;
   errors: Partial<FieldErrorsImpl<PosterData>>;
   control: Control<PosterData>;
+  setFile: Dispatch<SetStateAction<File | undefined>>;
+  file: File | undefined;
+  setImageError: Dispatch<
+    SetStateAction<
+      | {
+          message: string;
+        }
+      | undefined
+    >
+  >;
+  imageError:
+    | {
+        message: string;
+      }
+    | undefined;
 }
 
 const PosterForm = ({
@@ -39,7 +62,49 @@ const PosterForm = ({
   register,
   errors,
   control,
+  setFile,
+  file,
+  setImageError,
+  imageError,
 }: CreatePosterData) => {
+  const [preview, setPreview] = useState<string>();
+
+  // create a preview whenever file is changed
+  useEffect(() => {
+    if (!file) {
+      setPreview(undefined);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setPreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
+
+  function handleChange(event: ChangeEvent) {
+    const target = event.target as HTMLInputElement;
+    if (target.files) {
+      const currentFile = target.files[0];
+      // validate file size
+      if (currentFile.size > 5000000)
+        return setImageError({ message: 'Image size should be less than 5mb' });
+      // validate if file is image file
+      if (!isImageFile(currentFile))
+        return setImageError({
+          message: 'Only image file formats are allowed',
+        });
+      setImageError(undefined);
+      return setFile(currentFile);
+    }
+  }
+
+  const isImageFile = (file: File) => {
+    const acceptedImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+    return file && acceptedImageTypes.includes(file['type']);
+  };
+
   return (
     <>
       <Head>
@@ -77,6 +142,60 @@ const PosterForm = ({
               Here you can add posters to the database. All posters uploaded
               will be added to the database and visible for all of our users.
             </Alert>
+            <Box sx={{ mt: 5 }}>
+              {file && preview && (
+                <Box sx={{ mb: 2 }}>
+                  <Image
+                    src={preview}
+                    alt={file.name}
+                    height={100}
+                    width={100}
+                    style={{
+                      objectFit: 'cover',
+                      alignSelf: 'center',
+                      marginRight: 10,
+                    }}
+                  />
+                  <Typography variant="subtitle2">{file.name}</Typography>
+                </Box>
+              )}
+              <FormControl
+                sx={{
+                  display: file && 'flex',
+                  flexDirection: file && 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'flex-start',
+                  gap: 2,
+                }}
+                error={Boolean(imageError)}
+                variant="standard"
+              >
+                <Button
+                  variant="contained"
+                  sx={{
+                    padding: '2 4',
+                    flex: file && '0 0 10em',
+                    mr: file && 2,
+                    maxWidth: 100,
+                  }}
+                  component="label"
+                >
+                  Upload
+                  <input
+                    hidden
+                    accept="image/*"
+                    onChange={(event) => {
+                      handleChange(event);
+                    }}
+                    type="file"
+                  />
+                </Button>
+
+                <FormHelperText sx={{ textAlign: 'center' }}>
+                  {imageError ? imageError.message : !file && 'Upload an image'}
+                </FormHelperText>
+              </FormControl>
+            </Box>
             <Box>
               <Controller
                 name="title"
@@ -137,7 +256,7 @@ const PosterForm = ({
                 row
               >
                 <FormCheckBox
-                  options={categories}
+                  categories={categories}
                   name="categories"
                   control={control}
                 />
@@ -158,7 +277,7 @@ const PosterForm = ({
                 row
               >
                 <FormCheckBox
-                  options={posterSizes}
+                  sizes={posterSizes}
                   name="sizes"
                   control={control}
                 />
