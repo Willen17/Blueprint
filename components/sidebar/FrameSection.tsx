@@ -35,7 +35,7 @@ const FrameSection = () => {
             gap: 0.5,
           }}
         >
-          <Typography variant="body2">Passepassout</Typography>
+          <Typography variant="body2">Passepartout</Typography>
           <Switch /> {/* TODO: apply logic */}
         </Box>
       </SidebarSubtitle>
@@ -47,7 +47,7 @@ const FrameSection = () => {
           width: '100%',
           justifyContent: 'space-between',
           maxHeight: 200,
-          overflow: 'scroll',
+          overflowY: 'scroll',
         }}
       >
         {showMeFrames().map((frame, index) => (
@@ -83,8 +83,8 @@ const FrameSection = () => {
                   borderRadius: 50,
                   padding: 2,
                   position: 'absolute',
-                  right: 0,
-                  bottom: 0,
+                  right: 3,
+                  bottom: 3,
                 }}
               />
             ) : null}
