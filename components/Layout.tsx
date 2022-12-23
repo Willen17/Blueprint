@@ -21,7 +21,7 @@ const Layout = (props: Props) => {
           padding: 0,
         }}
       >
-        <main style={{ width: '100%' }}>{props.children}</main>
+        <main style={{ width: '100%', height: '100vh' }}>{props.children}</main>
         {!router.pathname.includes('admin') && <Sidebar />}
       </Box>
     </>
