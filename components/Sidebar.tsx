@@ -6,7 +6,7 @@ import FrameSection from './sidebar/FrameSection';
 import PosterSection from './sidebar/PosterSection';
 
 const Sidebar = () => {
-  const [anchor, setAnchor] = useState<boolean>(false);
+  const [anchor, setAnchor] = useState<boolean>(true);
   const toggleClose = () => setAnchor(false);
 
   return (
