@@ -1,4 +1,11 @@
-import { Box, Button } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Typography,
+} from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -82,119 +89,136 @@ const PosterSection = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 280, px: 3, pb: 2 }}>
-      <SidebarSubtitle subtitle="Poster Type">
+    <Accordion>
+      <AccordionSummary>
+        <Typography variant="h1">3. Posters</Typography>
+      </AccordionSummary>
+      <AccordionDetails sx={{ maxWidth: 280 }}>
+        <SidebarSubtitle subtitle="Poster Type">
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              placeItems: 'center',
+              gap: 0.5,
+            }}
+          >
+            <IconRectangleVertical
+              stroke={1.3}
+              fill={
+                selectedOrientation === 'Portrait'
+                  ? theme.palette.primary.main
+                  : 'none'
+              }
+              onClick={() => handleOrientationChange('Portrait')}
+              style={{ cursor: 'pointer' }}
+            />
+            <IconRectangle
+              stroke={1.3}
+              onClick={() => handleOrientationChange('Landscape')}
+              fill={
+                selectedOrientation === 'Landscape'
+                  ? theme.palette.primary.main
+                  : 'none'
+              }
+              style={{ cursor: 'pointer' }}
+            />
+          </Box>
+        </SidebarSubtitle>
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'row',
-            placeItems: 'center',
-            gap: 0.5,
+            flexWrap: 'wrap',
+            gap: 1,
+            width: '100%',
+            justifyContent: 'center',
           }}
         >
-          <IconRectangleVertical
-            stroke={1.3}
-            fill={
-              selectedOrientation === 'Portrait'
-                ? theme.palette.primary.main
-                : 'none'
-            }
-            onClick={() => handleOrientationChange('Portrait')}
-            style={{ cursor: 'pointer' }}
-          />
-          <IconRectangle
-            stroke={1.3}
-            onClick={() => handleOrientationChange('Landscape')}
-            fill={
-              selectedOrientation === 'Landscape'
-                ? theme.palette.primary.main
-                : 'none'
-            }
-            style={{ cursor: 'pointer' }}
-          />
+          {types.map((type, index) => (
+            <Button
+              key={index}
+              value={type}
+              sx={{
+                bgcolor:
+                  selectedCategory === type ? theme.palette.primary.main : null,
+                color:
+                  selectedCategory === type
+                    ? theme.palette.primary.contrastText
+                    : null,
+              }}
+              onClick={() => handleCategoryChange(type)}
+            >
+              {type}
+            </Button>
+          ))}
         </Box>
-      </SidebarSubtitle>
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 1,
-          width: '100%',
-          justifyContent: 'center',
-        }}
-      >
-        {types.map((type, index) => (
-          <Button
-            key={index}
-            value={type}
-            sx={{
-              bgcolor:
-                selectedCategory === type ? theme.palette.primary.main : null,
-              color:
-                selectedCategory === type
-                  ? theme.palette.primary.contrastText
-                  : null,
-            }}
-            onClick={() => handleCategoryChange(type)}
-          >
-            {type}
-          </Button>
-        ))}
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 1.5,
-          width: '100%',
-          justifyContent: 'center',
-          my: 2,
-          maxHeight: 250,
-          overflowY: 'scroll',
-        }}
-      >
-        {filteredPosters().map((poster, index) => (
-          <Box
-            key={index}
-            sx={{
-              cursor: 'pointer',
-              position: 'relative',
-              height: poster.orientation === 'Portrait' ? 65 : 55,
-              boxShadow:
-                selectedPoster === index.toString() // TODO: change to ID
-                  ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
-                  : null,
-            }}
-          >
-            <Image
-              width={poster.orientation === 'Portrait' ? 55 : 65}
-              height={poster.orientation === 'Portrait' ? 65 : 55}
-              alt={poster.title} // TODO: change to title
-              src={poster.image}
-              onClick={() => setSelectedPoster(index.toString())}
-            />
-            {/* TODO: adjust logic - this should not be index but id */}
-            {selectedPoster === index.toString() ? (
-              <IconCheck
-                stroke={1}
-                color={theme.palette.primary.contrastText}
-                size={15}
-                style={{
-                  background: theme.palette.primary.main,
-                  opacity: 0.7,
-                  borderRadius: 50,
-                  padding: 2,
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                }}
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 1.5,
+            width: '100%',
+            justifyContent: 'center',
+            my: 2,
+            maxHeight: 250,
+            overflowY: 'scroll',
+            '&::-webkit-scrollbar': {
+              width: '0.4em',
+            },
+            '&::-webkit-scrollbar-track': {
+              boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+              webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(0,0,0,.1)',
+              borderRadius: 5,
+              outline: 'none',
+            },
+          }}
+        >
+          {filteredPosters().map((poster, index) => (
+            <Box
+              key={index}
+              sx={{
+                cursor: 'pointer',
+                position: 'relative',
+                height: poster.orientation === 'Portrait' ? 65 : 55,
+                boxShadow:
+                  selectedPoster === index.toString() // TODO: change to ID
+                    ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
+                    : null,
+              }}
+            >
+              <Image
+                width={poster.orientation === 'Portrait' ? 55 : 65}
+                height={poster.orientation === 'Portrait' ? 65 : 55}
+                alt={poster.title} // TODO: change to title
+                src={poster.image}
+                onClick={() => setSelectedPoster(index.toString())}
               />
-            ) : null}
-          </Box>
-        ))}
-      </Box>
-    </Box>
+              {/* TODO: adjust logic - this should not be index but id */}
+              {selectedPoster === index.toString() ? (
+                <IconCheck
+                  stroke={1}
+                  color={theme.palette.primary.contrastText}
+                  size={15}
+                  style={{
+                    background: theme.palette.primary.main,
+                    opacity: 0.7,
+                    borderRadius: 50,
+                    padding: 2,
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                />
+              ) : null}
+            </Box>
+          ))}
+        </Box>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 
