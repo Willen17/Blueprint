@@ -16,7 +16,7 @@ const BgSection = () => {
       <BgSectionDetails />
     </MobileSidebarContainer>
   ) : (
-    <SidebarAccordion panel="1. Backgrounds">
+    <SidebarAccordion panel={sidebarSections[0]}>
       <BgSectionDetails />
     </SidebarAccordion>
   );

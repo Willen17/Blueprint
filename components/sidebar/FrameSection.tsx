@@ -16,7 +16,7 @@ const FrameSection = () => {
       <FrameSectionDetails />
     </MobileSidebarContainer>
   ) : (
-    <SidebarAccordion panel="2. Frames">
+    <SidebarAccordion panel={sidebarSections[1]}>
       <FrameSectionDetails />
     </SidebarAccordion>
   );

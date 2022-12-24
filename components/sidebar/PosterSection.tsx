@@ -16,7 +16,7 @@ const PosterSection = () => {
       <PosterSectionDetails />
     </MobileSidebarContainer>
   ) : (
-    <SidebarAccordion panel="3. Posters">
+    <SidebarAccordion panel={sidebarSections[2]}>
       <PosterSectionDetails />
     </SidebarAccordion>
   );

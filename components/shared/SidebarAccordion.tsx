@@ -8,6 +8,7 @@ import { IconChevronUp } from '@tabler/icons';
 import { ReactNode } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { theme } from '../theme';
+import { sidebarSections } from '../types';
 
 interface Props {
   panel: string;
@@ -52,7 +53,7 @@ const SidebarAccordion = (props: Props) => {
         }
       >
         <Typography variant="h1" component="h2">
-          {props.panel}
+          {sidebarSections.indexOf(props.panel) + 1}. {props.panel}
         </Typography>
       </AccordionSummary>
       <AccordionDetails

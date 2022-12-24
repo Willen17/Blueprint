@@ -33,8 +33,8 @@ interface CanvasContextValue {
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
-  expandedAccordion: '1. Background',
-  setExpandedAccordion: () => '1. Background',
+  expandedAccordion: '',
+  setExpandedAccordion: () => '',
   openMobileSection: '',
   setOpenMobileSection: () => '',
   isEditingFrame: false,
@@ -57,7 +57,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
-    '1. Background'
+    sidebarSections[0]
   );
   const [openMobileSection, setOpenMobileSection] = useState<string>(
     sidebarSections[0]
