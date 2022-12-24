@@ -1,11 +1,4 @@
-import {
-  AccordionDetails,
-  Box,
-  Checkbox,
-  FormControl,
-  Switch,
-  Typography,
-} from '@mui/material';
+import { Box, Checkbox, FormControl, Switch, Typography } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
@@ -30,16 +23,7 @@ const FrameSectionDetails = () => {
   };
 
   return (
-    <AccordionDetails
-      sx={{
-        maxWidth: 280,
-        minHeight: 'calc(100vh - 200px)',
-        maxHeight: 'calc(100vh - 200px)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflowY: 'scroll',
-      }}
-    >
+    <Box>
       <SidebarSubtitle subtitle="Frame Type">
         <Box
           sx={{
@@ -137,7 +121,7 @@ const FrameSectionDetails = () => {
           </FormControl>
         ))}
       </Box>
-    </AccordionDetails>
+    </Box>
   );
 };
 

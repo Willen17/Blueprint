@@ -1,35 +1,37 @@
 import {
   createContext,
+  Dispatch,
   FC,
   PropsWithChildren,
+  SetStateAction,
   useContext,
   useState,
 } from 'react';
 
 interface CanvasContextValue {
   expandedAccordion: string | false;
-  setExpandedAccordion: React.Dispatch<React.SetStateAction<string | false>>;
+  setExpandedAccordion: Dispatch<SetStateAction<string | false>>;
   isEditingFrame: boolean;
-  setIsEditingFrame: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsEditingFrame: Dispatch<SetStateAction<boolean>>;
   background: string;
-  setBackground: React.Dispatch<React.SetStateAction<string>>;
+  setBackground: Dispatch<SetStateAction<string>>;
   backgroundCategory: string;
-  setBackgroundCategory: React.Dispatch<React.SetStateAction<string>>;
+  setBackgroundCategory: Dispatch<SetStateAction<string>>;
   frame: string;
-  setFrame: React.Dispatch<React.SetStateAction<string>>;
+  setFrame: Dispatch<SetStateAction<string>>;
   frameDimension: string;
-  setFrameDimension: React.Dispatch<React.SetStateAction<string>>;
+  setFrameDimension: Dispatch<SetStateAction<string>>;
   poster: string;
-  setPoster: React.Dispatch<React.SetStateAction<string>>;
+  setPoster: Dispatch<SetStateAction<string>>;
   posterOrientation: string;
-  setPosterOrientation: React.Dispatch<React.SetStateAction<string>>;
+  setPosterOrientation: Dispatch<SetStateAction<string>>;
   posterCategory: string;
-  setPosterCategory: React.Dispatch<React.SetStateAction<string>>;
+  setPosterCategory: Dispatch<SetStateAction<string>>;
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
-  expandedAccordion: 'backgroundPanel',
-  setExpandedAccordion: () => 'backgroundPanel',
+  expandedAccordion: '1. Background',
+  setExpandedAccordion: () => '1. Background',
   isEditingFrame: false,
   setIsEditingFrame: () => false,
   background: '',
@@ -50,7 +52,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
-    'backgroundPanel'
+    '1. Background'
   );
   const [background, setBackground] = useState<string>('');
   const [backgroundCategory, setBackgroundCategory] = useState<string>('');

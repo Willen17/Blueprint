@@ -1,4 +1,4 @@
-import { AccordionDetails, Box, Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
@@ -85,15 +85,7 @@ const PosterSectionDetails = () => {
   };
 
   return (
-    <AccordionDetails
-      sx={{
-        maxWidth: 280,
-        minHeight: 'calc(100vh - 200px)',
-        maxHeight: 'calc(100vh - 200px)',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <Box>
       <SidebarSubtitle subtitle="Poster Type">
         <Box
           sx={{
@@ -216,7 +208,7 @@ const PosterSectionDetails = () => {
           </Box>
         ))}
       </Box>
-    </AccordionDetails>
+    </Box>
   );
 };
 
