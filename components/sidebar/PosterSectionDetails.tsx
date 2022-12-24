@@ -1,11 +1,13 @@
 import { Box, Button } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
+import { Key } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import posterL from '../../public/tempImages/poster-l.png';
 import posterP from '../../public/tempImages/poster-p.png';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
+import { posterCategories } from '../types';
 
 const PosterSectionDetails = () => {
   const {
@@ -26,18 +28,6 @@ const PosterSectionDetails = () => {
   const handleCategoryChange = (value: string) => {
     posterCategory !== value ? setPosterCategory(value) : setPosterCategory('');
   };
-
-  // To be deleted after we have inserted frames from data
-  const types = [
-    'Abstract',
-    'Animals',
-    'Floral',
-    'Minimalistic',
-    'Movies',
-    'Nature',
-    'Paintings',
-    'Other',
-  ];
 
   // To be deleted after we have inserted frames from data
   const showMePosters = () => {
@@ -85,7 +75,7 @@ const PosterSectionDetails = () => {
   };
 
   return (
-    <Box>
+    <>
       <SidebarSubtitle subtitle="Poster Type">
         <Box
           sx={{
@@ -126,21 +116,21 @@ const PosterSectionDetails = () => {
           justifyContent: 'center',
         }}
       >
-        {types.map((type, index) => (
+        {posterCategories.map((category: string, index: Key) => (
           <Button
             key={index}
-            value={type}
+            value={category}
             sx={{
               bgcolor:
-                posterCategory === type ? theme.palette.primary.main : null,
+                posterCategory === category ? theme.palette.primary.main : null,
               color:
-                posterCategory === type
+                posterCategory === category
                   ? theme.palette.primary.contrastText
                   : null,
             }}
-            onClick={() => handleCategoryChange(type)}
+            onClick={() => handleCategoryChange(category)}
           >
-            {type}
+            {category}
           </Button>
         ))}
       </Box>
@@ -151,7 +141,7 @@ const PosterSectionDetails = () => {
           gap: 1.5,
           width: '100%',
           justifyContent: 'center',
-          mt: 2,
+          my: 2.5,
           overflowY: 'scroll',
           '&::-webkit-scrollbar': {
             width: '0.4em',
@@ -208,7 +198,7 @@ const PosterSectionDetails = () => {
           </Box>
         ))}
       </Box>
-    </Box>
+    </>
   );
 };
 
