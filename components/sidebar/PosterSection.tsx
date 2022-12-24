@@ -38,6 +38,13 @@ const PosterSection = () => {
       : setSelectedCategory('');
   };
 
+  // TODO: logic to be fixed for editing from existing canvas, now it is only for "creating new"
+  const handleCollapseAccordion = () => {
+    setExpandedAccordion(false);
+    setSelectedCategory('');
+    setSelectedOrientation('');
+  };
+
   // To be deleted after we have inserted frames from data
   const types = [
     'Abstract',
@@ -101,11 +108,6 @@ const PosterSection = () => {
       square
       elevation={0}
       expanded={expandedAccordion === 'posterPanel'}
-      onClick={() =>
-        expandedAccordion !== 'posterPanel'
-          ? setExpandedAccordion('posterPanel')
-          : setExpandedAccordion(false)
-      }
       sx={{
         border: `1px solid ${theme.palette.secondary.light}`,
         borderLeft: 'none',
@@ -123,6 +125,11 @@ const PosterSection = () => {
           <IconChevronUp size={16} color={theme.palette.primary.main} />
         }
         sx={{ bgcolor: '#FBFBFB', maxHeight: 50 }}
+        onClick={() =>
+          expandedAccordion !== 'posterPanel'
+            ? setExpandedAccordion('posterPanel')
+            : handleCollapseAccordion()
+        }
       >
         <Typography variant="h1">3. Posters</Typography>
       </AccordionSummary>

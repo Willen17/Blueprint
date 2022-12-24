@@ -60,17 +60,19 @@ const BgSection = () => {
     }
   };
 
+  // TODO: logic to be fixed for editing from existing canvas, now it is only for "creating new"
+  const handleCollapseAccordion = () => {
+    setExpandedAccordion(false);
+    setSelectedCategory('');
+    setSelectedBg('');
+  };
+
   return (
     <Accordion
       disableGutters
       square
       elevation={0}
       expanded={expandedAccordion === 'backgroundPanel'}
-      onClick={() =>
-        expandedAccordion !== 'backgroundPanel'
-          ? setExpandedAccordion('backgroundPanel')
-          : setExpandedAccordion(false)
-      }
       sx={{
         border: `1px solid ${theme.palette.secondary.light}`,
         borderLeft: 'none',
@@ -88,6 +90,11 @@ const BgSection = () => {
           <IconChevronUp size={16} color={theme.palette.primary.main} />
         }
         sx={{ bgcolor: '#FBFBFB', maxHeight: 50 }}
+        onClick={() =>
+          expandedAccordion !== 'backgroundPanel'
+            ? setExpandedAccordion('backgroundPanel')
+            : handleCollapseAccordion()
+        }
       >
         <Typography variant="h1">1. Backgrounds</Typography>
       </AccordionSummary>

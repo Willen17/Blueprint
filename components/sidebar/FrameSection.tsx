@@ -35,17 +35,19 @@ const FrameSection = () => {
     return arr;
   };
 
+  // TODO: logic to be fixed for editing from existing canvas, now it is only for "creating new"
+  const handleCollapseAccordion = () => {
+    setExpandedAccordion(false);
+    setSelectedFrame('');
+    setSelectedDimension('');
+  };
+
   return (
     <Accordion
       disableGutters
       square
       elevation={0}
       expanded={expandedAccordion === 'framePanel'}
-      onClick={() =>
-        expandedAccordion !== 'framePanel'
-          ? setExpandedAccordion('framePanel')
-          : setExpandedAccordion(false)
-      }
       sx={{
         border: `1px solid ${theme.palette.secondary.light}`,
         borderLeft: 'none',
@@ -63,6 +65,11 @@ const FrameSection = () => {
           <IconChevronUp size={16} color={theme.palette.primary.main} />
         }
         sx={{ bgcolor: '#FBFBFB', maxHeight: 50 }}
+        onClick={() =>
+          expandedAccordion !== 'framePanel'
+            ? setExpandedAccordion('framePanel')
+            : handleCollapseAccordion()
+        }
       >
         <Typography variant="h1">2. Frames</Typography>
       </AccordionSummary>
