@@ -1,13 +1,13 @@
-import { Box, Drawer, Typography, useMediaQuery } from '@mui/material';
+import { Box, Drawer, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
 import { useCanvas } from '../context/CanvasContext';
 import SidebarToggleButton from './shared/SidebarToggleButton';
 import AddFrameButton from './sidebar/AddFrameButton';
 import BgSection from './sidebar/BgSection';
 import FrameSection from './sidebar/FrameSection';
+import MobileSidebar from './sidebar/MobileSidebar';
 import PosterSection from './sidebar/PosterSection';
 import { theme } from './theme';
-import { sidebarSections } from './types';
 
 const Sidebar = () => {
   const [anchor, setAnchor] = useState<boolean>(true);
@@ -69,67 +69,7 @@ const Sidebar = () => {
               flexDirection: 'column',
             }}
           >
-            {mobile ? (
-              <Box
-                minHeight={40}
-                maxHeight={40}
-                bgcolor="#FBFBFB"
-                borderBottom="#F1F1F1 1px solid"
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  placeItems: 'center',
-                  placeContent: 'center',
-                  gap: 3,
-                }}
-              >
-                <Typography
-                  variant="body1"
-                  component="h2"
-                  sx={{
-                    cursor: 'pointer',
-                    width: 65,
-                    textAlign: 'center',
-                    '&:hover': {
-                      fontWeight: 600,
-                    },
-                  }}
-                  onClick={() => setOpenMobileSection(sidebarSections[0])}
-                >
-                  {sidebarSections[0]}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  component="h2"
-                  sx={{
-                    cursor: 'pointer',
-                    width: 35,
-                    textAlign: 'center',
-                    '&:hover': {
-                      fontWeight: 600,
-                    },
-                  }}
-                  onClick={() => setOpenMobileSection(sidebarSections[1])}
-                >
-                  {sidebarSections[1]}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  component="h2"
-                  sx={{
-                    cursor: 'pointer',
-                    width: 35,
-                    textAlign: 'center',
-                    '&:hover': {
-                      fontWeight: 600,
-                    },
-                  }}
-                  onClick={() => setOpenMobileSection(sidebarSections[2])}
-                >
-                  {sidebarSections[2]}
-                </Typography>
-              </Box>
-            ) : null}
+            {mobile ? <MobileSidebar /> : null}
             {isEditingFrame ? (
               <>
                 <BgSection />
