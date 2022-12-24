@@ -7,11 +7,12 @@ import BgSection from './sidebar/BgSection';
 import FrameSection from './sidebar/FrameSection';
 import PosterSection from './sidebar/PosterSection';
 import { theme } from './theme';
+import { sidebarSections } from './types';
 
 const Sidebar = () => {
   const [anchor, setAnchor] = useState<boolean>(true);
   const toggleClose = () => setAnchor(false);
-  const { isEditingFrame } = useCanvas();
+  const { isEditingFrame, setOpenMobileSection } = useCanvas();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
@@ -93,8 +94,9 @@ const Sidebar = () => {
                       fontWeight: 600,
                     },
                   }}
+                  onClick={() => setOpenMobileSection(sidebarSections[0])}
                 >
-                  Background
+                  {sidebarSections[0]}
                 </Typography>
                 <Typography
                   variant="body1"
@@ -107,8 +109,9 @@ const Sidebar = () => {
                       fontWeight: 600,
                     },
                   }}
+                  onClick={() => setOpenMobileSection(sidebarSections[1])}
                 >
-                  Frame
+                  {sidebarSections[1]}
                 </Typography>
                 <Typography
                   variant="body1"
@@ -117,13 +120,13 @@ const Sidebar = () => {
                     cursor: 'pointer',
                     width: 35,
                     textAlign: 'center',
-
                     '&:hover': {
                       fontWeight: 600,
                     },
                   }}
+                  onClick={() => setOpenMobileSection(sidebarSections[2])}
                 >
-                  Poster
+                  {sidebarSections[2]}
                 </Typography>
               </Box>
             ) : null}

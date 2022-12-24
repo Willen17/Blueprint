@@ -7,10 +7,13 @@ import {
   useContext,
   useState,
 } from 'react';
+import { sidebarSections } from '../components/Types';
 
 interface CanvasContextValue {
   expandedAccordion: string | false;
   setExpandedAccordion: Dispatch<SetStateAction<string | false>>;
+  openMobileSection: string;
+  setOpenMobileSection: Dispatch<SetStateAction<string>>;
   isEditingFrame: boolean;
   setIsEditingFrame: Dispatch<SetStateAction<boolean>>;
   background: string;
@@ -32,6 +35,8 @@ interface CanvasContextValue {
 export const CanvasContext = createContext<CanvasContextValue>({
   expandedAccordion: '1. Background',
   setExpandedAccordion: () => '1. Background',
+  openMobileSection: '',
+  setOpenMobileSection: () => '',
   isEditingFrame: false,
   setIsEditingFrame: () => false,
   background: '',
@@ -54,6 +59,9 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
     '1. Background'
   );
+  const [openMobileSection, setOpenMobileSection] = useState<string>(
+    sidebarSections[0]
+  );
   const [background, setBackground] = useState<string>('');
   const [backgroundCategory, setBackgroundCategory] = useState<string>('');
   const [frame, setFrame] = useState<string>('');
@@ -70,6 +78,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       value={{
         expandedAccordion,
         setExpandedAccordion,
+        openMobileSection,
+        setOpenMobileSection,
         isEditingFrame,
         setIsEditingFrame,
         background,
