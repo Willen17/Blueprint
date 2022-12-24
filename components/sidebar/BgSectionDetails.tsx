@@ -56,7 +56,7 @@ const BgSectionDetails = () => {
   };
 
   return (
-    <Box>
+    <>
       <SidebarSubtitle subtitle="Background Type" />
       <Box
         sx={{
@@ -86,6 +86,7 @@ const BgSectionDetails = () => {
         ))}
       </Box>
       <Box
+        pb={2}
         sx={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -94,6 +95,7 @@ const BgSectionDetails = () => {
           justifyContent: 'center',
           my: 2,
           overflowY: 'scroll',
+
           '&::-webkit-scrollbar': {
             width: '0.4em',
           },
@@ -149,7 +151,7 @@ const BgSectionDetails = () => {
           </Box>
         ))}
       </Box>
-    </Box>
+    </>
   );
 };
 

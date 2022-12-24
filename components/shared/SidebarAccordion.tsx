@@ -53,7 +53,9 @@ const SidebarAccordion = (props: Props) => {
             : handleCollapseAccordion()
         }
       >
-        <Typography variant="h1">{props.panel}</Typography>
+        <Typography variant="h1" component="h2">
+          {props.panel}
+        </Typography>
       </AccordionSummary>
       <AccordionDetails
         sx={{
