@@ -6,15 +6,22 @@ import {
   Button,
   Typography,
 } from '@mui/material';
-import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
+import {
+  IconCheck,
+  IconChevronUp,
+  IconRectangle,
+  IconRectangleVertical,
+} from '@tabler/icons';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useCanvas } from '../../context/CanvasContext';
 import posterL from '../../public/tempImages/poster-l.png';
 import posterP from '../../public/tempImages/poster-p.png';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const PosterSection = () => {
+  const { setExpandedAccordion, expandedAccordion } = useCanvas();
   const [selectedOrientation, setSelectedOrientation] = useState<string>('');
   const [selectedPoster, setSelectedPoster] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -46,7 +53,7 @@ const PosterSection = () => {
   // To be deleted after we have inserted frames from data
   const showMePosters = () => {
     const arr = [];
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i <= 50; i++) {
       arr.push(
         {
           title: 'P1',
@@ -89,11 +96,45 @@ const PosterSection = () => {
   };
 
   return (
-    <Accordion>
-      <AccordionSummary>
+    <Accordion
+      disableGutters
+      square
+      elevation={0}
+      expanded={expandedAccordion === 'posterPanel'}
+      onClick={() =>
+        expandedAccordion !== 'posterPanel'
+          ? setExpandedAccordion('posterPanel')
+          : setExpandedAccordion(false)
+      }
+      sx={{
+        border: `1px solid ${theme.palette.secondary.light}`,
+        borderLeft: 'none',
+        borderRight: 'none',
+        '&:not(:last-child)': {
+          borderBottom: 0,
+        },
+        '&:before': {
+          display: 'none',
+        },
+      }}
+    >
+      <AccordionSummary
+        expandIcon={
+          <IconChevronUp size={16} color={theme.palette.primary.main} />
+        }
+        sx={{ bgcolor: '#FBFBFB', maxHeight: 50 }}
+      >
         <Typography variant="h1">3. Posters</Typography>
       </AccordionSummary>
-      <AccordionDetails sx={{ maxWidth: 280 }}>
+      <AccordionDetails
+        sx={{
+          maxWidth: 280,
+          minHeight: 'calc(100vh - 250px)',
+          maxHeight: 'calc(100vh - 250px)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <SidebarSubtitle subtitle="Poster Type">
           <Box
             sx={{
@@ -159,8 +200,7 @@ const PosterSection = () => {
             gap: 1.5,
             width: '100%',
             justifyContent: 'center',
-            my: 2,
-            maxHeight: 250,
+            mt: 2,
             overflowY: 'scroll',
             '&::-webkit-scrollbar': {
               width: '0.4em',

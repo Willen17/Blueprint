@@ -6,15 +6,17 @@ import {
   Button,
   Typography,
 } from '@mui/material';
-import { IconCheck } from '@tabler/icons';
+import { IconCheck, IconChevronUp } from '@tabler/icons';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useCanvas } from '../../context/CanvasContext';
 import bgLiving from '../../public/tempImages/bg-living.png';
 import bgOther from '../../public/tempImages/bg-other.png';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const BgSection = () => {
+  const { expandedAccordion, setExpandedAccordion } = useCanvas();
   const [selectedBg, setSelectedBg] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
 
@@ -30,7 +32,7 @@ const BgSection = () => {
   // To be deleted after we have inserted frames from data
   const showMeBgs = () => {
     const arr = [];
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i <= 100; i++) {
       arr.push(
         {
           title: 'B1',
@@ -59,11 +61,45 @@ const BgSection = () => {
   };
 
   return (
-    <Accordion>
-      <AccordionSummary>
+    <Accordion
+      disableGutters
+      square
+      elevation={0}
+      expanded={expandedAccordion === 'backgroundPanel'}
+      onClick={() =>
+        expandedAccordion !== 'backgroundPanel'
+          ? setExpandedAccordion('backgroundPanel')
+          : setExpandedAccordion(false)
+      }
+      sx={{
+        border: `1px solid ${theme.palette.secondary.light}`,
+        borderLeft: 'none',
+        borderRight: 'none',
+        '&:not(:last-child)': {
+          borderBottom: 0,
+        },
+        '&:before': {
+          display: 'none',
+        },
+      }}
+    >
+      <AccordionSummary
+        expandIcon={
+          <IconChevronUp size={16} color={theme.palette.primary.main} />
+        }
+        sx={{ bgcolor: '#FBFBFB', maxHeight: 50 }}
+      >
         <Typography variant="h1">1. Backgrounds</Typography>
       </AccordionSummary>
-      <AccordionDetails sx={{ maxWidth: 280 }}>
+      <AccordionDetails
+        sx={{
+          maxWidth: 280,
+          minHeight: 'calc(100vh - 250px)',
+          maxHeight: 'calc(100vh - 250px)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <SidebarSubtitle subtitle="Background Type" />
         <Box
           sx={{
@@ -100,7 +136,6 @@ const BgSection = () => {
             width: '100%',
             justifyContent: 'center',
             my: 2,
-            maxHeight: 250,
             overflowY: 'scroll',
             '&::-webkit-scrollbar': {
               width: '0.4em',

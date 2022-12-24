@@ -14,7 +14,15 @@ const Layout = (props: Props) => {
     <>
       <Header />
       <Box display="flex" width="100%" p={0} sx={{ flexDirection: 'row' }}>
-        <main style={{ width: '100%', height: '100vh' }}>{props.children}</main>
+        <main
+          style={{
+            width: '100%',
+            height: 'calc(100vh - 50px)',
+            maxHeight: 'calc(100vh - 50px)',
+          }}
+        >
+          {props.children}
+        </main>
         {!router.pathname.includes('admin') && <Sidebar />}
       </Box>
     </>

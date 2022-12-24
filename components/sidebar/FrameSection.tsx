@@ -8,14 +8,16 @@ import {
   Switch,
   Typography,
 } from '@mui/material';
-import { IconCheck } from '@tabler/icons';
+import { IconCheck, IconChevronUp } from '@tabler/icons';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useCanvas } from '../../context/CanvasContext';
 import frame from '../../public/tempImages/frame.png';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const FrameSection = () => {
+  const { setExpandedAccordion, expandedAccordion } = useCanvas();
   // TODO: add logic - how the states change the frame shown on canvas
   const [selectedFrame, setSelectedFrame] = useState<String>('');
   const [selectedDimension, setSelectedDimension] = useState<String>('21x30');
@@ -26,7 +28,7 @@ const FrameSection = () => {
   // To be deleted after we have inserted frames from data
   const showMeFrames = () => {
     const arr = [];
-    for (let i = 0; i <= 35; i++) {
+    for (let i = 0; i <= 30; i++) {
       arr.push({ src: frame });
       i++;
     }
@@ -34,11 +36,46 @@ const FrameSection = () => {
   };
 
   return (
-    <Accordion>
-      <AccordionSummary>
+    <Accordion
+      disableGutters
+      square
+      elevation={0}
+      expanded={expandedAccordion === 'framePanel'}
+      onClick={() =>
+        expandedAccordion !== 'framePanel'
+          ? setExpandedAccordion('framePanel')
+          : setExpandedAccordion(false)
+      }
+      sx={{
+        border: `1px solid ${theme.palette.secondary.light}`,
+        borderLeft: 'none',
+        borderRight: 'none',
+        '&:not(:last-child)': {
+          borderBottom: 0,
+        },
+        '&:before': {
+          display: 'none',
+        },
+      }}
+    >
+      <AccordionSummary
+        expandIcon={
+          <IconChevronUp size={16} color={theme.palette.primary.main} />
+        }
+        sx={{ bgcolor: '#FBFBFB', maxHeight: 50 }}
+      >
         <Typography variant="h1">2. Frames</Typography>
       </AccordionSummary>
-      <AccordionDetails sx={{ maxWidth: 280 }}>
+      <AccordionDetails
+        sx={{
+          maxWidth: 280,
+          minHeight: 'calc(100vh - 250px)',
+          maxHeight: 'calc(100vh - 250px)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflowY: 'scroll',
+        }}
+      >
         <SidebarSubtitle subtitle="Frame Type">
           <Box
             sx={{
@@ -67,7 +104,6 @@ const FrameSection = () => {
               key={index}
               sx={{
                 cursor: 'pointer',
-
                 position: 'relative',
                 height: 43,
                 width: 43,
