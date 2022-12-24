@@ -69,9 +69,9 @@ const Sidebar = () => {
               flexDirection: 'column',
             }}
           >
-            {mobile ? <MobileSidebar /> : null}
             {isEditingFrame ? (
               <>
+                {mobile ? <MobileSidebar /> : null}
                 <BgSection />
                 <FrameSection />
                 <PosterSection />
