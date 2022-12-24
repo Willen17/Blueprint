@@ -23,7 +23,7 @@ const FrameSectionDetails = () => {
   };
 
   return (
-    <Box>
+    <>
       <SidebarSubtitle subtitle="Frame Type">
         <Box
           sx={{
@@ -92,6 +92,7 @@ const FrameSectionDetails = () => {
       <Box
         sx={{
           mt: -1,
+          pb: 2.5,
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
@@ -121,7 +122,7 @@ const FrameSectionDetails = () => {
           </FormControl>
         ))}
       </Box>
-    </Box>
+    </>
   );
 };
 

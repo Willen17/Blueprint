@@ -20,8 +20,6 @@ const SidebarAccordion = (props: Props) => {
   // TODO: logic to be fixed for editing from existing canvas, now it is only for "creating new"
   const handleCollapseAccordion = () => {
     setExpandedAccordion(false);
-    // setFrame('');
-    // setFrameDimension('');
   };
 
   return (
@@ -63,7 +61,7 @@ const SidebarAccordion = (props: Props) => {
           minHeight: 'calc(100vh - 200px)',
           maxHeight: 'calc(100vh - 200px)',
           display: 'flex',
-          flexDirection: props.panel !== '2. Frames' ? 'column' : null,
+          flexDirection: 'column',
         }}
       >
         {props.children}

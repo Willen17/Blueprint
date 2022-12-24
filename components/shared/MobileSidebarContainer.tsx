@@ -12,11 +12,12 @@ const MobileSidebarContainer = (props: Props) => {
       bgcolor={theme.palette.primary.contrastText}
       px={2}
       sx={{
+        display: 'flex',
+        flexDirection: 'column',
         maxWidth: 280,
         minHeight: 'calc(100vh - 90px)',
         maxHeight: 'calc(100vh - 90px)',
-        display: 'flex',
-        flexDirection: 'column',
+        overflowY: 'scroll',
       }}
     >
       {props.children}
