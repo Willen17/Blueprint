@@ -89,7 +89,7 @@ const BgSection = () => {
         expandIcon={
           <IconChevronUp size={16} color={theme.palette.primary.main} />
         }
-        sx={{ bgcolor: '#FBFBFB', maxHeight: 50 }}
+        sx={{ bgcolor: '#FBFBFB', minHeight: 40, maxHeight: 40 }}
         onClick={() =>
           expandedAccordion !== 'backgroundPanel'
             ? setExpandedAccordion('backgroundPanel')
@@ -101,8 +101,8 @@ const BgSection = () => {
       <AccordionDetails
         sx={{
           maxWidth: 280,
-          minHeight: 'calc(100vh - 250px)',
-          maxHeight: 'calc(100vh - 250px)',
+          minHeight: 'calc(100vh - 200px)',
+          maxHeight: 'calc(100vh - 200px)',
           display: 'flex',
           flexDirection: 'column',
         }}

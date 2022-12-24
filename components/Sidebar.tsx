@@ -1,6 +1,8 @@
 import { Box, Drawer } from '@mui/material';
 import { useState } from 'react';
+import { useCanvas } from '../context/CanvasContext';
 import SidebarToggleButton from './shared/SidebarToggleButton';
+import AddFrameButton from './sidebar/AddFrameButton';
 import BgSection from './sidebar/BgSection';
 import FrameSection from './sidebar/FrameSection';
 import PosterSection from './sidebar/PosterSection';
@@ -8,6 +10,7 @@ import PosterSection from './sidebar/PosterSection';
 const Sidebar = () => {
   const [anchor, setAnchor] = useState<boolean>(true);
   const toggleClose = () => setAnchor(false);
+  const { isEditingFrame } = useCanvas();
 
   return (
     <>
@@ -58,11 +61,19 @@ const Sidebar = () => {
               height: 'calc(100vh - 50px)',
               maxHeight: 'calc(100vh - 50px)',
               borderLeft: '1px solid #F1F1F1',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
-            <BgSection />
-            <FrameSection />
-            <PosterSection />
+            {isEditingFrame ? (
+              <>
+                <BgSection />
+                <FrameSection />
+                <PosterSection />
+              </>
+            ) : (
+              <AddFrameButton />
+            )}
           </Box>
         </Box>
       </Drawer>
