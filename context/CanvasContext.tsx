@@ -7,7 +7,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import { sidebarSections } from '../components/Types';
+import { sidebarSections } from '../components/types';
 
 interface CanvasContextValue {
   expandedAccordion: string | false;
