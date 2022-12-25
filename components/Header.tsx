@@ -16,6 +16,10 @@ const Header = () => {
   const { currentUser, handleGoogleSignIn, handleSignOut } = useUser();
   const [openUser, setOpenUser] = useState<boolean>(false);
   const [openSave, setOpenSave] = useState<boolean>(false);
+  const [isHovering, setIsHovered] = useState(false);
+  const onMouseEnter = () => setIsHovered(true);
+  const onMouseLeave = () => setIsHovered(false);
+
   const handleClose = () => {
     setOpenUser(false);
     setOpenSave(false);
@@ -43,11 +47,18 @@ const Header = () => {
       >
         <Image
           priority
-          width={25}
-          height={25}
+          width={isHovering ? 26 : 25}
+          height={isHovering ? 26 : 25}
           alt="Blueprint Logo"
           src={bpLogo}
           onClick={() => setOpenSave(true)}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          style={{
+            boxSizing: 'border-box',
+            cursor: 'pointer',
+            transition: '.5s',
+          }}
         />
         <Typography variant="body2">
           Untitled {/* TODO: insert from canvas data */}
@@ -57,7 +68,17 @@ const Header = () => {
             onClick={() => setOpenUser(true)}
             alt={currentUser.displayName || currentUser.email}
             src={currentUser.photoURL}
-            sx={{ width: 25, height: 25, cursor: 'pointer' }}
+            sx={{
+              width: 25,
+              height: 25,
+              cursor: 'pointer',
+              boxSizing: 'border-box',
+              '&:hover': {
+                width: 26,
+                height: 26,
+                transition: '.5s',
+              },
+            }}
           />
         ) : (
           <Box sx={{ '&:hover': { color: '#3086B7' } }}>

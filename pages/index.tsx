@@ -95,7 +95,7 @@ export default function Home() {
           <Typography>Welcome to Blue print</Typography>
           <Typography variant="h1">This is H1</Typography>
           <Typography variant="h2">This is H2</Typography>
-          <Typography variant="subtitle1">This is H3</Typography>
+          <Typography variant="subtitle1">This is subtitle1</Typography>
           <Typography variant="body1">This is body1</Typography>
           <Typography variant="body2">This is body2</Typography>
           <Button>Button</Button>
