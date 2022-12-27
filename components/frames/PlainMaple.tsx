@@ -18,7 +18,7 @@ const PlainMaple = () => {
         zIndex: '-2',
         boxSizing: 'border-box',
         boxShadow:
-          '0px 1em 2em -1em rgba(0,0,0,.4),0px 2em 2em -1em rgba(0,0,0,.15),0px 1em 1em -1em rgba(0,0,0,.15),0px 4em 1.5em -1em rgba(0,0,0,.15),0px 1em 1em .5em rgba(0,0,0,.1), inset 0 .2em .1em #fff',
+          '0px 1em 2em -1em rgba(0,0,0,.4),0px 2em 2em -1em rgba(0,0,0,.15),0px 1em 1em -1em rgba(0, 0, 0, .15),0px 1em 1.5em -1em rgba(0,0,0,.15),0px 1em 1em .5em rgba(0,0,0,.1), inset 0 .2em .1em #fff',
       }}
     >
       <Image alt="maple background" src={maple} fill style={{ zIndex: '-2' }} />
