@@ -1,8 +1,8 @@
 import { Box, Checkbox, FormControl, Switch, Typography } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
+import { Fragment } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { frames } from '../../data/frameData';
-import frameImg from '../../public/tempImages/frame.png';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
@@ -14,19 +14,19 @@ const FrameSectionDetails = () => {
     frameDimension,
     setWithPassepartout,
     withPassepartout,
+    allFrames,
   } = useCanvas();
 
   // TODO: get dimensions from data instead
   const dimensions = ['21x30', '30x40', '40x50', '50x70', '70x100'];
 
-  // To be deleted after we have inserted frames from data
-  const showMeFrames = () => {
-    const arr = [];
-    for (let i = 0; i <= 30; i++) {
-      arr.push({ src: frameImg });
-      i++;
-    }
-    return arr;
+  const getFrameJSX = (id: string) => {
+    const match = frames.filter((f) => f.id === id);
+    return match.map((m, index) => (
+      <Fragment key={index}>
+        <m.frame />
+      </Fragment>
+    ));
   };
 
   return (
@@ -46,8 +46,7 @@ const FrameSectionDetails = () => {
             onChange={() =>
               setWithPassepartout(withPassepartout ? false : true)
             }
-          />{' '}
-          {/* TODO: apply logic */}
+          />
         </Box>
       </SidebarSubtitle>
       <Box
@@ -60,10 +59,10 @@ const FrameSectionDetails = () => {
           width: 230,
         }}
       >
-        {frames.map((fr) => (
+        {allFrames.map((fr) => (
           <Box
             key={fr.id}
-            onClick={() => setFrame(fr.id)}
+            onClick={() => setFrame(fr.id!)}
             sx={{
               cursor: 'pointer',
               position: 'relative',
@@ -71,12 +70,10 @@ const FrameSectionDetails = () => {
               width: 43,
               zIndex: 99,
               boxShadow:
-                frame === fr.id // TODO: change to ID
-                  ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
-                  : null,
+                frame === fr.id ? '0px 2px 5px rgba(0, 0, 0, 0.25)' : null,
             }}
           >
-            <fr.frame />
+            {getFrameJSX(fr.id!)}
             {frame === fr.id ? (
               <IconCheck
                 stroke={1}
@@ -107,6 +104,7 @@ const FrameSectionDetails = () => {
           justifyContent: 'center',
         }}
       >
+        {/* TODO: show only available frame sizes */}
         {dimensions.map((dimension, index) => (
           <FormControl
             key={index}

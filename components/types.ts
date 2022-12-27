@@ -21,6 +21,6 @@ export interface Frame {
   frame: () => JSX.Element;
   size: FrameDimension[];
   title: string;
-  id: string;
+  id?: string;
   category: string[];
 }

@@ -7,7 +7,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import { sidebarSections } from '../components/types';
+import { Frame, sidebarSections } from '../components/types';
 
 interface CanvasContextValue {
   expandedAccordion: string | false;
@@ -32,6 +32,8 @@ interface CanvasContextValue {
   setPosterOrientation: Dispatch<SetStateAction<string>>;
   posterCategory: string;
   setPosterCategory: Dispatch<SetStateAction<string>>;
+  allFrames: Frame[];
+  setAllFrames: Dispatch<SetStateAction<Frame[]>>;
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
@@ -57,6 +59,8 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setPosterOrientation: () => '',
   posterCategory: '',
   setPosterCategory: () => '',
+  allFrames: [],
+  setAllFrames: () => [],
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -74,6 +78,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [poster, setPoster] = useState<string>('');
   const [posterOrientation, setPosterOrientation] = useState<string>('');
   const [posterCategory, setPosterCategory] = useState<string>('');
+  const [allFrames, setAllFrames] = useState<Frame[]>([]);
 
   // TODO: setIsEditingFrame must be set to true when a user clicks a frame in the canvas
   const [isEditingFrame, setIsEditingFrame] = useState<boolean>(false);
@@ -103,6 +108,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setPosterOrientation,
         posterCategory,
         setPosterCategory,
+        allFrames,
+        setAllFrames,
       }}
     >
       {children}

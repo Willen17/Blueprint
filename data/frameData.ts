@@ -2,7 +2,6 @@ import PlainBlackPreview from '../components/frames/framePreview/PlainBlackPrevi
 import PlainMaplePreview from '../components/frames/framePreview/PlainMaplePreview';
 import PlainWalnutPreview from '../components/frames/framePreview/PlainWalnutPreview';
 import PlainWhitePreview from '../components/frames/framePreview/PlainWhitePreview';
-import { Frame } from '../components/types';
 
 export const frameDimensions = {
   xs: { width: 21, height: 30 },
@@ -12,57 +11,21 @@ export const frameDimensions = {
   xl: { width: 70, height: 100 },
 };
 
-export const frames: Frame[] = [
+export const frames = [
   {
     frame: PlainWhitePreview,
-    title: 'Plain White',
-    id: 'p1-white',
-    category: ['White'],
-    size: [
-      frameDimensions.xs,
-      frameDimensions.sm,
-      frameDimensions.md,
-      frameDimensions.lg,
-      frameDimensions.xl,
-    ],
+    id: 'EWtfJS2f1zpIHOMiZqT6',
   },
   {
     frame: PlainBlackPreview,
-    title: 'Plain Black',
-    id: 'p1-black',
-    category: ['Black'],
-    size: [
-      frameDimensions.xs,
-      frameDimensions.sm,
-      frameDimensions.md,
-      frameDimensions.lg,
-      frameDimensions.xl,
-    ],
+    id: 'y7p7AoPxjQlljP0yK19s',
   },
   {
     frame: PlainMaplePreview,
-    title: 'Plain Maple',
-    id: 'p1-maple',
-    category: ['Wooden'],
-    size: [
-      frameDimensions.xs,
-      frameDimensions.sm,
-      frameDimensions.md,
-      frameDimensions.lg,
-      frameDimensions.xl,
-    ],
+    id: 'rVKbdYQ4FIL2m0pvu8FQ',
   },
   {
     frame: PlainWalnutPreview,
-    title: 'Plain Walnut',
-    id: 'p1-walnut',
-    category: ['Wooden'],
-    size: [
-      frameDimensions.xs,
-      frameDimensions.sm,
-      frameDimensions.md,
-      frameDimensions.lg,
-      frameDimensions.xl,
-    ],
+    id: 'dh4w2TLpD1E6xqj2gsTl',
   },
 ];
