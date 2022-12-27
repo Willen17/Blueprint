@@ -13,6 +13,10 @@ import { addDoc, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import Head from 'next/head';
 import { useCallback, useState } from 'react';
+import PlainBlack from '../components/frames/PlainBlack';
+import PlainMaple from '../components/frames/PlainMaple';
+import PlainWalnut from '../components/frames/PlainWalnut';
+import PlainWhite from '../components/frames/PlainWhite';
 import { useUser } from '../context/UserContext';
 import { db, storage } from '../firebase/firebaseConfig';
 const inter = Inter({ subsets: ['latin'] });
@@ -106,6 +110,12 @@ export default function Home() {
             <input type="file" accept="image/*" onChange={handleChange} />
             <Button onClick={handleUpload}>Upload to Firebase</Button>
             <Typography>{percent}%</Typography>
+          </Box>
+          <Box display="flex" gap={3} sx={{ flexWrap: 'wrap' }}>
+            <PlainWhite />
+            <PlainBlack />
+            <PlainWalnut />
+            <PlainMaple />
           </Box>
         </Container>
       </main>
