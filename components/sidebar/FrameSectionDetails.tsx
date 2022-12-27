@@ -1,7 +1,7 @@
 import { Box, Checkbox, FormControl, Switch, Typography } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
-import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
+import { frames } from '../../data/frameData';
 import frameImg from '../../public/tempImages/frame.png';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
@@ -42,7 +42,6 @@ const FrameSectionDetails = () => {
         >
           <Typography variant="body2">Passepartout</Typography>
           <Switch
-            defaultChecked
             checked={withPassepartout}
             onChange={() =>
               setWithPassepartout(withPassepartout ? false : true)
@@ -61,29 +60,24 @@ const FrameSectionDetails = () => {
           width: 230,
         }}
       >
-        {showMeFrames().map((fr, index) => (
+        {frames.map((fr) => (
           <Box
-            key={index}
+            key={fr.id}
+            onClick={() => setFrame(fr.id)}
             sx={{
               cursor: 'pointer',
               position: 'relative',
               height: 43,
               width: 43,
+              zIndex: 99,
               boxShadow:
-                frame === index.toString() // TODO: change to ID
+                frame === fr.id // TODO: change to ID
                   ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
                   : null,
             }}
           >
-            <Image
-              width={43}
-              height={43}
-              alt="TITLE" // TODO: change to title
-              src={fr.src}
-              onClick={() => setFrame(index.toString())}
-            />
-            {/* TODO: adjust logic - this should not be index but id */}
-            {frame === index.toString() ? (
+            <fr.frame />
+            {frame === fr.id ? (
               <IconCheck
                 stroke={1}
                 color={theme.palette.primary.contrastText}
