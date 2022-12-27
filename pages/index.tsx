@@ -108,7 +108,6 @@ export default function Home(props: any) {
           <Typography variant="subtitle1">This is subtitle1</Typography>
           <Typography variant="body1">This is body1</Typography>
           <Typography variant="body2">This is body2</Typography>
-          {props.frames.map((k: any) => k.title)}
           <Button>Button</Button>
           <Checkbox size="small" />
           <Switch />
