@@ -22,6 +22,8 @@ interface CanvasContextValue {
   setBackgroundCategory: Dispatch<SetStateAction<string>>;
   frame: string;
   setFrame: Dispatch<SetStateAction<string>>;
+  withPassepartout: boolean;
+  setWithPassepartout: Dispatch<SetStateAction<boolean>>;
   frameDimension: string;
   setFrameDimension: Dispatch<SetStateAction<string>>;
   poster: string;
@@ -45,6 +47,8 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setBackgroundCategory: () => '',
   frame: '',
   setFrame: () => '',
+  withPassepartout: true,
+  setWithPassepartout: () => true,
   frameDimension: '',
   setFrameDimension: () => '',
   poster: '',
@@ -65,6 +69,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [background, setBackground] = useState<string>('');
   const [backgroundCategory, setBackgroundCategory] = useState<string>('');
   const [frame, setFrame] = useState<string>('');
+  const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [frameDimension, setFrameDimension] = useState<string>('21x30');
   const [poster, setPoster] = useState<string>('');
   const [posterOrientation, setPosterOrientation] = useState<string>('');
@@ -88,6 +93,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setBackgroundCategory,
         frame,
         setFrame,
+        withPassepartout,
+        setWithPassepartout,
         frameDimension,
         setFrameDimension,
         poster,

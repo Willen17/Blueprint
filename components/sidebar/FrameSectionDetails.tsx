@@ -7,7 +7,14 @@ import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const FrameSectionDetails = () => {
-  const { setFrame, frame, setFrameDimension, frameDimension } = useCanvas();
+  const {
+    setFrame,
+    frame,
+    setFrameDimension,
+    frameDimension,
+    setWithPassepartout,
+    withPassepartout,
+  } = useCanvas();
 
   // TODO: get dimensions from data instead
   const dimensions = ['21x30', '30x40', '40x50', '50x70', '70x100'];
@@ -34,7 +41,14 @@ const FrameSectionDetails = () => {
           }}
         >
           <Typography variant="body2">Passepartout</Typography>
-          <Switch /> {/* TODO: apply logic */}
+          <Switch
+            defaultChecked
+            checked={withPassepartout}
+            onChange={() =>
+              setWithPassepartout(withPassepartout ? false : true)
+            }
+          />{' '}
+          {/* TODO: apply logic */}
         </Box>
       </SidebarSubtitle>
       <Box
