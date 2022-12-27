@@ -1,16 +1,20 @@
 import { Box } from '@mui/material';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
+import walnut from '../../public/frameBg/walnut-surface.jpeg';
 import monaLisa from '../../public/tempImages/mona-lisa.jpg';
-import walnut from '../../public/tempImages/walnut-surface.jpeg';
 import PlainFrame from '../shared/PlainFrame';
+import { FrameDimension } from '../types';
 
-const PlainWalnut = () => {
+interface Props {
+  size: FrameDimension;
+}
+
+const PlainWalnut = (props: Props) => {
   const { withPassepartout } = useCanvas();
 
   return (
-    // outer
-    <PlainFrame bgImg={{ src: walnut, alt: 'Walnut Frame' }}>
+    <PlainFrame size={props.size} bgImg={{ src: walnut, alt: 'Walnut Frame' }}>
       {withPassepartout ? (
         <Box
           sx={{
@@ -28,7 +32,7 @@ const PlainWalnut = () => {
               width: '100%',
               height: '100%',
               display: 'block',
-              padding: '1%',
+              padding: '1.5%',
               boxShadow: 'inset 0px 0.1em 0.1em rgba(0, 0, 0, 0.2)',
             }}
           />

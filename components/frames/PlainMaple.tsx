@@ -1,16 +1,21 @@
 import { Box } from '@mui/material';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
-import maple from '../../public/tempImages/maple-surface.jpg';
+import maple from '../../public/frameBg/maple-surface.jpg';
 import monaLisa from '../../public/tempImages/mona-lisa.jpg';
 import PlainFrame from '../shared/PlainFrame';
+import { FrameDimension } from '../types';
 
-const PlainMaple = () => {
+interface Props {
+  size: FrameDimension;
+}
+
+const PlainMaple = (props: Props) => {
   const { withPassepartout } = useCanvas();
 
   return (
     // outer
-    <PlainFrame bgImg={{ src: maple, alt: 'Maple Frame' }}>
+    <PlainFrame size={props.size} bgImg={{ src: maple, alt: 'Maple Frame' }}>
       {withPassepartout ? (
         <Box
           sx={{
@@ -28,7 +33,7 @@ const PlainMaple = () => {
               width: '100%',
               height: '100%',
               display: 'block',
-              padding: '1%',
+              padding: '1.5%',
               boxShadow: 'inset 0px 0.1em 0.1em rgba(0, 0, 0, 0.2)',
             }}
           />

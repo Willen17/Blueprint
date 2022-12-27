@@ -1,11 +1,14 @@
 import { Box } from '@mui/material';
 import Image, { StaticImageData } from 'next/image';
 import { ReactNode } from 'react';
+import { frameDimensions } from '../../data/frameData';
+import { FrameDimension } from '../types';
 
 interface Props {
   isWhiteFrame?: boolean;
   bgColor?: string;
   bgImg?: { src: StaticImageData; alt: string };
+  size: FrameDimension;
   children: ReactNode;
 }
 
@@ -15,8 +18,8 @@ const PlainFrame = (props: Props) => {
       sx={{
         position: 'relative',
         display: 'flex',
-        width: '175px',
-        height: '245px',
+        width: props.size ? props.size!.width * 3.5 : null,
+        height: props.size ? props.size!.height * 3.5 : null,
         zIndex: '-2',
         boxSizing: 'border-box',
         background: props.isWhiteFrame
@@ -29,17 +32,35 @@ const PlainFrame = (props: Props) => {
     >
       {props.bgImg ? (
         <Image
+          fill
           alt={props.bgImg.alt}
           src={props.bgImg.src}
-          fill
           style={{ zIndex: '-2' }}
         />
       ) : null}
       {/* Inner */}
       <Box
         sx={{
-          width: '90%',
-          height: '92%',
+          width:
+            props.size === frameDimensions.xs
+              ? '82%'
+              : props.size === frameDimensions.sm
+              ? '84%'
+              : props.size === frameDimensions.md
+              ? '86%'
+              : props.size === frameDimensions.lg
+              ? '88%'
+              : '90%',
+          height:
+            props.size === frameDimensions.xs
+              ? '84%'
+              : props.size === frameDimensions.sm
+              ? '86%'
+              : props.size === frameDimensions.md
+              ? '88%'
+              : props.size === frameDimensions.lg
+              ? '90%'
+              : '92%',
           m: 'auto auto',
           bgcolor: '#f8f8f8',
           zIndex: '-1',

@@ -17,12 +17,11 @@ import PlainBlack from '../components/frames/PlainBlack';
 import PlainMaple from '../components/frames/PlainMaple';
 import PlainWalnut from '../components/frames/PlainWalnut';
 import PlainWhite from '../components/frames/PlainWhite';
-import { useUser } from '../context/UserContext';
+import { frameDimensions } from '../data/frameData';
 import { db, storage } from '../firebase/firebaseConfig';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
-  const { currentUser, handleGoogleSignIn, handleSignOut } = useUser();
   const postersCollectionRef = collection(db, 'posters');
 
   const getPosters = useCallback(async () => {
@@ -112,10 +111,11 @@ export default function Home() {
             <Typography>{percent}%</Typography>
           </Box>
           <Box display="flex" gap={3} sx={{ flexWrap: 'wrap' }}>
-            <PlainWhite />
-            <PlainBlack />
-            <PlainWalnut />
-            <PlainMaple />
+            <PlainWhite size={frameDimensions.xs} />
+            <PlainBlack size={frameDimensions.sm} />
+            <PlainWalnut size={frameDimensions.md} />
+            <PlainMaple size={frameDimensions.lg} />
+            <PlainWalnut size={frameDimensions.xl} />
           </Box>
         </Container>
       </main>

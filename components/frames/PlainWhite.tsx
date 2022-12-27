@@ -3,13 +3,17 @@ import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import monaLisa from '../../public/tempImages/mona-lisa.jpg';
 import PlainFrame from '../shared/PlainFrame';
+import { FrameDimension } from '../types';
+interface Props {
+  size: FrameDimension;
+}
 
-const PlainWhite = () => {
+const PlainWhite = (props: Props) => {
   const { withPassepartout } = useCanvas();
 
   return (
     // outer
-    <PlainFrame isWhiteFrame>
+    <PlainFrame size={props.size} isWhiteFrame>
       {withPassepartout ? (
         <Box
           sx={{
@@ -27,7 +31,7 @@ const PlainWhite = () => {
               width: '100%',
               height: '100%',
               display: 'block',
-              padding: '1%',
+              padding: '1.5%',
               boxShadow: 'inset 0px 0.1em 0.1em rgba(0, 0, 0, 0.2)',
             }}
           />
