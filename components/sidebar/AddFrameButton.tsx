@@ -1,10 +1,10 @@
 import { Box, Typography } from '@mui/material';
 import { IconPlus } from '@tabler/icons';
-import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import { theme } from '../theme';
 
 const AddFrameButton = () => {
-  const { setIsEditingFrame } = useCanvas();
+  const { setIsEditingFrame } = useSidebar();
   return (
     <Box
       bgcolor="#3A3335"

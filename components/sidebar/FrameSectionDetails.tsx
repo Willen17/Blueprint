@@ -2,6 +2,7 @@ import { Box, Checkbox, FormControl, Switch, Typography } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
 import { Fragment } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions, frames } from '../../data/frameData';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
@@ -14,8 +15,8 @@ const FrameSectionDetails = () => {
     frameDimension,
     setWithPassepartout,
     withPassepartout,
-    allFrames,
   } = useCanvas();
+  const { allFrames } = useSidebar();
 
   const getFrameJSX = (id: string) => {
     const match = frames.filter((f) => f.id === id);

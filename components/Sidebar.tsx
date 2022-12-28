@@ -1,6 +1,6 @@
 import { Box, Drawer, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
-import { useCanvas } from '../context/CanvasContext';
+import { useSidebar } from '../context/SidebarContext';
 import SidebarToggleButton from './shared/SidebarToggleButton';
 import AddFrameButton from './sidebar/AddFrameButton';
 import BgSection from './sidebar/BgSection';
@@ -12,7 +12,7 @@ import { theme } from './theme';
 const Sidebar = () => {
   const [anchor, setAnchor] = useState<boolean>(true);
   const toggleClose = () => setAnchor(false);
-  const { isEditingFrame, setOpenMobileSection } = useCanvas();
+  const { isEditingFrame } = useSidebar();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (

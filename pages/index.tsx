@@ -17,13 +17,13 @@ import PlainBlack from '../components/frames/PlainBlack';
 import PlainMaple from '../components/frames/PlainMaple';
 import PlainWalnut from '../components/frames/PlainWalnut';
 import PlainWhite from '../components/frames/PlainWhite';
-import { useCanvas } from '../context/CanvasContext';
+import { useSidebar } from '../context/SidebarContext';
 import { frameDimensions } from '../data/frameData';
 import { db, storage } from '../firebase/firebaseConfig';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home(props: any) {
-  const { allFrames, setAllFrames } = useCanvas();
+  const { allFrames, setAllFrames } = useSidebar();
   const postersCollectionRef = collection(db, 'posters');
 
   // const getPosters = useCallback(async () => {
@@ -36,7 +36,6 @@ export default function Home(props: any) {
 
   useEffect(() => {
     setAllFrames(props.frames);
-    console.log('called');
   }, [props.frames, setAllFrames]);
 
   const [file, setFile] = useState<any>('');
