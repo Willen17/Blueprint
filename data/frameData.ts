@@ -9,7 +9,7 @@ export const frameDimensions = {
   md: { width: 40, height: 50 },
   lg: { width: 50, height: 70 },
   xl: { width: 70, height: 100 },
-};
+} as const;
 
 export const frames = [
   {

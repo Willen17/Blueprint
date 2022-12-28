@@ -24,8 +24,10 @@ interface CanvasContextValue {
   setFrame: Dispatch<SetStateAction<string>>;
   withPassepartout: boolean;
   setWithPassepartout: Dispatch<SetStateAction<boolean>>;
-  frameDimension: string;
-  setFrameDimension: Dispatch<SetStateAction<string>>;
+  frameDimension: { width: number; height: number };
+  setFrameDimension: Dispatch<
+    SetStateAction<{ width: number; height: number }>
+  >;
   poster: string;
   setPoster: Dispatch<SetStateAction<string>>;
   posterOrientation: string;
@@ -51,8 +53,8 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setFrame: () => '',
   withPassepartout: true,
   setWithPassepartout: () => true,
-  frameDimension: '',
-  setFrameDimension: () => '',
+  frameDimension: { width: 0, height: 0 },
+  setFrameDimension: () => {},
   poster: '',
   setPoster: () => '',
   posterOrientation: '',
@@ -74,7 +76,10 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [backgroundCategory, setBackgroundCategory] = useState<string>('');
   const [frame, setFrame] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
-  const [frameDimension, setFrameDimension] = useState<string>('21x30');
+  const [frameDimension, setFrameDimension] = useState({
+    width: 21,
+    height: 30,
+  });
   const [poster, setPoster] = useState<string>('');
   const [posterOrientation, setPosterOrientation] = useState<string>('');
   const [posterCategory, setPosterCategory] = useState<string>('');
