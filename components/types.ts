@@ -12,6 +12,11 @@ export const posterCategories: string[] = [
   'Other',
 ];
 
+export interface FrameDimension {
+  width: number;
+  height: number;
+}
+
 export interface Frame {
   frame: () => JSX.Element;
   sizes: string[];
