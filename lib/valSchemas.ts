@@ -28,5 +28,15 @@ export const posterSizes = [
   { width: '50', height: '70' },
   { width: '70', height: '100' },
 ];
+
+export const schemaBackground = yup.object({
+  title: yup
+    .string()
+    .min(2, 'Title must be at least 2 characters')
+    .max(15, 'Title cannot be more than 15 characters')
+    .required('Title is required'),
+  categories: yup.array().min(1, 'Select at least one category').required(),
+});
 export type PosterData = yup.InferType<typeof schemaPoster>;
 export default schemaPoster;
+export type BackgroundData = yup.InferType<typeof schemaBackground>;
