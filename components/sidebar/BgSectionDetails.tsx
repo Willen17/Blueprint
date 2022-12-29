@@ -2,18 +2,15 @@ import { Box, Button } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import bgLiving from '../../public/tempImages/bg-living.png';
 import bgOther from '../../public/tempImages/bg-other.png';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const BgSectionDetails = () => {
-  const {
-    background,
-    setBackground,
-    setBackgroundCategory,
-    backgroundCategory,
-  } = useCanvas();
+  const { background, setBackground } = useCanvas();
+  const { setBackgroundCategory, backgroundCategory } = useSidebar();
 
   const handleCategoryChange = (value: string) => {
     backgroundCategory !== value

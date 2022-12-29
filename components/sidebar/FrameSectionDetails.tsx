@@ -2,7 +2,8 @@ import { Box, Checkbox, FormControl, Switch, Typography } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
 import { Fragment } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
-import { frames } from '../../data/frameData';
+import { useSidebar } from '../../context/SidebarContext';
+import { frameDimensions, frames } from '../../data/frameData';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
@@ -14,19 +15,36 @@ const FrameSectionDetails = () => {
     frameDimension,
     setWithPassepartout,
     withPassepartout,
-    allFrames,
   } = useCanvas();
-
-  // TODO: get dimensions from data instead
-  const dimensions = ['21x30', '30x40', '40x50', '50x70', '70x100'];
+  const { allFrames } = useSidebar();
 
   const getFrameJSX = (id: string) => {
     const match = frames.filter((f) => f.id === id);
-    return match.map((m, index) => (
-      <Fragment key={index}>
-        <m.frame />
+    return match.map((match) => (
+      <Fragment key={match.id}>
+        <match.frame />
       </Fragment>
     ));
+  };
+
+  const getFrameSizes = () => {
+    const arr = [];
+    const currentFrame = allFrames
+      .filter((fr) => fr.id === frame)
+      .map((fr) => fr);
+    const dimensionArr = Object.keys(frameDimensions).flatMap(
+      (dimension) => dimension
+    );
+    const matches = currentFrame
+      .flatMap((fr) => fr.sizes)
+      .filter((size) => dimensionArr.map((dimension) => dimension === size));
+
+    for (let i = 0; i < matches.length; i++) {
+      if (dimensionArr.indexOf(matches[i]) !== -1)
+        // @ts-ignore
+        arr.push(frameDimensions[matches[i]]);
+    }
+    return arr.sort((a, b) => a.width - b.width);
   };
 
   return (
@@ -93,41 +111,56 @@ const FrameSectionDetails = () => {
           </Box>
         ))}
       </Box>
-      <SidebarSubtitle subtitle="Size (cm)" />
-      <Box
-        sx={{
-          mt: -1,
-          pb: 2.5,
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          justifyContent: 'center',
-        }}
-      >
-        {/* TODO: show only available frame sizes */}
-        {dimensions.map((dimension, index) => (
-          <FormControl
-            key={index}
+
+      {frame ? (
+        <>
+          <SidebarSubtitle subtitle="Size (cm)" />
+          <Box
             sx={{
+              mt: -1,
+              pb: 2.5,
               display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              placeItems: 'center',
-              py: 0,
-              height: 25,
+              flexDirection: 'column',
+              width: '100%',
+              justifyContent: 'center',
             }}
           >
-            <Typography variant="body1">{dimension}</Typography>
-            <Checkbox
-              value={dimension}
-              size="small"
-              checked={frameDimension === dimension}
-              sx={{ p: 0 }}
-              onClick={() => setFrameDimension(dimension)}
-            />
-          </FormControl>
-        ))}
-      </Box>
+            {getFrameSizes().map((dimension, index) => (
+              <FormControl
+                key={index}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  placeItems: 'center',
+                  py: 0,
+                  height: 25,
+                }}
+              >
+                <Typography variant="body1">
+                  {dimension.width + 'x' + dimension.height}
+                </Typography>
+
+                <Checkbox
+                  value={dimension.width + 'x' + dimension.height}
+                  size="small"
+                  checked={
+                    frameDimension.width === dimension.width &&
+                    frameDimension.height === dimension.height
+                  }
+                  sx={{ p: 0 }}
+                  onClick={() =>
+                    setFrameDimension({
+                      width: dimension.width,
+                      height: dimension.height,
+                    })
+                  }
+                />
+              </FormControl>
+            ))}
+          </Box>
+        </>
+      ) : null}
     </>
   );
 };

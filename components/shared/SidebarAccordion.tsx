@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { IconChevronUp } from '@tabler/icons';
 import { ReactNode } from 'react';
-import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import { theme } from '../theme';
 import { sidebarSections } from '../types';
 
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const SidebarAccordion = (props: Props) => {
-  const { expandedAccordion, setExpandedAccordion } = useCanvas();
+  const { expandedAccordion, setExpandedAccordion } = useSidebar();
 
   // TODO: logic to be fixed for editing from existing canvas, now it is only for "creating new"
   const handleCollapseAccordion = () => {

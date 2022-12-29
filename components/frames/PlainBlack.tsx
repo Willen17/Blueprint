@@ -11,7 +11,6 @@ interface Props {
 
 const PlainBlack = (props: Props) => {
   const { withPassepartout } = useCanvas();
-
   return (
     // outer
     <PlainFrame size={props.size} bgColor="#000">

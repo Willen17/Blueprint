@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material';
-import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import { sidebarSections } from '../types';
 
 const MobileSidebar = () => {
-  const { openMobileSection, setOpenMobileSection } = useCanvas();
+  const { openMobileSection, setOpenMobileSection } = useSidebar();
 
   return (
     <Box

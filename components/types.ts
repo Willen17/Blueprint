@@ -19,7 +19,7 @@ export interface FrameDimension {
 
 export interface Frame {
   frame: () => JSX.Element;
-  size: FrameDimension[];
+  sizes: string[];
   title: string;
   id?: string;
   category: string[];

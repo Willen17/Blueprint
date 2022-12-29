@@ -1,5 +1,5 @@
 import { useMediaQuery } from '@mui/material';
-import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import MobileSidebarContainer from '../shared/MobileSidebarContainer';
 import SidebarAccordion from '../shared/SidebarAccordion';
 import { theme } from '../theme';
@@ -8,7 +8,7 @@ import PosterSectionDetails from './PosterSectionDetails';
 
 const PosterSection = () => {
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { openMobileSection } = useCanvas();
+  const { openMobileSection } = useSidebar();
 
   return mobile && openMobileSection !== sidebarSections[2] ? null : mobile &&
     openMobileSection === sidebarSections[2] ? (
