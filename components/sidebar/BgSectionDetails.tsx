@@ -3,54 +3,38 @@ import { IconCheck } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
-import bgLiving from '../../public/tempImages/bg-living.png';
-import bgOther from '../../public/tempImages/bg-other.png';
+import { backgroundCategories as bgCategories } from '../../lib/valSchemas';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const BgSectionDetails = () => {
   const { background, setBackground } = useCanvas();
-  const { setBackgroundCategory, backgroundCategory } = useSidebar();
+  const { setBackgroundCategories, backgroundCategories, allBackgrounds } =
+    useSidebar();
 
-  const handleCategoryChange = (value: string) => {
-    backgroundCategory !== value
-      ? setBackgroundCategory(value)
-      : setBackgroundCategory('');
-  };
+  function setCategory(category: string) {
+    let newFilter = { ...backgroundCategories };
+    for (let key in newFilter) {
+      if (key == category) {
+        newFilter[key as keyof typeof backgroundCategories] =
+          !backgroundCategories[key as keyof typeof backgroundCategories];
+      }
+    }
+    setBackgroundCategories(newFilter);
+  }
+  const noCategory = Object.values(backgroundCategories).every(
+    (v) => v === false
+  );
 
-  // To be deleted after we have inserted frames from data
-  const types = ['Living Room', 'Dining Room', 'Bedroom', 'Office', 'Other'];
-
-  // To be deleted after we have inserted frames from data
-  const showMeBgs = () => {
-    const arr = [];
-    for (let i = 0; i <= 100; i++) {
-      arr.push(
-        {
-          title: 'B1',
-          image: bgLiving,
-          category: 'Living Room',
-        },
-        {
-          title: 'B2',
-          image: bgOther,
-          category: 'Other',
-        }
+  const filteredItems = allBackgrounds.filter((item) => {
+    const itemCategories = item.categories;
+    return Object.keys(backgroundCategories).some((category) => {
+      return (
+        backgroundCategories[category as keyof typeof backgroundCategories] &&
+        itemCategories.includes(category)
       );
-      i++;
-    }
-    return arr;
-  };
-
-  // DO NOT delete the below function
-  /** Filters backgrounds by category */
-  const filteredPosters = () => {
-    if (backgroundCategory !== '') {
-      return showMeBgs().filter((bg) => bg.category === backgroundCategory);
-    } else {
-      return showMeBgs();
-    }
-  };
+    });
+  });
 
   return (
     <>
@@ -64,21 +48,25 @@ const BgSectionDetails = () => {
           justifyContent: 'center',
         }}
       >
-        {types.map((type, index) => (
+        {bgCategories.map((category, index) => (
           <Button
             key={index}
-            value={type}
+            value={category}
             sx={{
-              bgcolor:
-                backgroundCategory === type ? theme.palette.primary.main : null,
-              color:
-                backgroundCategory === type
-                  ? theme.palette.primary.contrastText
-                  : null,
+              bgcolor: backgroundCategories[
+                category as keyof typeof backgroundCategories
+              ]
+                ? theme.palette.primary.main
+                : null,
+              color: backgroundCategories[
+                category as keyof typeof backgroundCategories
+              ]
+                ? theme.palette.primary.contrastText
+                : null,
             }}
-            onClick={() => handleCategoryChange(type)}
+            onClick={() => setCategory(category)}
           >
-            {type}
+            {category}
           </Button>
         ))}
       </Box>
@@ -107,46 +95,87 @@ const BgSectionDetails = () => {
           },
         }}
       >
-        {filteredPosters().map((bg, index) => (
-          <Box
-            key={index}
-            sx={{
-              cursor: 'pointer',
-              position: 'relative',
-              height: 55,
-              boxShadow:
-                background === index.toString() // TODO: change to ID
-                  ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
-                  : null,
-            }}
-          >
-            <Image
-              width={65}
-              height={55}
-              alt={bg.title} // TODO: change to title
-              src={bg.image}
-              onClick={() => setBackground(index.toString())}
-            />
-            {/* TODO: adjust logic - this should not be index but id */}
-            {background === index.toString() ? (
-              <IconCheck
-                stroke={1}
-                color={theme.palette.primary.contrastText}
-                size={15}
-                style={{
-                  background: theme.palette.primary.main,
-                  opacity: 0.7,
-                  borderRadius: 50,
-                  padding: 2,
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
+        {noCategory
+          ? allBackgrounds.map((bg, index) => (
+              <Box
+                key={index}
+                sx={{
+                  cursor: 'pointer',
+                  position: 'relative',
+                  height: 55,
+                  boxShadow:
+                    background === index.toString() // TODO: change to ID
+                      ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
+                      : null,
                 }}
-              />
-            ) : null}
-          </Box>
-        ))}
+              >
+                <Image
+                  width={65}
+                  height={55}
+                  alt={bg.title} // TODO: change to title
+                  src={bg.image}
+                  onClick={() => setBackground(index.toString())}
+                />
+                {/* TODO: adjust logic - this should not be index but id */}
+                {background === index.toString() ? (
+                  <IconCheck
+                    stroke={1}
+                    color={theme.palette.primary.contrastText}
+                    size={15}
+                    style={{
+                      background: theme.palette.primary.main,
+                      opacity: 0.7,
+                      borderRadius: 50,
+                      padding: 2,
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  />
+                ) : null}
+              </Box>
+            ))
+          : filteredItems.map((bg, index) => (
+              <Box
+                key={index}
+                sx={{
+                  cursor: 'pointer',
+                  position: 'relative',
+                  height: 55,
+                  boxShadow:
+                    background === index.toString() // TODO: change to ID
+                      ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
+                      : null,
+                }}
+              >
+                <Image
+                  width={65}
+                  height={55}
+                  alt={bg.title} // TODO: change to title
+                  src={bg.image}
+                  onClick={() => setBackground(index.toString())}
+                />
+                {/* TODO: adjust logic - this should not be index but id */}
+                {background === index.toString() ? (
+                  <IconCheck
+                    stroke={1}
+                    color={theme.palette.primary.contrastText}
+                    size={15}
+                    style={{
+                      background: theme.palette.primary.main,
+                      opacity: 0.7,
+                      borderRadius: 50,
+                      padding: 2,
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                    }}
+                  />
+                ) : null}
+              </Box>
+            ))}
       </Box>
     </>
   );
