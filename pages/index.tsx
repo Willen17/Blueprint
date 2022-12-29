@@ -12,22 +12,32 @@ import { Inter } from '@next/font/google';
 import { addDoc, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import Head from 'next/head';
-import { useCallback, useState } from 'react';
-import { useUser } from '../context/UserContext';
+import { useCallback, useEffect, useState } from 'react';
+import PlainBlack from '../components/frames/PlainBlack';
+import PlainMaple from '../components/frames/PlainMaple';
+import PlainWalnut from '../components/frames/PlainWalnut';
+import PlainWhite from '../components/frames/PlainWhite';
+import { useCanvas } from '../context/CanvasContext';
+import { frameDimensions } from '../data/frameData';
 import { db, storage } from '../firebase/firebaseConfig';
 const inter = Inter({ subsets: ['latin'] });
 
-export default function Home() {
-  const { currentUser, handleGoogleSignIn, handleSignOut } = useUser();
+export default function Home(props: any) {
+  const { allFrames, setAllFrames } = useCanvas();
   const postersCollectionRef = collection(db, 'posters');
 
-  const getPosters = useCallback(async () => {
-    const posterData = await getDocs(postersCollectionRef);
-    console.log(
-      posterData.docs.map((doc) => ({ ...(doc.data() as any), id: doc.id }))
-    );
-  }, [postersCollectionRef]);
-  // getPosters();
+  // const getPosters = useCallback(async () => {
+  //   const posterData = await getDocs(postersCollectionRef);
+  //   console.log(
+  //     posterData.docs.map((doc) => ({ ...(doc.data() as any), id: doc.id }))
+  //   );
+  // }, [postersCollectionRef]);
+  // // getPosters();
+
+  useEffect(() => {
+    setAllFrames(props.frames);
+    console.log('called');
+  }, [props.frames, setAllFrames]);
 
   const [file, setFile] = useState<any>('');
   const [percent, setPercent] = useState<number>(0);
@@ -107,8 +117,28 @@ export default function Home() {
             <Button onClick={handleUpload}>Upload to Firebase</Button>
             <Typography>{percent}%</Typography>
           </Box>
+          <Box display="flex" gap={3} sx={{ flexWrap: 'wrap' }}>
+            <PlainWhite size={frameDimensions.xs} />
+            <PlainBlack size={frameDimensions.sm} />
+            <PlainWalnut size={frameDimensions.md} />
+            <PlainMaple size={frameDimensions.lg} />
+            <PlainWalnut size={frameDimensions.xl} />
+          </Box>
         </Container>
       </main>
     </>
   );
 }
+
+export const getStaticProps = async () => {
+  const framesCollectionRef = collection(db, 'frames');
+  const frameData = await getDocs(framesCollectionRef);
+  return {
+    props: {
+      frames: frameData.docs.map((doc) => ({
+        ...(doc.data() as any),
+        id: doc.id,
+      })),
+    },
+  };
+};

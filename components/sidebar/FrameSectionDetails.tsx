@@ -1,25 +1,32 @@
 import { Box, Checkbox, FormControl, Switch, Typography } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
-import Image from 'next/image';
+import { Fragment } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
-import frameImg from '../../public/tempImages/frame.png';
+import { frames } from '../../data/frameData';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const FrameSectionDetails = () => {
-  const { setFrame, frame, setFrameDimension, frameDimension } = useCanvas();
+  const {
+    setFrame,
+    frame,
+    setFrameDimension,
+    frameDimension,
+    setWithPassepartout,
+    withPassepartout,
+    allFrames,
+  } = useCanvas();
 
   // TODO: get dimensions from data instead
   const dimensions = ['21x30', '30x40', '40x50', '50x70', '70x100'];
 
-  // To be deleted after we have inserted frames from data
-  const showMeFrames = () => {
-    const arr = [];
-    for (let i = 0; i <= 30; i++) {
-      arr.push({ src: frameImg });
-      i++;
-    }
-    return arr;
+  const getFrameJSX = (id: string) => {
+    const match = frames.filter((f) => f.id === id);
+    return match.map((m, index) => (
+      <Fragment key={index}>
+        <m.frame />
+      </Fragment>
+    ));
   };
 
   return (
@@ -34,7 +41,12 @@ const FrameSectionDetails = () => {
           }}
         >
           <Typography variant="body2">Passepartout</Typography>
-          <Switch /> {/* TODO: apply logic */}
+          <Switch
+            checked={withPassepartout}
+            onChange={() =>
+              setWithPassepartout(withPassepartout ? false : true)
+            }
+          />
         </Box>
       </SidebarSubtitle>
       <Box
@@ -47,29 +59,22 @@ const FrameSectionDetails = () => {
           width: 230,
         }}
       >
-        {showMeFrames().map((fr, index) => (
+        {allFrames.map((fr) => (
           <Box
-            key={index}
+            key={fr.id}
+            onClick={() => setFrame(fr.id!)}
             sx={{
               cursor: 'pointer',
               position: 'relative',
               height: 43,
               width: 43,
+              zIndex: 99,
               boxShadow:
-                frame === index.toString() // TODO: change to ID
-                  ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
-                  : null,
+                frame === fr.id ? '0px 2px 5px rgba(0, 0, 0, 0.25)' : null,
             }}
           >
-            <Image
-              width={43}
-              height={43}
-              alt="TITLE" // TODO: change to title
-              src={fr.src}
-              onClick={() => setFrame(index.toString())}
-            />
-            {/* TODO: adjust logic - this should not be index but id */}
-            {frame === index.toString() ? (
+            {getFrameJSX(fr.id!)}
+            {frame === fr.id ? (
               <IconCheck
                 stroke={1}
                 color={theme.palette.primary.contrastText}
@@ -99,6 +104,7 @@ const FrameSectionDetails = () => {
           justifyContent: 'center',
         }}
       >
+        {/* TODO: show only available frame sizes */}
         {dimensions.map((dimension, index) => (
           <FormControl
             key={index}

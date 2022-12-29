@@ -7,7 +7,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import { sidebarSections } from '../components/types';
+import { Frame, sidebarSections } from '../components/types';
 
 interface CanvasContextValue {
   expandedAccordion: string | false;
@@ -22,6 +22,8 @@ interface CanvasContextValue {
   setBackgroundCategory: Dispatch<SetStateAction<string>>;
   frame: string;
   setFrame: Dispatch<SetStateAction<string>>;
+  withPassepartout: boolean;
+  setWithPassepartout: Dispatch<SetStateAction<boolean>>;
   frameDimension: string;
   setFrameDimension: Dispatch<SetStateAction<string>>;
   poster: string;
@@ -30,6 +32,8 @@ interface CanvasContextValue {
   setPosterOrientation: Dispatch<SetStateAction<string>>;
   posterCategory: string;
   setPosterCategory: Dispatch<SetStateAction<string>>;
+  allFrames: Frame[];
+  setAllFrames: Dispatch<SetStateAction<Frame[]>>;
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
@@ -45,6 +49,8 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setBackgroundCategory: () => '',
   frame: '',
   setFrame: () => '',
+  withPassepartout: true,
+  setWithPassepartout: () => true,
   frameDimension: '',
   setFrameDimension: () => '',
   poster: '',
@@ -53,6 +59,8 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setPosterOrientation: () => '',
   posterCategory: '',
   setPosterCategory: () => '',
+  allFrames: [],
+  setAllFrames: () => [],
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -65,10 +73,12 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [background, setBackground] = useState<string>('');
   const [backgroundCategory, setBackgroundCategory] = useState<string>('');
   const [frame, setFrame] = useState<string>('');
+  const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [frameDimension, setFrameDimension] = useState<string>('21x30');
   const [poster, setPoster] = useState<string>('');
   const [posterOrientation, setPosterOrientation] = useState<string>('');
   const [posterCategory, setPosterCategory] = useState<string>('');
+  const [allFrames, setAllFrames] = useState<Frame[]>([]);
 
   // TODO: setIsEditingFrame must be set to true when a user clicks a frame in the canvas
   const [isEditingFrame, setIsEditingFrame] = useState<boolean>(false);
@@ -88,6 +98,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setBackgroundCategory,
         frame,
         setFrame,
+        withPassepartout,
+        setWithPassepartout,
         frameDimension,
         setFrameDimension,
         poster,
@@ -96,6 +108,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setPosterOrientation,
         posterCategory,
         setPosterCategory,
+        allFrames,
+        setAllFrames,
       }}
     >
       {children}
