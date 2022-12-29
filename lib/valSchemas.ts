@@ -47,5 +47,6 @@ export const backgroundCategories = [
   'Dining room',
   'Color',
   'Office',
+  'Other',
 ];
 export type BackgroundData = yup.InferType<typeof schemaBackground>;
