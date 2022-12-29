@@ -11,7 +11,7 @@ const schemaPoster = yup.object({
   sizes: yup.array().min(1, 'At least one size must be selected').required(),
 });
 
-export const categories = [
+export const posterCategories = [
   'Abstract',
   'Animals',
   'Floral',
@@ -21,6 +21,7 @@ export const categories = [
   'Painting',
   'Other',
 ];
+
 export const posterSizes = [
   { width: '21', height: '30' },
   { width: '30', height: '40' },
@@ -29,6 +30,8 @@ export const posterSizes = [
   { width: '70', height: '100' },
 ];
 
+export type PosterData = yup.InferType<typeof schemaPoster>;
+export default schemaPoster;
 export const schemaBackground = yup.object({
   title: yup
     .string()
@@ -37,6 +40,12 @@ export const schemaBackground = yup.object({
     .required('Title is required'),
   categories: yup.array().min(1, 'Select at least one category').required(),
 });
-export type PosterData = yup.InferType<typeof schemaPoster>;
-export default schemaPoster;
+
+export const backgroundCategories = [
+  'Living room',
+  'Bedroom',
+  'Dining room',
+  'Color',
+  'Office',
+];
 export type BackgroundData = yup.InferType<typeof schemaBackground>;

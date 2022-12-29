@@ -1,17 +1,21 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { useState } from 'react';
 import { Control, FieldPath, useController } from 'react-hook-form';
-import { categories, PosterData, posterSizes } from '../lib/valSchemas';
+import { posterCategories, PosterData, posterSizes } from '../lib/valSchemas';
 
 interface Props {
-  control: Control<PosterData>;
+  control?: Control<PosterData>;
   name: FieldPath<PosterData>;
-  categories?: typeof categories;
+  categories?: typeof posterCategories;
   sizes?: typeof posterSizes;
 }
 
-const FormCheckBox = ({ categories, sizes, control, name }: Props) => {
-  const { field } = useController<PosterData>({ control, name });
+const PosterCheckBox = ({ categories, sizes, control, name }: Props) => {
+  const { field } = useController<PosterData>({
+    control,
+    name,
+  });
+
   const { onChange } = field;
   const [value, setValue] = useState(field.value || []);
 
@@ -73,4 +77,4 @@ const FormCheckBox = ({ categories, sizes, control, name }: Props) => {
   );
 };
 
-export default FormCheckBox;
+export default PosterCheckBox;
