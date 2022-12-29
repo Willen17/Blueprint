@@ -1,19 +1,50 @@
 import { collection, getDocs } from '@firebase/firestore';
 import { Container } from '@mui/material';
 import { Inter } from '@next/font/google';
+import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useEffect } from 'react';
+import { Background } from '../components/types';
 import { useSidebar } from '../context/SidebarContext';
 import { db } from '../firebase/firebaseConfig';
+
 const Test = dynamic(() => import('../components/canvas/Test'), { ssr: false }); // do not adjust this - M1 mac needs this to run canvas
 const inter = Inter({ subsets: ['latin'] });
 
-export default function Home(props: any) {
-  const { setAllFrames } = useSidebar();
+export const getStaticProps = async () => {
+  const framesCollectionRef = collection(db, 'frames');
+  const frameData = await getDocs(framesCollectionRef);
+
+  const backgroundsCollectionRef = collection(db, 'backgrounds');
+  const backgroundData = await getDocs(backgroundsCollectionRef);
+
+  return {
+    props: {
+      frames: frameData.docs.map((doc) => ({
+        ...(doc.data() as any),
+        id: doc.id,
+      })),
+      backgrounds: backgroundData.docs.map((doc) => ({
+        ...(doc.data() as Background),
+        id: doc.id,
+        createdAt: doc.data().createdAt.toDate().toDateString(),
+      })),
+    },
+  };
+};
+
+export default function Home({
+  frames,
+  backgrounds,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const { setAllFrames, setAllBackgrounds } = useSidebar();
   useEffect(() => {
-    setAllFrames(props.frames);
-  }, [props.frames, setAllFrames]);
+    setAllFrames(frames);
+  }, [frames, setAllFrames]);
+  useEffect(() => {
+    setAllBackgrounds(backgrounds);
+  }, [backgrounds, setAllBackgrounds]);
 
   return (
     <>
@@ -31,16 +62,3 @@ export default function Home(props: any) {
     </>
   );
 }
-
-export const getStaticProps = async () => {
-  const framesCollectionRef = collection(db, 'frames');
-  const frameData = await getDocs(framesCollectionRef);
-  return {
-    props: {
-      frames: frameData.docs.map((doc) => ({
-        ...(doc.data() as any),
-        id: doc.id,
-      })),
-    },
-  };
-};
