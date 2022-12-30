@@ -12,6 +12,7 @@ const FrameSectionDetails = () => {
     useCanvas();
   const { allFrames } = useSidebar();
 
+  /** Renders correct frame JSX */
   const getFrameJSX = (id: string) => {
     const match = frames.filter((f) => f.id === id);
     return match.map((match) => (
@@ -21,6 +22,7 @@ const FrameSectionDetails = () => {
     ));
   };
 
+  /** Gets and renders available frame sizes from frame data */
   const getFrameSizes = () => {
     const arr = [];
     const currentFrame = allFrames
@@ -36,7 +38,7 @@ const FrameSectionDetails = () => {
     for (let i = 0; i < matches.length; i++) {
       if (dimensionArr.indexOf(matches[i]) !== -1)
         // @ts-ignore
-        arr.push(frameDimensions[matches[i]]);
+        arr.push({ ...frameDimensions[matches[i]], size: matches[i] });
     }
     return arr.sort((a, b) => a.width - b.width);
   };
@@ -142,19 +144,10 @@ const FrameSectionDetails = () => {
                 <Checkbox
                   value={dimension.width + 'x' + dimension.height}
                   size="small"
-                  checked={
-                    frameSet.dimension.width === dimension.width &&
-                    frameSet.dimension.height === dimension.height
-                  }
+                  checked={frameSet.size === dimension.size}
                   sx={{ p: 0 }}
                   onClick={() =>
-                    setFrameSet({
-                      ...frameSet,
-                      dimension: {
-                        width: dimension.width,
-                        height: dimension.height,
-                      },
-                    })
+                    setFrameSet({ ...frameSet, size: dimension.size })
                   }
                 />
               </FormControl>

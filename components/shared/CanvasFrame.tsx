@@ -19,6 +19,7 @@ const CanvasFrame = (props: Props) => {
     const x = 20;
     const y = 50;
     return { x, y };
+    //TODO: add logics so the pos doesnt overlap
   };
 
   const frameBorder = () => {
@@ -85,13 +86,6 @@ const CanvasFrame = (props: Props) => {
               fill="#f8f8f8"
             />
             <Rect
-              x={pos().x + frameBorder()}
-              y={pos().y + frameBorder()}
-              width={props.size.width * 3.5 - frameBorder() * 2}
-              height={passepartout() - frameBorder()}
-              fill="#f8f8f8"
-            />
-            <Rect
               x={pos().x + props.size.width * 3.5 - passepartout()}
               y={pos().y + frameBorder()}
               width={passepartout() - frameBorder()}
@@ -100,17 +94,25 @@ const CanvasFrame = (props: Props) => {
             />
             <Rect
               x={pos().x + frameBorder()}
-              y={pos().y + props.size.height * 3.5 - passepartout()}
+              y={pos().y + frameBorder()}
               width={props.size.width * 3.5 - frameBorder() * 2}
-              height={passepartout() - frameBorder()}
+              height={passepartout() * 1.1 - frameBorder()}
+              fill="#f8f8f8"
+            />
+
+            <Rect
+              x={pos().x + frameBorder()}
+              y={pos().y + props.size.height * 3.5 - passepartout() * 1.1}
+              width={props.size.width * 3.5 - frameBorder() * 2}
+              height={passepartout() * 1.1 - frameBorder()}
               fill="#f8f8f8"
             />
             {/* shadow for passepartout. Sequence: left, right, top, bottom*/}
             <Rect
               x={pos().x + passepartout()}
-              y={pos().y + passepartout() + 1}
+              y={pos().y + passepartout() * 1.1 + 1}
               width={1}
-              height={props.size.height * 3.5 - passepartout() * 2 - 1}
+              height={props.size.height * 3.5 - passepartout() * 1.1 * 2 - 1}
               fill="#eee"
               shadowBlur={0.25}
               shadowColor="#000"
@@ -119,9 +121,9 @@ const CanvasFrame = (props: Props) => {
             />
             <Rect
               x={pos().x + props.size.width * 3.5 - passepartout()}
-              y={pos().y + passepartout() + 1}
+              y={pos().y + passepartout() * 1.1 + 1}
               width={1}
-              height={props.size.height * 3.5 - passepartout() * 2 - 1}
+              height={props.size.height * 3.5 - passepartout() * 1.1 * 2 - 1}
               fill="#eee"
               shadowBlur={0.25}
               shadowColor="#000"
@@ -130,7 +132,7 @@ const CanvasFrame = (props: Props) => {
             />
             <Rect
               x={pos().x + passepartout()}
-              y={pos().y + passepartout()}
+              y={pos().y + passepartout() * 1.1}
               width={props.size.width * 3.5 - passepartout() * 2 + 1}
               height={1}
               fill="#ddd"
@@ -141,7 +143,7 @@ const CanvasFrame = (props: Props) => {
             />
             <Rect
               x={pos().x + passepartout()}
-              y={pos().y + props.size.height * 3.5 - passepartout()}
+              y={pos().y + props.size.height * 3.5 - passepartout() * 1.1}
               width={props.size.width * 3.5 - passepartout() * 2 + 1}
               height={1}
               fill="#fff"

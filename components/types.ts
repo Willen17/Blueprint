@@ -40,7 +40,7 @@ export type Background = {
 export interface CanvasFrameSet {
   id: string;
   title: string;
-  dimension: FrameDimension;
+  size: string;
 }
 
 export interface Canvas {

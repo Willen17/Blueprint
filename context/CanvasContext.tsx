@@ -31,7 +31,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setPoster: () => '',
   posterOrientation: '',
   setPosterOrientation: () => '',
-  frameSet: { id: '', title: '', dimension: { width: 0, height: 0 } },
+  frameSet: { id: '', title: '', size: '' },
   setFrameSet: () => {},
 });
 
@@ -44,7 +44,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
     id: '',
     title: '',
-    dimension: { width: 21, height: 30 },
+    size: '',
   });
 
   return (
