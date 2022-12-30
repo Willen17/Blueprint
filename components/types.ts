@@ -1,3 +1,4 @@
+import { User as FirebaseUser } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
 import { backgroundCategories } from '../lib/valSchemas';
 
@@ -21,7 +22,7 @@ export interface FrameDimension {
 }
 
 export interface Frame {
-  frame: () => JSX.Element;
+  frame?: () => JSX.Element;
   sizes: string[];
   title: string;
   id?: string;
@@ -35,3 +36,26 @@ export type Background = {
   id?: string;
   createdAt?: Timestamp;
 };
+
+export interface CanvasFrameSet {
+  id: string;
+  title: string;
+  dimension: FrameDimension;
+}
+
+export interface Canvas {
+  title: string;
+  id?: string;
+  user: FirebaseUser;
+  createdAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
+  updatedAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
+  background: any; // TODO: put the correct type. Wille is working on this so i dont bother the type here
+  items: [
+    {
+      frame: CanvasFrameSet;
+      poster: { id: string; src: string };
+      withPassepartout: boolean;
+      position: { x: number; y: number };
+    }
+  ];
+}

@@ -8,14 +8,8 @@ import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const FrameSectionDetails = () => {
-  const {
-    setFrame,
-    frame,
-    setFrameDimension,
-    frameDimension,
-    setWithPassepartout,
-    withPassepartout,
-  } = useCanvas();
+  const { frameSet, setFrameSet, setWithPassepartout, withPassepartout } =
+    useCanvas();
   const { allFrames } = useSidebar();
 
   const getFrameJSX = (id: string) => {
@@ -30,7 +24,7 @@ const FrameSectionDetails = () => {
   const getFrameSizes = () => {
     const arr = [];
     const currentFrame = allFrames
-      .filter((fr) => fr.id === frame)
+      .filter((fr) => fr.id === frameSet.id)
       .map((fr) => fr);
     const dimensionArr = Object.keys(frameDimensions).flatMap(
       (dimension) => dimension
@@ -80,7 +74,9 @@ const FrameSectionDetails = () => {
         {allFrames.map((fr) => (
           <Box
             key={fr.id}
-            onClick={() => setFrame(fr.id!)}
+            onClick={() =>
+              setFrameSet({ ...frameSet, id: fr.id!, title: fr.title })
+            }
             sx={{
               cursor: 'pointer',
               position: 'relative',
@@ -88,11 +84,13 @@ const FrameSectionDetails = () => {
               width: 43,
               zIndex: 99,
               boxShadow:
-                frame === fr.id ? '0px 2px 5px rgba(0, 0, 0, 0.25)' : null,
+                frameSet.id === fr.id
+                  ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
+                  : null,
             }}
           >
             {getFrameJSX(fr.id!)}
-            {frame === fr.id ? (
+            {frameSet.id === fr.id ? (
               <IconCheck
                 stroke={1}
                 color={theme.palette.primary.contrastText}
@@ -112,7 +110,7 @@ const FrameSectionDetails = () => {
         ))}
       </Box>
 
-      {frame ? (
+      {frameSet.id ? (
         <>
           <SidebarSubtitle subtitle="Size (cm)" />
           <Box
@@ -145,14 +143,17 @@ const FrameSectionDetails = () => {
                   value={dimension.width + 'x' + dimension.height}
                   size="small"
                   checked={
-                    frameDimension.width === dimension.width &&
-                    frameDimension.height === dimension.height
+                    frameSet.dimension.width === dimension.width &&
+                    frameSet.dimension.height === dimension.height
                   }
                   sx={{ p: 0 }}
                   onClick={() =>
-                    setFrameDimension({
-                      width: dimension.width,
-                      height: dimension.height,
+                    setFrameSet({
+                      ...frameSet,
+                      dimension: {
+                        width: dimension.width,
+                        height: dimension.height,
+                      },
                     })
                   }
                 />
