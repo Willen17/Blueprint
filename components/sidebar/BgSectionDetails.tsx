@@ -104,7 +104,7 @@ const BgSectionDetails = () => {
                   position: 'relative',
                   height: 55,
                   boxShadow:
-                    background === index.toString() // TODO: change to ID
+                    background === bg.image
                       ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
                       : null,
                 }}
@@ -112,12 +112,11 @@ const BgSectionDetails = () => {
                 <Image
                   width={65}
                   height={55}
-                  alt={bg.title} // TODO: change to title
+                  alt={bg.title}
                   src={bg.image}
-                  onClick={() => setBackground(index.toString())}
+                  onClick={() => setBackground(bg.image)}
                 />
-                {/* TODO: adjust logic - this should not be index but id */}
-                {background === index.toString() ? (
+                {background === bg.image ? (
                   <IconCheck
                     stroke={1}
                     color={theme.palette.primary.contrastText}
@@ -144,7 +143,7 @@ const BgSectionDetails = () => {
                   position: 'relative',
                   height: 55,
                   boxShadow:
-                    background === index.toString() // TODO: change to ID
+                    background === bg.image
                       ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
                       : null,
                 }}
@@ -152,12 +151,11 @@ const BgSectionDetails = () => {
                 <Image
                   width={65}
                   height={55}
-                  alt={bg.title} // TODO: change to title
+                  alt={bg.title}
                   src={bg.image}
-                  onClick={() => setBackground(index.toString())}
+                  onClick={() => setBackground(bg.image)}
                 />
-                {/* TODO: adjust logic - this should not be index but id */}
-                {background === index.toString() ? (
+                {background === bg.image ? (
                   <IconCheck
                     stroke={1}
                     color={theme.palette.primary.contrastText}
