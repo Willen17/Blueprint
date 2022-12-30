@@ -1,6 +1,5 @@
 import { Layer, Stage, Text } from 'react-konva';
 import { useCanvas } from '../../context/CanvasContext';
-import { frameDimensions } from '../../data/frameData';
 import CanvasFrame from '../shared/CanvasFrame';
 import { theme } from '../theme';
 
@@ -30,8 +29,7 @@ function Test() {
       </Layer>
 
       {frameSet.id && frameSet.size ? (
-        //  @ts-ignore
-        <CanvasFrame size={frameDimensions[frameSet.size]} />
+        <CanvasFrame frameSet={frameSet} />
       ) : null}
     </Stage>
   );

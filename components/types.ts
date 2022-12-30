@@ -27,6 +27,7 @@ export interface Frame {
   title: string;
   id?: string;
   category: string[];
+  image?: string;
 }
 
 export type Background = {

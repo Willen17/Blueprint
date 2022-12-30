@@ -1,18 +1,30 @@
+// @ts-nocheck
 import { Image, Layer, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
 import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
 import { theme } from '../theme';
-import { FrameDimension } from '../types';
+import { CanvasFrameSet } from '../types';
 
 interface Props {
-  size: FrameDimension;
+  frameSet: CanvasFrameSet;
 }
 
 const CanvasFrame = (props: Props) => {
-  const { withPassepartout } = useCanvas();
+  const { withPassepartout, frameSet } = useCanvas();
+  const { allFrames } = useSidebar();
+  const dimension = frameDimensions[props.frameSet.size];
+  const match = allFrames.filter((frame) => frame.id === props.frameSet.id);
+
   const [img1] = useImage(
     'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Ffour%20coca%20cola%20bottles.jpg?alt=media&token=7e1d8a77-358c-4a19-9742-1e91e09de6e2'
+  );
+  const [maple] = useImage(
+    'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fmaple-surface.jpg?alt=media&token=4d386205-d4fa-4531-b801-543d95101a98'
+  );
+  const [walnut] = useImage(
+    'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fwalnut-surface.jpeg?alt=media&token=e0224afc-7b60-414e-8922-63804d3f7f4c'
   );
 
   const pos = () => {
@@ -24,13 +36,13 @@ const CanvasFrame = (props: Props) => {
 
   const frameBorder = () => {
     let frameBorder;
-    props.size === frameDimensions.xs
+    dimension === frameDimensions.xs
       ? (frameBorder = 8)
-      : props.size === frameDimensions.sm
+      : dimension === frameDimensions.sm
       ? (frameBorder = 8)
-      : props.size === frameDimensions.md
+      : dimension === frameDimensions.md
       ? (frameBorder = 9)
-      : props.size === frameDimensions.lg
+      : dimension === frameDimensions.lg
       ? (frameBorder = 10)
       : (frameBorder = 10);
     return frameBorder;
@@ -38,42 +50,65 @@ const CanvasFrame = (props: Props) => {
 
   const passepartout = () => {
     let passepartout = 0;
-    // if (withPassepartout) {
-    props.size === frameDimensions.xs
+    dimension === frameDimensions.xs
       ? (passepartout = 12)
-      : props.size === frameDimensions.sm
+      : dimension === frameDimensions.sm
       ? (passepartout = 16)
-      : props.size === frameDimensions.md
+      : dimension === frameDimensions.md
       ? (passepartout = 21)
-      : props.size === frameDimensions.lg
+      : dimension === frameDimensions.lg
       ? (passepartout = 26)
       : (passepartout = 33);
-    // }
     return passepartout + frameBorder();
+  };
+
+  const frameColor = () => {
+    if (match[0].category.includes('Wooden')) {
+      if (match[0].title.toLowerCase().includes('maple')) return maple;
+      if (match[0].title.toLowerCase().includes('walnut')) return walnut;
+    } else {
+      if (match[0].title.toLowerCase().includes('white')) return '#fff';
+      if (match[0].title.toLowerCase().includes('black')) return '#000';
+    }
   };
 
   return (
     <Layer draggable>
       <>
-        <Rect
-          x={pos().x}
-          y={pos().y}
-          width={props.size.width * 3.5}
-          height={props.size.height * 3.5}
-          fill="#fff"
-          shadowBlur={15}
-          shadowColor="#000"
-          shadowOpacity={0.5}
-          shadowOffset={{ x: 0, y: 5 }}
-        />
+        {match[0].category.includes('Wooden') ? (
+          <Image
+            image={frameColor()}
+            alt="abc"
+            x={pos().x}
+            y={pos().y}
+            width={dimension.width * 3.5}
+            height={dimension.height * 3.5}
+            shadowBlur={15}
+            shadowColor="#000"
+            shadowOpacity={0.5}
+            shadowOffset={{ x: 0, y: 5 }}
+          />
+        ) : (
+          <Rect
+            x={pos().x}
+            y={pos().y}
+            width={dimension.width * 3.5}
+            height={dimension.height * 3.5}
+            fill={frameColor()}
+            shadowBlur={15}
+            shadowColor="#000"
+            shadowOpacity={0.5}
+            shadowOffset={{ x: 0, y: 5 }}
+          />
+        )}
 
         <Image
           image={img1}
           alt="cola"
           x={pos().x + frameBorder()}
           y={pos().y + frameBorder()}
-          width={props.size.width * 3.5 - frameBorder() * 2}
-          height={props.size.height * 3.5 - frameBorder() * 2}
+          width={dimension.width * 3.5 - frameBorder() * 2}
+          height={dimension.height * 3.5 - frameBorder() * 2}
         />
         {withPassepartout ? (
           <>
@@ -82,28 +117,28 @@ const CanvasFrame = (props: Props) => {
               x={pos().x + frameBorder()}
               y={pos().y + frameBorder()}
               width={passepartout() - frameBorder()}
-              height={props.size.height * 3.5 - frameBorder() * 2}
+              height={dimension.height * 3.5 - frameBorder() * 2}
               fill="#f8f8f8"
             />
             <Rect
-              x={pos().x + props.size.width * 3.5 - passepartout()}
+              x={pos().x + dimension.width * 3.5 - passepartout()}
               y={pos().y + frameBorder()}
               width={passepartout() - frameBorder()}
-              height={props.size.height * 3.5 - frameBorder() * 2}
+              height={dimension.height * 3.5 - frameBorder() * 2}
               fill="#f8f8f8"
             />
             <Rect
               x={pos().x + frameBorder()}
               y={pos().y + frameBorder()}
-              width={props.size.width * 3.5 - frameBorder() * 2}
+              width={dimension.width * 3.5 - frameBorder() * 2}
               height={passepartout() * 1.1 - frameBorder()}
               fill="#f8f8f8"
             />
 
             <Rect
               x={pos().x + frameBorder()}
-              y={pos().y + props.size.height * 3.5 - passepartout() * 1.1}
-              width={props.size.width * 3.5 - frameBorder() * 2}
+              y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
+              width={dimension.width * 3.5 - frameBorder() * 2}
               height={passepartout() * 1.1 - frameBorder()}
               fill="#f8f8f8"
             />
@@ -112,7 +147,7 @@ const CanvasFrame = (props: Props) => {
               x={pos().x + passepartout()}
               y={pos().y + passepartout() * 1.1 + 1}
               width={1}
-              height={props.size.height * 3.5 - passepartout() * 1.1 * 2 - 1}
+              height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
               fill="#eee"
               shadowBlur={0.25}
               shadowColor="#000"
@@ -120,10 +155,10 @@ const CanvasFrame = (props: Props) => {
               shadowOffset={{ x: 0, y: 0 }}
             />
             <Rect
-              x={pos().x + props.size.width * 3.5 - passepartout()}
+              x={pos().x + dimension.width * 3.5 - passepartout()}
               y={pos().y + passepartout() * 1.1 + 1}
               width={1}
-              height={props.size.height * 3.5 - passepartout() * 1.1 * 2 - 1}
+              height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
               fill="#eee"
               shadowBlur={0.25}
               shadowColor="#000"
@@ -133,7 +168,7 @@ const CanvasFrame = (props: Props) => {
             <Rect
               x={pos().x + passepartout()}
               y={pos().y + passepartout() * 1.1}
-              width={props.size.width * 3.5 - passepartout() * 2 + 1}
+              width={dimension.width * 3.5 - passepartout() * 2 + 1}
               height={1}
               fill="#ddd"
               shadowBlur={0.5}
@@ -143,8 +178,8 @@ const CanvasFrame = (props: Props) => {
             />
             <Rect
               x={pos().x + passepartout()}
-              y={pos().y + props.size.height * 3.5 - passepartout() * 1.1}
-              width={props.size.width * 3.5 - passepartout() * 2 + 1}
+              y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
+              width={dimension.width * 3.5 - passepartout() * 2 + 1}
               height={1}
               fill="#fff"
             />
@@ -155,7 +190,7 @@ const CanvasFrame = (props: Props) => {
           x={pos().x + frameBorder()}
           y={pos().y + frameBorder() + 1}
           width={1}
-          height={props.size.height * 3.5 - frameBorder() * 2 - 1}
+          height={dimension.height * 3.5 - frameBorder() * 2 - 1}
           fill="#eee"
           shadowBlur={3}
           shadowColor="#ddd"
@@ -163,10 +198,10 @@ const CanvasFrame = (props: Props) => {
           shadowOffset={{ x: 2, y: 0 }}
         />
         <Rect
-          x={pos().x + props.size.width * 3.5 - frameBorder()}
+          x={pos().x + dimension.width * 3.5 - frameBorder()}
           y={pos().y + frameBorder() + 1}
           width={1}
-          height={props.size.height * 3.5 - frameBorder() * 2 - 1}
+          height={dimension.height * 3.5 - frameBorder() * 2 - 1}
           fill="#eee"
           shadowBlur={3}
           shadowColor="#ddd"
@@ -176,7 +211,7 @@ const CanvasFrame = (props: Props) => {
         <Rect
           x={pos().x + frameBorder()}
           y={pos().y + frameBorder()}
-          width={props.size.width * 3.5 - frameBorder() * 2 + 1}
+          width={dimension.width * 3.5 - frameBorder() * 2 + 1}
           height={1}
           fill="#ddd"
           shadowBlur={13}
@@ -186,17 +221,16 @@ const CanvasFrame = (props: Props) => {
         />
         <Rect
           x={pos().x + frameBorder()}
-          y={pos().y + props.size.height * 3.5 - frameBorder()}
-          width={props.size.width * 3.5 - frameBorder() * 2 + 1}
+          y={pos().y + dimension.height * 3.5 - frameBorder()}
+          width={dimension.width * 3.5 - frameBorder() * 2 + 1}
           height={1}
           fill="#fff"
           opacity={0.5}
         />
-
         <Text
-          text={props.size.width + 'x' + props.size.height}
-          x={(pos().x + props.size.width * 3.5) / 2 - 7.5}
-          y={pos().y + props.size.height * 3.5 + 10}
+          text={dimension.width + 'x' + dimension.height}
+          x={(pos().x + dimension.width * 3.5) / 2 - 7.5}
+          y={pos().y + dimension.height * 3.5 + 10}
           fontFamily={theme.typography.fontFamily}
           fontSize={Number(theme.typography.body1.fontSize)}
         />
