@@ -18,16 +18,15 @@ const Sidebar = () => {
   return (
     <>
       {/* Button when drawer is closed */}
-      <Box bgcolor="#FBFBFB" width={5} sx={{ borderLeft: '1px solid #F8F8F8' }}>
-        <SidebarToggleButton onClick={() => setAnchor(true)} />
-      </Box>
+      {/* <Box bgcolor="#FBFBFB" width={5} sx={{ borderLeft: '1px solid #F8F8F8' }}> */}
+      <SidebarToggleButton onClick={() => setAnchor(true)} />
+      {/* </Box> */}
 
       {/* Drawer */}
       <Drawer
         anchor="right"
         open={anchor}
         onClose={toggleClose}
-        hideBackdrop
         sx={{
           mt: '50px',
           display: 'flex',
@@ -44,9 +43,7 @@ const Sidebar = () => {
       >
         <Box
           display="flex"
-          minWidth={295}
-          width={295}
-          sx={{ flexDirection: 'row' }}
+          sx={{ flexDirection: 'row', width: 295, minWidth: 295 }}
         >
           <Box
             bgcolor="transparent"

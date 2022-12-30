@@ -13,7 +13,13 @@ const Layout = (props: Props) => {
   return (
     <>
       <Header />
-      <Box display="flex" width="100%" p={0} sx={{ flexDirection: 'row' }}>
+      <Box
+        display="flex"
+        height="calc(100vh - 50px)"
+        width="100%"
+        p={0}
+        sx={{ flexDirection: 'row' }}
+      >
         <main
           style={{
             width: '100%',
