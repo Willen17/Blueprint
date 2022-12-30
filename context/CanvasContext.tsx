@@ -7,64 +7,59 @@ import {
   useContext,
   useState,
 } from 'react';
-import { FrameDimension } from '../components/types';
+import { Canvas, CanvasFrameSet } from '../components/types';
 
 interface CanvasContextValue {
   background: string;
   setBackground: Dispatch<SetStateAction<string>>;
-  frame: string;
-  setFrame: Dispatch<SetStateAction<string>>;
   withPassepartout: boolean;
   setWithPassepartout: Dispatch<SetStateAction<boolean>>;
-  frameDimension: FrameDimension;
-  setFrameDimension: Dispatch<SetStateAction<FrameDimension>>;
   poster: string;
   setPoster: Dispatch<SetStateAction<string>>;
   posterOrientation: string;
   setPosterOrientation: Dispatch<SetStateAction<string>>;
+  frameSet: CanvasFrameSet;
+  setFrameSet: Dispatch<SetStateAction<CanvasFrameSet>>;
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
   background: '',
   setBackground: () => '',
-  frame: '',
-  setFrame: () => '',
   withPassepartout: true,
   setWithPassepartout: () => true,
-  frameDimension: { width: 0, height: 0 },
-  setFrameDimension: () => {},
   poster: '',
   setPoster: () => '',
   posterOrientation: '',
   setPosterOrientation: () => '',
+  frameSet: { id: '', title: '', size: '' },
+  setFrameSet: () => {},
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [background, setBackground] = useState<string>('');
-  const [frame, setFrame] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
-  const [frameDimension, setFrameDimension] = useState<FrameDimension>({
-    width: 21,
-    height: 30,
-  });
   const [poster, setPoster] = useState<string>('');
   const [posterOrientation, setPosterOrientation] = useState<string>('');
+  const [canvas, setCanvas] = useState<Canvas>();
+  const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
+    id: '',
+    title: '',
+    size: '',
+  });
 
   return (
     <CanvasContext.Provider
       value={{
         background,
         setBackground,
-        frame,
-        setFrame,
         withPassepartout,
         setWithPassepartout,
-        frameDimension,
-        setFrameDimension,
         poster,
         setPoster,
         posterOrientation,
         setPosterOrientation,
+        frameSet,
+        setFrameSet,
       }}
     >
       {children}

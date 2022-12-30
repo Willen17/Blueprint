@@ -21,11 +21,11 @@ export const frames = [
     id: 'y7p7AoPxjQlljP0yK19s',
   },
   {
-    frame: PlainMaplePreview,
+    frame: PlainWalnutPreview,
     id: 'rVKbdYQ4FIL2m0pvu8FQ',
   },
   {
-    frame: PlainWalnutPreview,
+    frame: PlainMaplePreview,
     id: 'dh4w2TLpD1E6xqj2gsTl',
   },
 ];
