@@ -7,7 +7,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Frame, sidebarSections } from '../components/types';
+import { Background, Frame, sidebarSections } from '../components/types';
 
 interface SidebarContextValue {
   expandedAccordion: string | false;
@@ -16,12 +16,30 @@ interface SidebarContextValue {
   setOpenMobileSection: Dispatch<SetStateAction<string>>;
   isEditingFrame: boolean;
   setIsEditingFrame: Dispatch<SetStateAction<boolean>>;
-  backgroundCategory: string;
-  setBackgroundCategory: Dispatch<SetStateAction<string>>;
+  backgroundCategories: {
+    'Living room': boolean;
+    Bedroom: boolean;
+    'Dining room': boolean;
+    Color: boolean;
+    Office: boolean;
+    Other: boolean;
+  };
+  setBackgroundCategories: Dispatch<
+    SetStateAction<{
+      'Living room': boolean;
+      Bedroom: boolean;
+      'Dining room': boolean;
+      Color: boolean;
+      Office: boolean;
+      Other: boolean;
+    }>
+  >;
   posterCategory: string;
   setPosterCategory: Dispatch<SetStateAction<string>>;
   allFrames: Frame[];
   setAllFrames: Dispatch<SetStateAction<Frame[]>>;
+  allBackgrounds: Background[];
+  setAllBackgrounds: Dispatch<SetStateAction<Background[]>>;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -31,12 +49,21 @@ export const SidebarContext = createContext<SidebarContextValue>({
   setOpenMobileSection: () => '',
   isEditingFrame: false,
   setIsEditingFrame: () => false,
-  backgroundCategory: '',
-  setBackgroundCategory: () => '',
+  backgroundCategories: {
+    'Living room': false,
+    Bedroom: false,
+    'Dining room': false,
+    Color: false,
+    Office: false,
+    Other: false,
+  },
+  setBackgroundCategories: () => {},
   posterCategory: '',
   setPosterCategory: () => '',
   allFrames: [],
   setAllFrames: () => [],
+  allBackgrounds: [],
+  setAllBackgrounds: () => [],
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -46,9 +73,17 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [openMobileSection, setOpenMobileSection] = useState<string>(
     sidebarSections[0]
   );
-  const [backgroundCategory, setBackgroundCategory] = useState<string>('');
+  const [backgroundCategories, setBackgroundCategories] = useState({
+    'Living room': false,
+    Bedroom: false,
+    'Dining room': false,
+    Color: false,
+    Office: false,
+    Other: false,
+  });
   const [posterCategory, setPosterCategory] = useState<string>('');
   const [allFrames, setAllFrames] = useState<Frame[]>([]);
+  const [allBackgrounds, setAllBackgrounds] = useState<Background[]>([]);
 
   // TODO: setIsEditingFrame must be set to true when a user clicks a frame in the canvas
   const [isEditingFrame, setIsEditingFrame] = useState<boolean>(false);
@@ -62,12 +97,14 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setOpenMobileSection,
         isEditingFrame,
         setIsEditingFrame,
-        backgroundCategory,
-        setBackgroundCategory,
+        backgroundCategories,
+        setBackgroundCategories,
         posterCategory,
         setPosterCategory,
         allFrames,
         setAllFrames,
+        allBackgrounds,
+        setAllBackgrounds,
       }}
     >
       {children}
