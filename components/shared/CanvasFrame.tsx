@@ -78,7 +78,7 @@ const CanvasFrame = (props: Props) => {
         {match[0].category.includes('Wooden') ? (
           <Image
             image={frameColor()}
-            alt="abc"
+            alt={match[0].title}
             x={pos().x}
             y={pos().y}
             width={dimension.width * 3.5}
