@@ -1,5 +1,7 @@
 import { Image, Layer, Rect, Stage, Text } from 'react-konva';
 import useImage from 'use-image';
+import { frameDimensions } from '../../data/frameData';
+import CanvasFrame from '../shared/CanvasFrame';
 import { theme } from '../theme';
 
 // this component is just for testing - many values to be changed later
@@ -33,45 +35,11 @@ function Test() {
           fontVariant="bold"
         />
       </Layer>
-      <Layer draggable>
-        <Rect
-          x={20}
-          y={50}
-          width={40 * 3.5}
-          height={50 * 3.5}
-          fill="black"
-          shadowBlur={15}
-          shadowColor="black"
-          shadowOpacity={0.5}
-          shadowOffset={{ x: 0, y: 5 }}
-        />
-        <Rect
-          x={20 + 10}
-          y={50 + 10}
-          width={40 * 3.5 - 20}
-          height={50 * 3.5 - 20}
-          fill="#f8f8f8"
-        />
-        <Image
-          image={img1}
-          alt="cola"
-          x={20 + 30}
-          y={50 + 30}
-          width={40 * 3.5 - 60}
-          height={50 * 3.5 - 60}
-          shadowBlur={1}
-          shadowColor="black"
-          shadowOpacity={0.6}
-          shadowOffset={{ x: 0, y: 0 }}
-        />
-        <Text
-          text="40x50"
-          x={(20 + 40 * 3.5) / 2.2}
-          y={50 + 50 * 3.5 + 10}
-          fontFamily={theme.typography.fontFamily}
-          fontSize={Number(theme.typography.body1.fontSize)}
-        />
-      </Layer>
+      <CanvasFrame size={frameDimensions.xs} />
+      <CanvasFrame size={frameDimensions.sm} />
+      <CanvasFrame size={frameDimensions.md} />
+      <CanvasFrame size={frameDimensions.lg} />
+      <CanvasFrame size={frameDimensions.xl} />
       <Layer draggable>
         <Rect
           x={100}
