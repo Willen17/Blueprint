@@ -4,13 +4,10 @@ import {
   Button,
   Container,
   FormControl,
-  FormControlLabel,
   FormGroup,
   FormHelperText,
   FormLabel,
   Paper,
-  Radio,
-  RadioGroup,
   TextField,
   Typography,
 } from '@mui/material';
@@ -30,15 +27,15 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
 } from 'react-hook-form';
-import { posterCategories, PosterData, posterSizes } from '../lib/valSchemas';
-import PosterCheckBox from './PosterCheckBox';
+import { backgroundCategories, BackgroundData } from '../lib/valSchemas';
+import BgCheckBox from './BgCheckBox';
 
 interface CreatePosterData {
-  onSubmit: (data: PosterData) => void;
-  register: UseFormRegister<PosterData>;
-  formHandleSubmit: UseFormHandleSubmit<PosterData>;
-  errors: Partial<FieldErrorsImpl<PosterData>>;
-  control: Control<PosterData>;
+  onSubmit: (data: BackgroundData) => void;
+  register: UseFormRegister<BackgroundData>;
+  formHandleSubmit: UseFormHandleSubmit<BackgroundData>;
+  errors: Partial<FieldErrorsImpl<BackgroundData>>;
+  control: Control<BackgroundData>;
   setFile: Dispatch<SetStateAction<File | undefined>>;
   file: File | undefined;
   setImageError: Dispatch<
@@ -56,7 +53,7 @@ interface CreatePosterData {
     | undefined;
 }
 
-const PosterForm = ({
+const BackgroundForm = ({
   onSubmit,
   formHandleSubmit,
   register,
@@ -108,8 +105,11 @@ const PosterForm = ({
   return (
     <>
       <Head>
-        <title>Admin - Poster form</title>
-        <meta name="description" content="Post your posters to the database" />
+        <title>Admin - Background form</title>
+        <meta
+          name="description"
+          content="Post your backgrounds to the database"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -124,7 +124,7 @@ const PosterForm = ({
       >
         <Box>
           <Typography variant="h3" sx={{ ml: 5 }}>
-            Create a poster
+            Create a background
           </Typography>
         </Box>
         <Paper elevation={3}>
@@ -139,8 +139,9 @@ const PosterForm = ({
             }}
           >
             <Alert severity="info">
-              Here you can add posters to the database. All posters uploaded
-              will be added to the database and visible for all of our users.
+              Here you can add backgrounds to the database. All backgrounds
+              uploaded will be added to the database and visible for all of our
+              users.
             </Alert>
             <Box sx={{ mt: 5 }}>
               {file && preview && (
@@ -217,35 +218,7 @@ const PosterForm = ({
                 )}
               />
             </Box>
-            <Controller
-              control={control}
-              name="orientation"
-              defaultValue=""
-              render={({ field }) => (
-                <FormControl error={Boolean(errors.orientation)}>
-                  <FormLabel id="orientation">Orientation</FormLabel>
-                  <RadioGroup aria-labelledby="orientation" {...field}>
-                    <FormControlLabel
-                      value="Portrait"
-                      id="Portrait"
-                      control={<Radio aria-labelledby="Portrait" />}
-                      label="Portrait"
-                    />
-                    <FormControlLabel
-                      value="Landscape"
-                      id="Landscape"
-                      control={<Radio aria-labelledby="Landscape" />}
-                      label="Landscape"
-                    />
-                  </RadioGroup>
-                  <FormHelperText sx={{ ml: 0 }}>
-                    {errors.orientation
-                      ? errors.orientation.message
-                      : 'What orientation is the poster?'}
-                  </FormHelperText>
-                </FormControl>
-              )}
-            />
+
             <FormControl error={Boolean(errors.categories)}>
               <FormLabel id="categories">Categories</FormLabel>
               <FormGroup
@@ -255,8 +228,8 @@ const PosterForm = ({
                 }}
                 row
               >
-                <PosterCheckBox
-                  categories={posterCategories}
+                <BgCheckBox
+                  categories={backgroundCategories}
                   name="categories"
                   control={control}
                 />
@@ -267,29 +240,9 @@ const PosterForm = ({
                   : 'What categories is the poster?'}
               </FormHelperText>
             </FormControl>
-            <FormControl error={Boolean(errors.sizes)}>
-              <FormLabel id="sizes">Size (cm)</FormLabel>
-              <FormGroup
-                aria-label="sizes"
-                sx={{
-                  justifyContent: 'flex-start',
-                }}
-                row
-              >
-                <PosterCheckBox
-                  sizes={posterSizes}
-                  name="sizes"
-                  control={control}
-                />
-              </FormGroup>
-              <FormHelperText sx={{ ml: 0 }}>
-                {errors.sizes
-                  ? errors.sizes.message
-                  : 'What sizes is the poster?'}
-              </FormHelperText>
-            </FormControl>
+
             <Button type="submit" variant="contained" sx={{ padding: '2 4' }}>
-              Create poster
+              Create background
             </Button>
           </Box>
         </Paper>
@@ -298,4 +251,4 @@ const PosterForm = ({
   );
 };
 
-export default PosterForm;
+export default BackgroundForm;
