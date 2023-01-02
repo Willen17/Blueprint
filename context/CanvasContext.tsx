@@ -115,7 +115,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   /** Detects the states needed for Canvas and pushes them into the "canvas" state */
   /** This function shapes the canvas object for uploading to db - canvas collection */
   const updateCanvasState = useCallback(() => {
-    // TODO: add all missing properties
+    // TODO: add all missing properties.
     // Now there is only backgournd and items, but missing all other things under type "Canvas"
     if (background)
       setCanvas((prevState) => ({ ...prevState, background: background }));
