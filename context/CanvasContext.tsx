@@ -4,10 +4,13 @@ import {
   FC,
   PropsWithChildren,
   SetStateAction,
+  useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import { Canvas, CanvasFrameSet } from '../components/types';
+import { auth } from '../firebase/firebaseConfig';
 
 interface CanvasContextValue {
   background: string;
@@ -20,6 +23,8 @@ interface CanvasContextValue {
   setPosterOrientation: Dispatch<SetStateAction<string>>;
   frameSet: CanvasFrameSet;
   setFrameSet: Dispatch<SetStateAction<CanvasFrameSet>>;
+  frameSets: CanvasFrameSet[];
+  setFrameSets: Dispatch<SetStateAction<CanvasFrameSet[]>>;
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
@@ -33,6 +38,8 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setPosterOrientation: () => '',
   frameSet: { id: '', title: '', size: '' },
   setFrameSet: () => {},
+  frameSets: [],
+  setFrameSets: () => [],
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -40,12 +47,50 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [poster, setPoster] = useState<string>('');
   const [posterOrientation, setPosterOrientation] = useState<string>('');
-  const [canvas, setCanvas] = useState<Canvas>();
   const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
     id: '',
     title: '',
     size: '',
   });
+  const [frameSets, setFrameSets] = useState<CanvasFrameSet[]>([]);
+  const [canvas, setCanvas] = useState<Canvas>({
+    title: 'My Wall',
+    id: '',
+    user: auth.currentUser ? auth.currentUser : undefined,
+    items: [
+      {
+        frame: { id: '', title: '', size: '' },
+        poster: { id: '', src: '' },
+        withPassepartout: true,
+        position: { x: 0, y: 0 },
+      },
+    ],
+  });
+
+  useEffect(() => {
+    const obj = {
+      frame: frameSet,
+      poster: { id: '', src: '' },
+      withPassepartout: withPassepartout,
+      position: { x: 0, y: 0 },
+    };
+    if (background) setCanvas({ ...canvas, background: background });
+    // if (frameSets) setCanvas({ ...canvas, );
+  }, []);
+
+  const addFrameSet = useCallback(async () => {
+    // TODO: logic to be adjusted when the poster is in. Now a new frame is created when the user changes frame
+    if (frameSet.id && frameSet.size && frameSet.title) {
+      setFrameSets([...frameSets, frameSet]);
+      setFrameSet({ id: '', size: '', title: '' });
+    }
+  }, [frameSet, frameSets]);
+
+  useEffect(() => {
+    addFrameSet();
+  }, [addFrameSet]);
+
+  console.log(frameSets);
 
   return (
     <CanvasContext.Provider
@@ -60,6 +105,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setPosterOrientation,
         frameSet,
         setFrameSet,
+        frameSets,
+        setFrameSets,
       }}
     >
       {children}

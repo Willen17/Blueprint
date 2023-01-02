@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Image, Layer, Rect, Text } from 'react-konva';
+import { Group, Image, Layer, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
@@ -9,10 +9,11 @@ import { CanvasFrameSet } from '../types';
 
 interface Props {
   frameSet: CanvasFrameSet;
+  index: Key;
 }
 
 const CanvasFrame = (props: Props) => {
-  const { withPassepartout, frameSet } = useCanvas();
+  const { withPassepartout } = useCanvas();
   const { allFrames } = useSidebar();
   const dimension = frameDimensions[props.frameSet.size];
   const match = allFrames.filter((frame) => frame.id === props.frameSet.id);
@@ -28,10 +29,8 @@ const CanvasFrame = (props: Props) => {
   );
 
   const pos = () => {
-    const x = 20;
-    const y = 50;
-    return { x, y };
-    //TODO: add logics so the pos doesnt overlap
+    if (props.index === 0) return { x: 20, y: 30 };
+    return { x: 20 * (props.index + 1), y: 30 };
   };
 
   const frameBorder = () => {
@@ -113,76 +112,80 @@ const CanvasFrame = (props: Props) => {
         {withPassepartout ? (
           <>
             {/*  passepartout. Sequence: left, right, top, bottom*/}
-            <Rect
-              x={pos().x + frameBorder()}
-              y={pos().y + frameBorder()}
-              width={passepartout() - frameBorder()}
-              height={dimension.height * 3.5 - frameBorder() * 2}
-              fill="#f8f8f8"
-            />
-            <Rect
-              x={pos().x + dimension.width * 3.5 - passepartout()}
-              y={pos().y + frameBorder()}
-              width={passepartout() - frameBorder()}
-              height={dimension.height * 3.5 - frameBorder() * 2}
-              fill="#f8f8f8"
-            />
-            <Rect
-              x={pos().x + frameBorder()}
-              y={pos().y + frameBorder()}
-              width={dimension.width * 3.5 - frameBorder() * 2}
-              height={passepartout() * 1.1 - frameBorder()}
-              fill="#f8f8f8"
-            />
+            <Group>
+              <Rect
+                x={pos().x + frameBorder()}
+                y={pos().y + frameBorder()}
+                width={passepartout() - frameBorder()}
+                height={dimension.height * 3.5 - frameBorder() * 2}
+                fill="#f8f8f8"
+              />
+              <Rect
+                x={pos().x + dimension.width * 3.5 - passepartout()}
+                y={pos().y + frameBorder()}
+                width={passepartout() - frameBorder()}
+                height={dimension.height * 3.5 - frameBorder() * 2}
+                fill="#f8f8f8"
+              />
+              <Rect
+                x={pos().x + frameBorder()}
+                y={pos().y + frameBorder()}
+                width={dimension.width * 3.5 - frameBorder() * 2}
+                height={passepartout() * 1.1 - frameBorder()}
+                fill="#f8f8f8"
+              />
 
-            <Rect
-              x={pos().x + frameBorder()}
-              y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
-              width={dimension.width * 3.5 - frameBorder() * 2}
-              height={passepartout() * 1.1 - frameBorder()}
-              fill="#f8f8f8"
-            />
+              <Rect
+                x={pos().x + frameBorder()}
+                y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
+                width={dimension.width * 3.5 - frameBorder() * 2}
+                height={passepartout() * 1.1 - frameBorder()}
+                fill="#f8f8f8"
+              />
+            </Group>
             {/* shadow for passepartout. Sequence: left, right, top, bottom*/}
-            <Rect
-              x={pos().x + passepartout()}
-              y={pos().y + passepartout() * 1.1 + 1}
-              width={1}
-              height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
-              fill="#eee"
-              shadowBlur={0.25}
-              shadowColor="#000"
-              shadowOpacity={0.6}
-              shadowOffset={{ x: 0, y: 0 }}
-            />
-            <Rect
-              x={pos().x + dimension.width * 3.5 - passepartout()}
-              y={pos().y + passepartout() * 1.1 + 1}
-              width={1}
-              height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
-              fill="#eee"
-              shadowBlur={0.25}
-              shadowColor="#000"
-              shadowOpacity={0.6}
-              shadowOffset={{ x: 0, y: 0 }}
-            />
-            <Rect
-              x={pos().x + passepartout()}
-              y={pos().y + passepartout() * 1.1}
-              width={dimension.width * 3.5 - passepartout() * 2 + 1}
-              height={1}
-              fill="#ddd"
-              shadowBlur={0.5}
-              shadowColor="#000"
-              shadowOpacity={0.2}
-              shadowOffset={{ x: 0, y: 0 }}
-            />
-            <Rect
-              x={pos().x + passepartout()}
-              y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
-              width={dimension.width * 3.5 - passepartout() * 2 + 1}
-              height={1}
-              fill="#fff"
-            />
+            <Group>
+              <Rect
+                x={pos().x + passepartout()}
+                y={pos().y + passepartout() * 1.1 + 1}
+                width={1}
+                height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
+                fill="#eee"
+                shadowBlur={0.25}
+                shadowColor="#000"
+                shadowOpacity={0.6}
+                shadowOffset={{ x: 0, y: 0 }}
+              />
+              <Rect
+                x={pos().x + dimension.width * 3.5 - passepartout()}
+                y={pos().y + passepartout() * 1.1 + 1}
+                width={1}
+                height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
+                fill="#eee"
+                shadowBlur={0.25}
+                shadowColor="#000"
+                shadowOpacity={0.6}
+                shadowOffset={{ x: 0, y: 0 }}
+              />
+              <Rect
+                x={pos().x + passepartout()}
+                y={pos().y + passepartout() * 1.1}
+                width={dimension.width * 3.5 - passepartout() * 2 + 1}
+                height={1}
+                fill="#ddd"
+                shadowBlur={0.5}
+                shadowColor="#000"
+                shadowOpacity={0.2}
+                shadowOffset={{ x: 0, y: 0 }}
+              />
+              <Rect
+                x={pos().x + passepartout()}
+                y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
+                width={dimension.width * 3.5 - passepartout() * 2 + 1}
+                height={1}
+                fill="#fff"
+              />
+            </Group>
           </>
         ) : null}
         {/* shadow for frame. Sequence: left, right, top, bottom*/}
@@ -229,7 +232,7 @@ const CanvasFrame = (props: Props) => {
         />
         <Text
           text={dimension.width + 'x' + dimension.height}
-          x={(pos().x + dimension.width * 3.5) / 2 - 7.5}
+          x={pos().x + (dimension.width * 3.5) / 2 - 20}
           y={pos().y + dimension.height * 3.5 + 10}
           fontFamily={theme.typography.fontFamily}
           fontSize={Number(theme.typography.body1.fontSize)}
