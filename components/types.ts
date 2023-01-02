@@ -44,6 +44,18 @@ export interface CanvasFrameSet {
   size: string;
 }
 
+export interface Poster {
+  id: string;
+  src: string;
+}
+
+export interface CanvasItem {
+  frame: CanvasFrameSet;
+  poster: { id: string; src: string };
+  withPassepartout: boolean;
+  position: { x: number; y: number };
+}
+
 export interface Canvas {
   title?: string;
   id?: string;
@@ -51,12 +63,5 @@ export interface Canvas {
   createdAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
   updatedAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
   background?: string; // TODO: put the correct type. Wille is working on this so i dont bother the type here
-  items: [
-    {
-      frame: CanvasFrameSet;
-      poster: { id: string; src: string };
-      withPassepartout: boolean;
-      position: { x: number; y: number };
-    }
-  ];
+  items: CanvasItem[];
 }

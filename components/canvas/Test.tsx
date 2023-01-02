@@ -6,7 +6,7 @@ import CanvasFrame from '../shared/CanvasFrame';
 
 // this component is just for testing - many values to be changed later
 function Test() {
-  const { background, frameSets } = useCanvas();
+  const { background, canvas } = useCanvas();
 
   const stageCanvasRef = useRef<HTMLDivElement>(null);
 
@@ -50,9 +50,11 @@ function Test() {
           backgroundPosition: 'center',
         }}
       >
-        {frameSets.map((frameSet, index) => (
-          <CanvasFrame key={index} frameSet={frameSet} index={index} />
-        ))}
+        {canvas.items.map((item, index) =>
+          item.frame.id.length > 0 && item.poster.id.length > 0 ? (
+            <CanvasFrame key={index} frameSet={item.frame} index={index} />
+          ) : null
+        )}
       </Stage>
     </Container>
   );

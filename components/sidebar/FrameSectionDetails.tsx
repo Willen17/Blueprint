@@ -77,7 +77,11 @@ const FrameSectionDetails = () => {
           <Box
             key={fr.id}
             onClick={() =>
-              setFrameSet({ ...frameSet, id: fr.id!, title: fr.title })
+              setFrameSet((prevState) => ({
+                ...prevState,
+                id: fr.id!,
+                title: fr.title,
+              }))
             }
             sx={{
               cursor: 'pointer',
@@ -147,7 +151,10 @@ const FrameSectionDetails = () => {
                   checked={frameSet.size === dimension.size}
                   sx={{ p: 0 }}
                   onClick={() =>
-                    setFrameSet({ ...frameSet, size: dimension.size })
+                    setFrameSet((prevState) => ({
+                      ...prevState,
+                      size: dimension.size,
+                    }))
                   }
                 />
               </FormControl>
