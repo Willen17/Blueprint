@@ -95,7 +95,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         frame: frameSet,
         poster: poster,
         withPassepartout: withPassepartout,
-        position: { x: 0, y: 0 },
+        position: { x: 0, y: 0 }, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
       });
   }, [frameSet, poster, withPassepartout]);
 

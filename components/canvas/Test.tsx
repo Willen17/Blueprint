@@ -52,7 +52,7 @@ function Test() {
       >
         {canvas.items.map((item, index) =>
           item.frame.id.length > 0 && item.poster.id.length > 0 ? (
-            <CanvasFrame key={index} frameSet={item.frame} index={index} />
+            <CanvasFrame key={index} item={item} index={index} />
           ) : null
         )}
       </Stage>

@@ -1,26 +1,25 @@
 // @ts-nocheck
 import { Group, Image, Layer, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
-import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
 import { theme } from '../theme';
-import { CanvasFrameSet } from '../types';
 
 interface Props {
-  frameSet: CanvasFrameSet;
+  item: CanvasItem;
   index: Key;
 }
 
-const CanvasFrame = (props: Props) => {
-  const { withPassepartout } = useCanvas();
-  const { allFrames } = useSidebar();
-  const dimension = frameDimensions[props.frameSet.size];
-  const match = allFrames.filter((frame) => frame.id === props.frameSet.id);
+// TODO: what is missing here is the frame scaling and previous position
+// but for previous position i guess we are only able to do it once we have the canvas object
+// saved in the db, as in that case the canvas wont be empty after reloading... or?
 
-  const [img1] = useImage(
-    'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Ffour%20coca%20cola%20bottles.jpg?alt=media&token=7e1d8a77-358c-4a19-9742-1e91e09de6e2'
-  );
+const CanvasFrame = (props: Props) => {
+  const { allFrames } = useSidebar();
+  const dimension = frameDimensions[props.item.frame.size];
+  const match = allFrames.filter((frame) => frame.id === props.item.frame.id);
+
+  const [poster] = useImage(props.item.poster.src);
   const [maple] = useImage(
     'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fmaple-surface.jpg?alt=media&token=4d386205-d4fa-4531-b801-543d95101a98'
   );
@@ -102,14 +101,14 @@ const CanvasFrame = (props: Props) => {
         )}
 
         <Image
-          image={img1}
+          image={poster}
           alt="cola"
           x={pos().x + frameBorder()}
           y={pos().y + frameBorder()}
           width={dimension.width * 3.5 - frameBorder() * 2}
           height={dimension.height * 3.5 - frameBorder() * 2}
         />
-        {withPassepartout ? (
+        {props.item.withPassepartout ? (
           <>
             {/*  passepartout. Sequence: left, right, top, bottom*/}
             <Group>
