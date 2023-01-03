@@ -18,7 +18,12 @@ const PosterSectionDetails = () => {
     setPosterOrientation,
     frameSet,
   } = useCanvas();
-  const { allPosters, posterCategories, setPosterCategories } = useSidebar();
+  const {
+    allPosters,
+    posterCategories,
+    setPosterCategories,
+    setAnchorSidebar,
+  } = useSidebar();
 
   /** Handles change of orientation state */
   const handleOrientationChange = (value: string) => {
@@ -173,9 +178,10 @@ const PosterSectionDetails = () => {
               height={p.orientation === 'Portrait' ? 65 : 55}
               alt={p.title}
               src={p.image}
-              onClick={() =>
-                setPoster({ ...poster, id: p.id!, image: p.image })
-              }
+              onClick={() => {
+                setPoster({ ...poster, id: p.id!, image: p.image });
+                setAnchorSidebar(false);
+              }}
             />
             {poster.id === p.id ? (
               <IconCheck

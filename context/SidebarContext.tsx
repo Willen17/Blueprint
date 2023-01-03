@@ -11,6 +11,8 @@ import { Background, Frame, Poster } from '../components/types';
 import { sidebarSections } from '../lib/valSchemas';
 
 interface SidebarContextValue {
+  anchorSidebar: boolean;
+  setAnchorSidebar: Dispatch<SetStateAction<boolean>>;
   expandedAccordion: string | false;
   setExpandedAccordion: Dispatch<SetStateAction<string | false>>;
   openMobileSection: string;
@@ -66,6 +68,8 @@ interface SidebarContextValue {
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
+  anchorSidebar: true,
+  setAnchorSidebar: () => true,
   expandedAccordion: '',
   setExpandedAccordion: () => '',
   openMobileSection: '',
@@ -101,6 +105,7 @@ export const SidebarContext = createContext<SidebarContextValue>({
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [anchorSidebar, setAnchorSidebar] = useState<boolean>(true);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
     sidebarSections[0]
   );
@@ -135,6 +140,8 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <SidebarContext.Provider
       value={{
+        anchorSidebar,
+        setAnchorSidebar,
         expandedAccordion,
         setExpandedAccordion,
         openMobileSection,
