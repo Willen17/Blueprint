@@ -58,7 +58,11 @@ const CanvasFrame = (props: Props) => {
       : dimension === frameDimensions.lg
       ? (frameBorder = 10)
       : (frameBorder = 10);
-    return frameBorder * (imageWidth / imageHeight);
+    return (
+      frameBorder *
+      5 *
+      Math.min(props.imageScale.scaleX, props.imageScale.scaleY)
+    );
   };
   const passepartout = () => {
     let passepartout = 0;
@@ -71,7 +75,12 @@ const CanvasFrame = (props: Props) => {
       : dimension === frameDimensions.lg
       ? (passepartout = 26)
       : (passepartout = 33);
-    return passepartout * (imageWidth / imageHeight) + frameBorder();
+    return (
+      passepartout *
+        5 *
+        Math.min(props.imageScale.scaleX, props.imageScale.scaleY) +
+      frameBorder()
+    );
   };
   const frameColor = () => {
     if (match[0].category.includes('Wooden')) {
@@ -161,8 +170,6 @@ const CanvasFrame = (props: Props) => {
           y={frameBorder()}
           width={imageWidth - frameBorder() * 2}
           height={imageHeight - frameBorder() * 2}
-          // width={imageWidth}
-          // height={imageHeight}
         />
         {props.item.withPassepartout ? (
           <>
