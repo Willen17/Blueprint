@@ -38,12 +38,12 @@ function Test() {
 
   const [canvasBackground] = useImage(background);
 
-  let x, y, width, height;
+  let x, y, width, height, scaleX, scaleY;
   if (canvasBackground) {
     const aspectRatio = canvasBackground.width / canvasBackground.height;
 
-    const scaleX = dimensions.width / canvasBackground.width;
-    const scaleY = dimensions.height / canvasBackground.height;
+    scaleX = dimensions.width / canvasBackground.width;
+    scaleY = dimensions.height / canvasBackground.height;
     let scale = scaleX;
     if (aspectRatio < 1) {
       scale = Math.max(scaleX, scaleY);
@@ -71,10 +71,19 @@ function Test() {
               height={height}
             />
           )}
+
+          {width &&
+          height &&
+          canvasBackground &&
+          frameSet.id &&
+          frameSet.size ? (
+            <CanvasFrame
+              frameSet={frameSet}
+              imageScale={{ scaleX, scaleY }}
+              bg={{ width, height, x, y }}
+            />
+          ) : null}
         </Layer>
-        {frameSet.id && frameSet.size ? (
-          <CanvasFrame frameSet={frameSet} />
-        ) : null}
       </Stage>
     </Container>
   );
