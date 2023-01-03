@@ -1,25 +1,25 @@
 // @ts-nocheck
-import { Image, Layer, Rect, Text } from 'react-konva';
+import { Group, Image, Layer, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
-import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
 import { theme } from '../theme';
-import { CanvasFrameSet } from '../types';
 
 interface Props {
-  frameSet: CanvasFrameSet;
+  item: CanvasItem;
+  index: Key;
 }
 
-const CanvasFrame = (props: Props) => {
-  const { withPassepartout, frameSet } = useCanvas();
-  const { allFrames } = useSidebar();
-  const dimension = frameDimensions[props.frameSet.size];
-  const match = allFrames.filter((frame) => frame.id === props.frameSet.id);
+// TODO: what is missing here is the frame scaling and previous position
+// but for previous position i guess we are only able to do it once we have the canvas object
+// saved in the db, as in that case the canvas wont be empty after reloading... or?
 
-  const [img1] = useImage(
-    'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Ffour%20coca%20cola%20bottles.jpg?alt=media&token=7e1d8a77-358c-4a19-9742-1e91e09de6e2'
-  );
+const CanvasFrame = (props: Props) => {
+  const { allFrames } = useSidebar();
+  const dimension = frameDimensions[props.item.frame.size];
+  const match = allFrames.filter((frame) => frame.id === props.item.frame.id);
+
+  const [poster] = useImage(props.item.poster.src);
   const [maple] = useImage(
     'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fmaple-surface.jpg?alt=media&token=4d386205-d4fa-4531-b801-543d95101a98'
   );
@@ -28,10 +28,8 @@ const CanvasFrame = (props: Props) => {
   );
 
   const pos = () => {
-    const x = 20;
-    const y = 50;
-    return { x, y };
-    //TODO: add logics so the pos doesnt overlap
+    if (props.index === 0) return { x: 20, y: 30 };
+    return { x: 20 * (props.index + 1), y: 30 };
   };
 
   const frameBorder = () => {
@@ -103,86 +101,90 @@ const CanvasFrame = (props: Props) => {
         )}
 
         <Image
-          image={img1}
+          image={poster}
           alt="cola"
           x={pos().x + frameBorder()}
           y={pos().y + frameBorder()}
           width={dimension.width * 3.5 - frameBorder() * 2}
           height={dimension.height * 3.5 - frameBorder() * 2}
         />
-        {withPassepartout ? (
+        {props.item.withPassepartout ? (
           <>
             {/*  passepartout. Sequence: left, right, top, bottom*/}
-            <Rect
-              x={pos().x + frameBorder()}
-              y={pos().y + frameBorder()}
-              width={passepartout() - frameBorder()}
-              height={dimension.height * 3.5 - frameBorder() * 2}
-              fill="#f8f8f8"
-            />
-            <Rect
-              x={pos().x + dimension.width * 3.5 - passepartout()}
-              y={pos().y + frameBorder()}
-              width={passepartout() - frameBorder()}
-              height={dimension.height * 3.5 - frameBorder() * 2}
-              fill="#f8f8f8"
-            />
-            <Rect
-              x={pos().x + frameBorder()}
-              y={pos().y + frameBorder()}
-              width={dimension.width * 3.5 - frameBorder() * 2}
-              height={passepartout() * 1.1 - frameBorder()}
-              fill="#f8f8f8"
-            />
+            <Group>
+              <Rect
+                x={pos().x + frameBorder()}
+                y={pos().y + frameBorder()}
+                width={passepartout() - frameBorder()}
+                height={dimension.height * 3.5 - frameBorder() * 2}
+                fill="#f8f8f8"
+              />
+              <Rect
+                x={pos().x + dimension.width * 3.5 - passepartout()}
+                y={pos().y + frameBorder()}
+                width={passepartout() - frameBorder()}
+                height={dimension.height * 3.5 - frameBorder() * 2}
+                fill="#f8f8f8"
+              />
+              <Rect
+                x={pos().x + frameBorder()}
+                y={pos().y + frameBorder()}
+                width={dimension.width * 3.5 - frameBorder() * 2}
+                height={passepartout() * 1.1 - frameBorder()}
+                fill="#f8f8f8"
+              />
 
-            <Rect
-              x={pos().x + frameBorder()}
-              y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
-              width={dimension.width * 3.5 - frameBorder() * 2}
-              height={passepartout() * 1.1 - frameBorder()}
-              fill="#f8f8f8"
-            />
+              <Rect
+                x={pos().x + frameBorder()}
+                y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
+                width={dimension.width * 3.5 - frameBorder() * 2}
+                height={passepartout() * 1.1 - frameBorder()}
+                fill="#f8f8f8"
+              />
+            </Group>
             {/* shadow for passepartout. Sequence: left, right, top, bottom*/}
-            <Rect
-              x={pos().x + passepartout()}
-              y={pos().y + passepartout() * 1.1 + 1}
-              width={1}
-              height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
-              fill="#eee"
-              shadowBlur={0.25}
-              shadowColor="#000"
-              shadowOpacity={0.6}
-              shadowOffset={{ x: 0, y: 0 }}
-            />
-            <Rect
-              x={pos().x + dimension.width * 3.5 - passepartout()}
-              y={pos().y + passepartout() * 1.1 + 1}
-              width={1}
-              height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
-              fill="#eee"
-              shadowBlur={0.25}
-              shadowColor="#000"
-              shadowOpacity={0.6}
-              shadowOffset={{ x: 0, y: 0 }}
-            />
-            <Rect
-              x={pos().x + passepartout()}
-              y={pos().y + passepartout() * 1.1}
-              width={dimension.width * 3.5 - passepartout() * 2 + 1}
-              height={1}
-              fill="#ddd"
-              shadowBlur={0.5}
-              shadowColor="#000"
-              shadowOpacity={0.2}
-              shadowOffset={{ x: 0, y: 0 }}
-            />
-            <Rect
-              x={pos().x + passepartout()}
-              y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
-              width={dimension.width * 3.5 - passepartout() * 2 + 1}
-              height={1}
-              fill="#fff"
-            />
+            <Group>
+              <Rect
+                x={pos().x + passepartout()}
+                y={pos().y + passepartout() * 1.1 + 1}
+                width={1}
+                height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
+                fill="#eee"
+                shadowBlur={0.25}
+                shadowColor="#000"
+                shadowOpacity={0.6}
+                shadowOffset={{ x: 0, y: 0 }}
+              />
+              <Rect
+                x={pos().x + dimension.width * 3.5 - passepartout()}
+                y={pos().y + passepartout() * 1.1 + 1}
+                width={1}
+                height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
+                fill="#eee"
+                shadowBlur={0.25}
+                shadowColor="#000"
+                shadowOpacity={0.6}
+                shadowOffset={{ x: 0, y: 0 }}
+              />
+              <Rect
+                x={pos().x + passepartout()}
+                y={pos().y + passepartout() * 1.1}
+                width={dimension.width * 3.5 - passepartout() * 2 + 1}
+                height={1}
+                fill="#ddd"
+                shadowBlur={0.5}
+                shadowColor="#000"
+                shadowOpacity={0.2}
+                shadowOffset={{ x: 0, y: 0 }}
+              />
+              <Rect
+                x={pos().x + passepartout()}
+                y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
+                width={dimension.width * 3.5 - passepartout() * 2 + 1}
+                height={1}
+                fill="#fff"
+              />
+            </Group>
           </>
         ) : null}
         {/* shadow for frame. Sequence: left, right, top, bottom*/}
@@ -229,7 +231,7 @@ const CanvasFrame = (props: Props) => {
         />
         <Text
           text={dimension.width + 'x' + dimension.height}
-          x={(pos().x + dimension.width * 3.5) / 2 - 7.5}
+          x={pos().x + (dimension.width * 3.5) / 2 - 20}
           y={pos().y + dimension.height * 3.5 + 10}
           fontFamily={theme.typography.fontFamily}
           fontSize={Number(theme.typography.body1.fontSize)}

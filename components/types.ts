@@ -44,19 +44,24 @@ export interface CanvasFrameSet {
   size: string;
 }
 
+export interface Poster {
+  id: string;
+  src: string;
+}
+
+export interface CanvasItem {
+  frame: CanvasFrameSet;
+  poster: { id: string; src: string };
+  withPassepartout: boolean;
+  position: { x: number; y: number };
+}
+
 export interface Canvas {
-  title: string;
+  title?: string;
   id?: string;
-  user: FirebaseUser;
+  user: FirebaseUser | undefined;
   createdAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
   updatedAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
-  background: any; // TODO: put the correct type. Wille is working on this so i dont bother the type here
-  items: [
-    {
-      frame: CanvasFrameSet;
-      poster: { id: string; src: string };
-      withPassepartout: boolean;
-      position: { x: number; y: number };
-    }
-  ];
+  background?: string; // TODO: put the correct type. Wille is working on this so i dont bother the type here
+  items: CanvasItem[];
 }
