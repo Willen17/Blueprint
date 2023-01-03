@@ -1,20 +1,6 @@
 import { User as FirebaseUser } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
-import { backgroundCategories } from '../lib/valSchemas';
-
-export const sidebarSections: string[] = ['Background', 'Frame', 'Poster'];
-
-// can be deleted after we have inserted frames from data
-export const posterCategories: string[] = [
-  'Abstract',
-  'Animals',
-  'Floral',
-  'Minimalistic',
-  'Movies',
-  'Nature',
-  'Paintings',
-  'Other',
-];
+import { backgroundCategories, posterCategories } from '../lib/valSchemas';
 
 export interface Dimension {
   width: number;

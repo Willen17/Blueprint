@@ -7,8 +7,8 @@ import {
 import { IconChevronUp } from '@tabler/icons';
 import { ReactNode } from 'react';
 import { useSidebar } from '../../context/SidebarContext';
+import { sidebarSections } from '../../lib/valSchemas';
 import { theme } from '../theme';
-import { sidebarSections } from '../types';
 
 interface Props {
   panel: string;

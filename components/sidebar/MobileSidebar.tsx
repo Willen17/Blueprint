@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { useSidebar } from '../../context/SidebarContext';
-import { sidebarSections } from '../types';
+import { sidebarSections } from '../../lib/valSchemas';
 
 const MobileSidebar = () => {
   const { openMobileSection, setOpenMobileSection } = useSidebar();

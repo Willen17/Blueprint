@@ -4,11 +4,11 @@ import Image from 'next/image';
 import { Key } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { posterCategories } from '../../lib/valSchemas';
 import posterL from '../../public/tempImages/poster-l.png';
 import posterP from '../../public/tempImages/poster-p.png';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
-import { posterCategories } from '../types';
 
 const PosterSectionDetails = () => {
   const { poster, setPoster, posterOrientation, setPosterOrientation } =

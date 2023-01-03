@@ -7,12 +7,8 @@ import {
   useContext,
   useState,
 } from 'react';
-import {
-  Background,
-  Frame,
-  Poster,
-  sidebarSections,
-} from '../components/types';
+import { Background, Frame, Poster } from '../components/types';
+import { sidebarSections } from '../lib/valSchemas';
 
 interface SidebarContextValue {
   expandedAccordion: string | false;
