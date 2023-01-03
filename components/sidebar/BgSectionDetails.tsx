@@ -80,7 +80,6 @@ const BgSectionDetails = () => {
           justifyContent: 'center',
           my: 2,
           overflowY: 'scroll',
-
           '&::-webkit-scrollbar': {
             width: '0.4em',
           },

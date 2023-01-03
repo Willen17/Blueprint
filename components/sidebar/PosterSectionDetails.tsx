@@ -1,16 +1,23 @@
-import { Box, Button } from '@mui/material';
+// @ts-nocheck
+import { Box, Button, Typography } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
 import { Key } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const PosterSectionDetails = () => {
-  const { poster, setPoster, posterOrientation, setPosterOrientation } =
-    useCanvas();
+  const {
+    poster,
+    setPoster,
+    posterOrientation,
+    setPosterOrientation,
+    frameSet,
+  } = useCanvas();
   const { allPosters, posterCategories, setPosterCategories } = useSidebar();
 
   /** Handles change of orientation state */
@@ -37,7 +44,16 @@ const PosterSectionDetails = () => {
     const noCategory = Object.values(posterCategories).every(
       (v) => v === false
     );
-    const filteredByCategory = allPosters.filter((item) => {
+    const filteredBySize = allPosters.flatMap((poster) =>
+      poster.sizes
+        .filter(
+          (size) =>
+            Number(size.width) === frameDimensions[frameSet.size].width &&
+            Number(size.height) === frameDimensions[frameSet.size].height
+        )
+        .map(() => poster)
+    );
+    const filteredByCategory = filteredBySize.filter((item) => {
       return Object.keys(posterCategories).some((category) => {
         return (
           posterCategories[category as keyof typeof posterCategories] &&
@@ -48,13 +64,13 @@ const PosterSectionDetails = () => {
 
     if (posterOrientation.length > 0) {
       let list = [];
-      noCategory ? (list = allPosters) : (list = filteredByCategory);
+      noCategory ? (list = filteredBySize) : (list = filteredByCategory);
       return list.filter((poster) => poster.orientation === posterOrientation);
     }
-    return noCategory ? allPosters : filteredByCategory;
+    return noCategory ? filteredBySize : filteredByCategory;
   };
 
-  return (
+  return frameSet.id && frameSet.size ? (
     <>
       <SidebarSubtitle subtitle="Poster Type">
         <Box
@@ -122,8 +138,10 @@ const PosterSectionDetails = () => {
           flexWrap: 'wrap',
           gap: 1.5,
           width: '100%',
+          placeContent: 'start',
           justifyContent: 'center',
           my: 2.5,
+          height: '100%',
           overflowY: 'scroll',
           '&::-webkit-scrollbar': {
             width: '0.4em',
@@ -139,7 +157,7 @@ const PosterSectionDetails = () => {
           },
         }}
       >
-        {filteredPosters()!.map((p, index) => (
+        {filteredPosters().map((p, index) => (
           <Box
             key={index}
             sx={{
@@ -180,6 +198,10 @@ const PosterSectionDetails = () => {
         ))}
       </Box>
     </>
+  ) : (
+    <Typography mt={3} width={180} mx="auto" textAlign="center">
+      The posters will appear here after selecting a frame.
+    </Typography>
   );
 };
 

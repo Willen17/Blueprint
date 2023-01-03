@@ -61,6 +61,7 @@ const SidebarAccordion = (props: Props) => {
           maxWidth: 280,
           minHeight: 'calc(100vh - 200px)',
           maxHeight: 'calc(100vh - 200px)',
+          height: 'calc(100vh - 200px)',
           display: 'flex',
           flexDirection: 'column',
         }}
