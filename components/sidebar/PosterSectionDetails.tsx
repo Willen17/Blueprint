@@ -161,7 +161,7 @@ const PosterSectionDetails = () => {
               position: 'relative',
               height: p.orientation === 'Portrait' ? 65 : 55,
               boxShadow:
-                poster === index.toString() // TODO: change to ID
+                poster.id === index.toString() // TODO: change to ID
                   ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
                   : null,
             }}
@@ -171,10 +171,10 @@ const PosterSectionDetails = () => {
               height={p.orientation === 'Portrait' ? 65 : 55}
               alt={p.title} // TODO: change to title
               src={p.image}
-              onClick={() => setPoster(index.toString())}
+              onClick={() => setPoster({ ...poster, id: index.toString() })}
             />
             {/* TODO: adjust logic - this should not be index but id */}
-            {poster === index.toString() ? (
+            {poster.id === index.toString() ? (
               <IconCheck
                 stroke={1}
                 color={theme.palette.primary.contrastText}

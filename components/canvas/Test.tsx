@@ -7,7 +7,7 @@ import CanvasFrame from '../shared/CanvasFrame';
 
 // this component is just for testing - many values to be changed later
 function Test() {
-  const { background, frameSet } = useCanvas();
+  const { background, canvas } = useCanvas();
 
   const stageCanvasRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +38,13 @@ function Test() {
 
   const [canvasBackground] = useImage(background);
 
-  let x, y, width, height, scaleX, scaleY;
+  // let x:  number, y:number, width: number, height: number, scaleX:number, scaleY:number;
+  let x = 0,
+    y = 0,
+    width = 0,
+    height = 0,
+    scaleX = 0,
+    scaleY = 0;
   if (canvasBackground) {
     const aspectRatio = canvasBackground.width / canvasBackground.height;
 
@@ -71,18 +77,20 @@ function Test() {
               height={height}
             />
           )}
-
           {width &&
-          height &&
-          canvasBackground &&
-          frameSet.id &&
-          frameSet.size ? (
-            <CanvasFrame
-              frameSet={frameSet}
-              imageScale={{ scaleX, scaleY }}
-              bg={{ width, height, x, y }}
-            />
-          ) : null}
+            height &&
+            canvasBackground &&
+            canvas.items.map((item, index) =>
+              item.frame.id.length > 0 && item.poster.id.length > 0 ? (
+                <CanvasFrame
+                  key={index}
+                  item={item}
+                  index={index}
+                  imageScale={{ scaleX, scaleY }}
+                  bg={{ width, height, x, y }}
+                />
+              ) : null
+            )}
         </Layer>
       </Stage>
     </Container>
