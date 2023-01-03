@@ -58,7 +58,7 @@ const FrameSectionDetails = () => {
           <Switch
             checked={withPassepartout}
             onChange={() =>
-              setWithPassepartout(withPassepartout ? false : true)
+              setWithPassepartout(() => (withPassepartout ? false : true))
             }
           />
         </Box>
