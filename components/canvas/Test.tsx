@@ -77,20 +77,17 @@ function Test() {
               height={height}
             />
           )}
-          {width &&
-            height &&
-            canvasBackground &&
-            canvas.items.map((item, index) =>
-              item.frame.id.length > 0 && item.poster.id.length > 0 ? (
-                <CanvasFrame
-                  key={index}
-                  item={item}
-                  index={index}
-                  imageScale={{ scaleX, scaleY }}
-                  bg={{ width, height, x, y }}
-                />
-              ) : null
-            )}
+          {canvas.items.map((item, index) =>
+            item.frame.id.length > 0 && item.poster.id.length > 0 ? (
+              <CanvasFrame
+                key={index}
+                item={item}
+                index={index}
+                imageScale={{ scaleX, scaleY }}
+                bg={{ width, height, x, y }}
+              />
+            ) : null
+          )}
         </Layer>
       </Stage>
     </Container>

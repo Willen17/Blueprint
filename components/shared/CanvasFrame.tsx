@@ -11,8 +11,8 @@ interface Props {
   item: CanvasItem;
   index: Key;
   imageScale: {
-    scaleX?: number;
-    scaleY?: number;
+    scaleX: number;
+    scaleY: number;
   };
   bg: {
     width: number;
@@ -58,7 +58,7 @@ const CanvasFrame = (props: Props) => {
       : dimension === frameDimensions.lg
       ? (frameBorder = 10)
       : (frameBorder = 10);
-    return frameBorder;
+    return frameBorder * (imageWidth / imageHeight);
   };
   const passepartout = () => {
     let passepartout = 0;
@@ -71,7 +71,7 @@ const CanvasFrame = (props: Props) => {
       : dimension === frameDimensions.lg
       ? (passepartout = 26)
       : (passepartout = 33);
-    return passepartout + frameBorder();
+    return passepartout * (imageWidth / imageHeight) + frameBorder();
   };
   const frameColor = () => {
     if (match[0].category.includes('Wooden')) {
@@ -89,8 +89,8 @@ const CanvasFrame = (props: Props) => {
 
   let imageAspectRatio,
     scaleFactor: number | undefined,
-    imageWidth: number | undefined,
-    imageHeight: number | undefined;
+    imageWidth = 1,
+    imageHeight = 1;
   if (poster && props.imageScale.scaleX && props.imageScale.scaleY) {
     imageAspectRatio =
       ((dimension.width * multiplyValue) / dimension.height) * multiplyValue;
@@ -136,8 +136,6 @@ const CanvasFrame = (props: Props) => {
           <Image
             image={frameColor() as HTMLImageElement}
             alt={match[0].title}
-            // x={pos().x}
-            // y={pos().y}
             width={imageWidth}
             height={imageHeight}
             shadowBlur={15}
@@ -147,8 +145,6 @@ const CanvasFrame = (props: Props) => {
           />
         ) : (
           <Rect
-            // x={pos().x}
-            // y={pos().y}
             width={imageWidth}
             height={imageHeight}
             fill={frameColor() as string}
@@ -161,10 +157,10 @@ const CanvasFrame = (props: Props) => {
         <Image
           image={poster}
           alt="cola"
-          // x={pos().x + frameBorder()}
-          // y={pos().y + frameBorder()}
-          width={imageWidth && imageWidth - frameBorder() * 2}
-          height={imageHeight && imageHeight - frameBorder() * 2}
+          x={frameBorder()}
+          y={frameBorder()}
+          width={imageWidth - frameBorder() * 2}
+          height={imageHeight - frameBorder() * 2}
           // width={imageWidth}
           // height={imageHeight}
         />
@@ -173,31 +169,31 @@ const CanvasFrame = (props: Props) => {
             {/*  passepartout. Sequence: left, right, top, bottom*/}
             <Group>
               <Rect
-                // x={pos().x + frameBorder()}
-                // y={pos().y + frameBorder()}
+                x={frameBorder()}
+                y={frameBorder()}
                 width={passepartout() - frameBorder()}
-                height={imageHeight && imageHeight - frameBorder() * 2}
+                height={imageHeight - frameBorder() * 2}
                 fill="#f8f8f8"
               />
               <Rect
-                // x={pos().x + dimension.width * 3.5 - passepartout()}
-                // y={pos().y + frameBorder()}
+                x={imageWidth - passepartout()}
+                y={frameBorder()}
                 width={passepartout() - frameBorder()}
-                height={imageHeight && imageHeight - frameBorder() * 2}
+                height={imageHeight - frameBorder() * 2}
                 fill="#f8f8f8"
               />
               <Rect
-                // x={pos().x + frameBorder()}
-                // y={pos().y + frameBorder()}
-                width={imageWidth && imageWidth - frameBorder() * 2}
+                x={frameBorder()}
+                y={frameBorder()}
+                width={imageWidth - frameBorder() * 2}
                 height={passepartout() * 1.1 - frameBorder()}
                 fill="#f8f8f8"
               />
 
               <Rect
-                // x={pos().x + frameBorder()}
-                // y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
-                width={imageWidth && imageWidth - frameBorder() * 2}
+                x={frameBorder()}
+                y={imageHeight - passepartout() * 1.1}
+                width={imageWidth - frameBorder() * 2}
                 height={passepartout() * 1.1 - frameBorder()}
                 fill="#f8f8f8"
               />
@@ -205,12 +201,10 @@ const CanvasFrame = (props: Props) => {
             {/* shadow for passepartout. Sequence: left, right, top, bottom*/}
             <Group>
               <Rect
-                // x={pos().x + passepartout()}
-                // y={pos().y + passepartout() * 1.1 + 1}
+                x={passepartout()}
+                y={passepartout() * 1.1 + 1}
                 width={1}
-                height={
-                  imageHeight && imageHeight - passepartout() * 1.1 * 2 - 1
-                }
+                height={imageHeight - passepartout() * 1.1 * 2 - 1}
                 fill="#eee"
                 shadowBlur={0.25}
                 shadowColor="#000"
@@ -218,12 +212,10 @@ const CanvasFrame = (props: Props) => {
                 shadowOffset={{ x: 0, y: 0 }}
               />
               <Rect
-                // x={pos().x + dimension.width * 3.5 - passepartout()}
-                // y={pos().y + passepartout() * 1.1 + 1}
+                x={imageWidth - passepartout()}
+                y={passepartout() * 1.1 + 1}
                 width={1}
-                height={
-                  imageHeight && imageHeight - passepartout() * 1.1 * 2 - 1
-                }
+                height={imageHeight - passepartout() * 1.1 * 2 - 1}
                 fill="#eee"
                 shadowBlur={0.25}
                 shadowColor="#000"
@@ -231,9 +223,9 @@ const CanvasFrame = (props: Props) => {
                 shadowOffset={{ x: 0, y: 0 }}
               />
               <Rect
-                // x={pos().x + passepartout()}
-                // y={pos().y + passepartout() * 1.1}
-                width={imageWidth && imageWidth - passepartout() * 2 + 1}
+                x={passepartout()}
+                y={passepartout() * 1.1}
+                width={imageWidth - passepartout() * 2 + 1}
                 height={1}
                 fill="#ddd"
                 shadowBlur={0.5}
@@ -242,9 +234,9 @@ const CanvasFrame = (props: Props) => {
                 shadowOffset={{ x: 0, y: 0 }}
               />
               <Rect
-                // x={pos().x + passepartout()}
-                // y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
-                width={imageWidth && imageWidth - passepartout() * 2 + 1}
+                x={passepartout()}
+                y={imageHeight - passepartout() * 1.1}
+                width={imageWidth - passepartout() * 2 + 1}
                 height={1}
                 fill="#fff"
               />
@@ -253,10 +245,10 @@ const CanvasFrame = (props: Props) => {
         ) : null}
         {/* shadow for frame. Sequence: left, right, top, bottom*/}
         <Rect
-          // x={pos().x + frameBorder()}
-          // y={pos().y + frameBorder() + 1}
+          x={frameBorder()}
+          y={frameBorder() + 1}
           width={1}
-          height={imageHeight && imageHeight - frameBorder() * 2 - 1}
+          height={imageHeight - frameBorder() * 2 - 1}
           fill="#eee"
           shadowBlur={3}
           shadowColor="#ddd"
@@ -264,10 +256,10 @@ const CanvasFrame = (props: Props) => {
           shadowOffset={{ x: 2, y: 0 }}
         />
         <Rect
-          // x={pos().x + dimension.width * 3.5 - frameBorder()}
-          // y={pos().y + frameBorder() + 1}
+          x={imageWidth - frameBorder()}
+          y={frameBorder() + 1}
           width={1}
-          height={imageHeight && imageHeight - frameBorder() * 2 - 1}
+          height={imageHeight - frameBorder() * 2 - 1}
           fill="#eee"
           shadowBlur={3}
           shadowColor="#ddd"
@@ -275,9 +267,9 @@ const CanvasFrame = (props: Props) => {
           shadowOffset={{ x: -2, y: 0 }}
         />
         <Rect
-          // x={pos().x + frameBorder()}
-          // y={pos().y + frameBorder()}
-          width={imageWidth && imageWidth - frameBorder() * 2 + 1}
+          x={frameBorder()}
+          y={frameBorder()}
+          width={imageWidth - frameBorder() * 2 + 1}
           height={1}
           fill="#ddd"
           shadowBlur={13}
@@ -286,17 +278,17 @@ const CanvasFrame = (props: Props) => {
           shadowOffset={{ x: 0, y: 6 }}
         />
         <Rect
-          // x={pos().x + frameBorder()}
-          // y={pos().y + dimension.height * 3.5 - frameBorder()}
-          width={imageWidth && imageWidth - frameBorder() * 2 + 1}
+          x={frameBorder()}
+          y={imageHeight - frameBorder()}
+          width={imageWidth - frameBorder() * 2 + 1}
           height={1}
           fill="#fff"
           opacity={0.5}
         />
         <Text
           text={dimension.width + 'x' + dimension.height}
-          x={imageWidth && imageWidth / 2 - 7.5}
-          y={imageHeight && imageHeight + 10}
+          x={imageWidth / 2 - 20}
+          y={imageHeight + 10}
           // x={pos().x + (dimension.width * 3.5) / 2 - 20}
           // y={pos().y + dimension.height * 3.5 + 10}
           fontFamily={theme.typography.fontFamily}
