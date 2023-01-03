@@ -3,9 +3,10 @@ import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import monaLisa from '../../public/tempImages/mona-lisa.jpg';
 import PlainFrame from '../shared/PlainFrame';
-import { FrameDimension } from '../types';
+import { Dimension } from '../types';
+
 interface Props {
-  size: FrameDimension;
+  size: Dimension;
 }
 
 const PlainWhite = (props: Props) => {

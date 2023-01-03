@@ -19,7 +19,7 @@ const CanvasFrame = (props: Props) => {
   const dimension = frameDimensions[props.item.frame.size];
   const match = allFrames.filter((frame) => frame.id === props.item.frame.id);
 
-  const [poster] = useImage(props.item.poster.src);
+  const [poster] = useImage(props.item.poster.image);
   const [maple] = useImage(
     'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fmaple-surface.jpg?alt=media&token=4d386205-d4fa-4531-b801-543d95101a98'
   );

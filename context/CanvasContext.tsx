@@ -13,7 +13,7 @@ import {
   Canvas,
   CanvasFrameSet,
   CanvasItem,
-  Poster,
+  CanvasPoster,
 } from '../components/types';
 
 interface CanvasContextValue {
@@ -21,8 +21,8 @@ interface CanvasContextValue {
   setBackground: Dispatch<SetStateAction<string>>;
   withPassepartout: boolean;
   setWithPassepartout: Dispatch<SetStateAction<boolean>>;
-  poster: Poster;
-  setPoster: Dispatch<SetStateAction<Poster>>;
+  poster: CanvasPoster;
+  setPoster: Dispatch<SetStateAction<CanvasPoster>>;
   posterOrientation: string;
   setPosterOrientation: Dispatch<SetStateAction<string>>;
   frameSet: CanvasFrameSet;
@@ -38,7 +38,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setBackground: () => '',
   withPassepartout: true,
   setWithPassepartout: () => true,
-  poster: { id: '', src: '' },
+  poster: { id: '', image: '' },
   setPoster: () => '',
   posterOrientation: '',
   setPosterOrientation: () => '',
@@ -54,9 +54,10 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [background, setBackground] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   // TODO: the default should be empty but putting something for now for testing
-  const [poster, setPoster] = useState<Poster>({
+  const [poster, setPoster] = useState<CanvasPoster>({
     id: 'NzqeB2wLemjDEO9Sqrjq',
-    src: 'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fmilky%20way%20with%20mountains.jpeg?alt=media&token=ead8bbfe-f1e5-423d-89ee-aab6847ebac8',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fmilky%20way%20with%20mountains.jpeg?alt=media&token=ead8bbfe-f1e5-423d-89ee-aab6847ebac8',
   });
   const [posterOrientation, setPosterOrientation] = useState<string>('');
   const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
@@ -67,7 +68,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [frameSets, setFrameSets] = useState<CanvasFrameSet[]>([]);
   const [item, setItem] = useState<CanvasItem>({
     frame: frameSet,
-    poster: { id: '', src: '' },
+    poster: { id: '', image: '' },
     withPassepartout: true,
     position: { x: 0, y: 0 },
   });
@@ -105,7 +106,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setItems((prevState) => [...prevState, item]);
       setItem({
         frame: { id: '', title: '', size: '' },
-        poster: { id: '', src: '' },
+        poster: { id: '', image: '' },
         withPassepartout: true,
         position: { x: 0, y: 0 },
       });

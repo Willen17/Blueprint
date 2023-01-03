@@ -2,13 +2,13 @@ import { Box } from '@mui/material';
 import Image, { StaticImageData } from 'next/image';
 import { ReactNode } from 'react';
 import { frameDimensions } from '../../data/frameData';
-import { FrameDimension } from '../types';
+import { Dimension } from '../types';
 
 interface Props {
   isWhiteFrame?: boolean;
   bgColor?: string;
   bgImg?: { src: StaticImageData; alt: string };
-  size: FrameDimension;
+  size: Dimension;
   children: ReactNode;
 }
 

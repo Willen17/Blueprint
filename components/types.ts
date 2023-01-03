@@ -16,7 +16,7 @@ export const posterCategories: string[] = [
   'Other',
 ];
 
-export interface FrameDimension {
+export interface Dimension {
   width: number;
   height: number;
 }
@@ -44,14 +44,24 @@ export interface CanvasFrameSet {
   size: string;
 }
 
-export interface Poster {
+export interface CanvasPoster {
   id: string;
-  src: string;
+  image: string;
+}
+
+export interface Poster {
+  categories: string[];
+  createdAt?: typeof posterCategories;
+  image: string;
+  id?: string;
+  title: string;
+  orientation: string;
+  size: Dimension[];
 }
 
 export interface CanvasItem {
   frame: CanvasFrameSet;
-  poster: { id: string; src: string };
+  poster: CanvasPoster;
   withPassepartout: boolean;
   position: { x: number; y: number };
 }

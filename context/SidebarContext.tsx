@@ -7,7 +7,12 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Background, Frame, sidebarSections } from '../components/types';
+import {
+  Background,
+  Frame,
+  Poster,
+  sidebarSections,
+} from '../components/types';
 
 interface SidebarContextValue {
   expandedAccordion: string | false;
@@ -40,6 +45,8 @@ interface SidebarContextValue {
   setAllFrames: Dispatch<SetStateAction<Frame[]>>;
   allBackgrounds: Background[];
   setAllBackgrounds: Dispatch<SetStateAction<Background[]>>;
+  allPosters: Poster[];
+  setAllPosters: Dispatch<SetStateAction<Poster[]>>;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -64,6 +71,8 @@ export const SidebarContext = createContext<SidebarContextValue>({
   setAllFrames: () => [],
   allBackgrounds: [],
   setAllBackgrounds: () => [],
+  allPosters: [],
+  setAllPosters: () => [],
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -84,6 +93,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [posterCategory, setPosterCategory] = useState<string>('');
   const [allFrames, setAllFrames] = useState<Frame[]>([]);
   const [allBackgrounds, setAllBackgrounds] = useState<Background[]>([]);
+  const [allPosters, setAllPosters] = useState<Poster[]>([]);
 
   // TODO: setIsEditingFrame must be set to true when a user clicks a frame in the canvas
   const [isEditingFrame, setIsEditingFrame] = useState<boolean>(false);
@@ -105,6 +115,8 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setAllFrames,
         allBackgrounds,
         setAllBackgrounds,
+        allPosters,
+        setAllPosters,
       }}
     >
       {children}
