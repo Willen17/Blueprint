@@ -23,15 +23,6 @@ const inter = Inter({ subsets: ['latin'] });
 
 export default function Home(props: any) {
   const postersCollectionRef = collection(db, 'posters');
-
-  // const getPosters = useCallback(async () => {
-  //   const posterData = await getDocs(postersCollectionRef);
-  //   console.log(
-  //     posterData.docs.map((doc) => ({ ...(doc.data() as any), id: doc.id }))
-  //   );
-  // }, [postersCollectionRef]);
-  // // getPosters();
-
   const [file, setFile] = useState<any>('');
   const [percent, setPercent] = useState<number>(0);
 

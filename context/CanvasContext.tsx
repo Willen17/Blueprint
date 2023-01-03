@@ -82,8 +82,6 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     items: [item],
   });
 
-  console.log(poster);
-
   /** Detects the selection under frame section in sidebar and pushes them into the "frameSets" state */
   const updateFrameSetState = useCallback(
     () => setFrameSets([...frameSets, frameSet]),
