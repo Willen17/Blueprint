@@ -15,6 +15,7 @@ import {
   CanvasItem,
   CanvasPoster,
 } from '../components/types';
+import { useSidebar } from './SidebarContext';
 
 interface CanvasContextValue {
   background: string;
@@ -51,6 +52,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { setIsEditingFrame } = useSidebar();
   const [background, setBackground] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [poster, setPoster] = useState<CanvasPoster>({ id: '', image: '' });
@@ -96,8 +98,9 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setPoster({ id: '', image: '' });
       setFrameSet({ id: '', size: '', title: '' });
       setWithPassepartout(true);
+      setIsEditingFrame(false);
     }
-  }, [item]);
+  }, [item, setIsEditingFrame]);
 
   /** Updates the "item" state for single item */
   const updateItemState = useCallback(() => {
