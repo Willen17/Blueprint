@@ -35,8 +35,28 @@ interface SidebarContextValue {
       Other: boolean;
     }>
   >;
-  posterCategory: string;
-  setPosterCategory: Dispatch<SetStateAction<string>>;
+  posterCategories: {
+    Abstract: boolean;
+    Animals: boolean;
+    Floral: boolean;
+    Minimalistic: boolean;
+    Movies: boolean;
+    Nature: boolean;
+    Painting: boolean;
+    Other: boolean;
+  };
+  setPosterCategories: Dispatch<
+    SetStateAction<{
+      Abstract: boolean;
+      Animals: boolean;
+      Floral: boolean;
+      Minimalistic: boolean;
+      Movies: boolean;
+      Nature: boolean;
+      Painting: boolean;
+      Other: boolean;
+    }>
+  >;
   allFrames: Frame[];
   setAllFrames: Dispatch<SetStateAction<Frame[]>>;
   allBackgrounds: Background[];
@@ -61,8 +81,17 @@ export const SidebarContext = createContext<SidebarContextValue>({
     Other: false,
   },
   setBackgroundCategories: () => {},
-  posterCategory: '',
-  setPosterCategory: () => '',
+  posterCategories: {
+    Abstract: false,
+    Animals: false,
+    Floral: false,
+    Minimalistic: false,
+    Movies: false,
+    Nature: false,
+    Painting: false,
+    Other: false,
+  },
+  setPosterCategories: () => {},
   allFrames: [],
   setAllFrames: () => [],
   allBackgrounds: [],
@@ -86,7 +115,16 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     Office: false,
     Other: false,
   });
-  const [posterCategory, setPosterCategory] = useState<string>('');
+  const [posterCategories, setPosterCategories] = useState({
+    Abstract: false,
+    Animals: false,
+    Floral: false,
+    Minimalistic: false,
+    Movies: false,
+    Nature: false,
+    Painting: false,
+    Other: false,
+  });
   const [allFrames, setAllFrames] = useState<Frame[]>([]);
   const [allBackgrounds, setAllBackgrounds] = useState<Background[]>([]);
   const [allPosters, setAllPosters] = useState<Poster[]>([]);
@@ -105,8 +143,8 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setIsEditingFrame,
         backgroundCategories,
         setBackgroundCategories,
-        posterCategory,
-        setPosterCategory,
+        posterCategories,
+        setPosterCategories,
         allFrames,
         setAllFrames,
         allBackgrounds,
