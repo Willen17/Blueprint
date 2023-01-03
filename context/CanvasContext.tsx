@@ -39,7 +39,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setBackground: () => '',
   withPassepartout: true,
   setWithPassepartout: () => true,
-  poster: { id: '', image: '' },
+  poster: { id: '', image: '', isPortrait: undefined },
   setPoster: () => '',
   posterOrientation: '',
   setPosterOrientation: () => '',
@@ -55,7 +55,11 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { setIsEditingFrame } = useSidebar();
   const [background, setBackground] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
-  const [poster, setPoster] = useState<CanvasPoster>({ id: '', image: '' });
+  const [poster, setPoster] = useState<CanvasPoster>({
+    id: '',
+    image: '',
+    isPortrait: undefined,
+  });
   const [posterOrientation, setPosterOrientation] = useState<string>('');
   const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
     id: '',
@@ -65,7 +69,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [frameSets, setFrameSets] = useState<CanvasFrameSet[]>([]);
   const [item, setItem] = useState<CanvasItem>({
     frame: frameSet,
-    poster: { id: '', image: '' },
+    poster: { id: '', image: '', isPortrait: undefined },
     withPassepartout: withPassepartout,
     position: { x: 0, y: 0 },
   });
@@ -77,6 +81,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     user: undefined,
     items: [item],
   });
+
+  console.log(poster);
 
   /** Detects the selection under frame section in sidebar and pushes them into the "frameSets" state */
   const updateFrameSetState = useCallback(
@@ -91,11 +97,11 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       /** reset all states below as the item has been pushed to the items array state */
       setItem({
         frame: { id: '', title: '', size: '' },
-        poster: { id: '', image: '' },
+        poster: { id: '', image: '', isPortrait: undefined },
         withPassepartout: true,
         position: { x: 0, y: 0 },
       });
-      setPoster({ id: '', image: '' });
+      setPoster({ id: '', image: '', isPortrait: undefined });
       setFrameSet({ id: '', size: '', title: '' });
       setWithPassepartout(true);
       setIsEditingFrame(false);

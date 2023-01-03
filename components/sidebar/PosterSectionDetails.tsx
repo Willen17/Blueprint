@@ -179,7 +179,12 @@ const PosterSectionDetails = () => {
               alt={p.title}
               src={p.image}
               onClick={() => {
-                setPoster({ ...poster, id: p.id!, image: p.image });
+                setPoster({
+                  ...poster,
+                  id: p.id!,
+                  image: p.image,
+                  isPortrait: p.orientation === 'Portrait' ? true : false,
+                });
                 setAnchorSidebar(false);
               }}
             />

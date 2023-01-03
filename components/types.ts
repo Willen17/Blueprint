@@ -33,6 +33,7 @@ export interface CanvasFrameSet {
 export interface CanvasPoster {
   id: string;
   image: string;
+  isPortrait: boolean | undefined;
 }
 
 export interface Poster {

@@ -79,8 +79,16 @@ const CanvasFrame = (props: Props) => {
             alt={match[0].title}
             x={pos().x}
             y={pos().y}
-            width={dimension.width * 3.5}
-            height={dimension.height * 3.5}
+            width={
+              props.item.poster.isPortrait
+                ? dimension.width * 3.5
+                : dimension.height * 3.5
+            }
+            height={
+              props.item.poster.isPortrait
+                ? dimension.height * 3.5
+                : dimension.width * 3.5
+            }
             shadowBlur={15}
             shadowColor="#000"
             shadowOpacity={0.5}
@@ -90,8 +98,16 @@ const CanvasFrame = (props: Props) => {
           <Rect
             x={pos().x}
             y={pos().y}
-            width={dimension.width * 3.5}
-            height={dimension.height * 3.5}
+            width={
+              props.item.poster.isPortrait
+                ? dimension.width * 3.5
+                : dimension.height * 3.5
+            }
+            height={
+              props.item.poster.isPortrait
+                ? dimension.height * 3.5
+                : dimension.width * 3.5
+            }
             fill={frameColor()}
             shadowBlur={15}
             shadowColor="#000"
@@ -105,8 +121,16 @@ const CanvasFrame = (props: Props) => {
           alt="cola"
           x={pos().x + frameBorder()}
           y={pos().y + frameBorder()}
-          width={dimension.width * 3.5 - frameBorder() * 2}
-          height={dimension.height * 3.5 - frameBorder() * 2}
+          width={
+            props.item.poster.isPortrait
+              ? dimension.width * 3.5 - frameBorder() * 2
+              : dimension.height * 3.5 - frameBorder() * 2
+          }
+          height={
+            props.item.poster.isPortrait
+              ? dimension.height * 3.5 - frameBorder() * 2
+              : dimension.width * 3.5 - frameBorder() * 2
+          }
         />
         {props.item.withPassepartout ? (
           <>
@@ -116,28 +140,51 @@ const CanvasFrame = (props: Props) => {
                 x={pos().x + frameBorder()}
                 y={pos().y + frameBorder()}
                 width={passepartout() - frameBorder()}
-                height={dimension.height * 3.5 - frameBorder() * 2}
+                height={
+                  props.item.poster.isPortrait
+                    ? dimension.height * 3.5 - frameBorder() * 2
+                    : dimension.width * 3.5 - frameBorder() * 2
+                }
                 fill="#f8f8f8"
               />
               <Rect
-                x={pos().x + dimension.width * 3.5 - passepartout()}
+                x={
+                  props.item.poster.isPortrait
+                    ? pos().x + dimension.width * 3.5 - passepartout()
+                    : pos().x + dimension.height * 3.5 - passepartout()
+                }
                 y={pos().y + frameBorder()}
                 width={passepartout() - frameBorder()}
-                height={dimension.height * 3.5 - frameBorder() * 2}
+                height={
+                  props.item.poster.isPortrait
+                    ? dimension.height * 3.5 - frameBorder() * 2
+                    : dimension.width * 3.5 - frameBorder() * 2
+                }
                 fill="#f8f8f8"
               />
               <Rect
                 x={pos().x + frameBorder()}
                 y={pos().y + frameBorder()}
-                width={dimension.width * 3.5 - frameBorder() * 2}
+                width={
+                  props.item.poster.isPortrait
+                    ? dimension.width * 3.5 - frameBorder() * 2
+                    : dimension.height * 3.5 - frameBorder() * 2
+                }
                 height={passepartout() * 1.1 - frameBorder()}
                 fill="#f8f8f8"
               />
-
               <Rect
                 x={pos().x + frameBorder()}
-                y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
-                width={dimension.width * 3.5 - frameBorder() * 2}
+                y={
+                  props.item.poster.isPortrait
+                    ? pos().y + dimension.height * 3.5 - passepartout() * 1.1
+                    : pos().y + dimension.width * 3.5 - passepartout() * 1.1
+                }
+                width={
+                  props.item.poster.isPortrait
+                    ? dimension.width * 3.5 - frameBorder() * 2
+                    : dimension.height * 3.5 - frameBorder() * 2
+                }
                 height={passepartout() * 1.1 - frameBorder()}
                 fill="#f8f8f8"
               />
@@ -148,7 +195,11 @@ const CanvasFrame = (props: Props) => {
                 x={pos().x + passepartout()}
                 y={pos().y + passepartout() * 1.1 + 1}
                 width={1}
-                height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
+                height={
+                  props.item.poster.isPortrait
+                    ? dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1
+                    : dimension.width * 3.5 - passepartout() * 1.1 * 2 - 1
+                }
                 fill="#eee"
                 shadowBlur={0.25}
                 shadowColor="#000"
@@ -156,10 +207,18 @@ const CanvasFrame = (props: Props) => {
                 shadowOffset={{ x: 0, y: 0 }}
               />
               <Rect
-                x={pos().x + dimension.width * 3.5 - passepartout()}
+                x={
+                  props.item.poster.isPortrait
+                    ? pos().x + dimension.width * 3.5 - passepartout()
+                    : pos().x + dimension.height * 3.5 - passepartout()
+                }
                 y={pos().y + passepartout() * 1.1 + 1}
                 width={1}
-                height={dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1}
+                height={
+                  props.item.poster.isPortrait
+                    ? dimension.height * 3.5 - passepartout() * 1.1 * 2 - 1
+                    : dimension.width * 3.5 - passepartout() * 1.1 * 2 - 1
+                }
                 fill="#eee"
                 shadowBlur={0.25}
                 shadowColor="#000"
@@ -169,7 +228,11 @@ const CanvasFrame = (props: Props) => {
               <Rect
                 x={pos().x + passepartout()}
                 y={pos().y + passepartout() * 1.1}
-                width={dimension.width * 3.5 - passepartout() * 2 + 1}
+                width={
+                  props.item.poster.isPortrait
+                    ? dimension.width * 3.5 - passepartout() * 2 + 1
+                    : dimension.height * 3.5 - passepartout() * 2 + 1
+                }
                 height={1}
                 fill="#ddd"
                 shadowBlur={0.5}
@@ -179,8 +242,16 @@ const CanvasFrame = (props: Props) => {
               />
               <Rect
                 x={pos().x + passepartout()}
-                y={pos().y + dimension.height * 3.5 - passepartout() * 1.1}
-                width={dimension.width * 3.5 - passepartout() * 2 + 1}
+                y={
+                  props.item.poster.isPortrait
+                    ? pos().y + dimension.height * 3.5 - passepartout() * 1.1
+                    : pos().y + dimension.width * 3.5 - passepartout() * 1.1
+                }
+                width={
+                  props.item.poster.isPortrait
+                    ? dimension.width * 3.5 - passepartout() * 2 + 1
+                    : dimension.height * 3.5 - passepartout() * 2 + 1
+                }
                 height={1}
                 fill="#fff"
               />
@@ -192,7 +263,11 @@ const CanvasFrame = (props: Props) => {
           x={pos().x + frameBorder()}
           y={pos().y + frameBorder() + 1}
           width={1}
-          height={dimension.height * 3.5 - frameBorder() * 2 - 1}
+          height={
+            props.item.poster.isPortrait
+              ? dimension.height * 3.5 - frameBorder() * 2 - 1
+              : dimension.width * 3.5 - frameBorder() * 2 - 1
+          }
           fill="#eee"
           shadowBlur={3}
           shadowColor="#ddd"
@@ -200,10 +275,18 @@ const CanvasFrame = (props: Props) => {
           shadowOffset={{ x: 2, y: 0 }}
         />
         <Rect
-          x={pos().x + dimension.width * 3.5 - frameBorder()}
+          x={
+            props.item.poster.isPortrait
+              ? pos().x + dimension.width * 3.5 - frameBorder()
+              : pos().x + dimension.height * 3.5 - frameBorder()
+          }
           y={pos().y + frameBorder() + 1}
           width={1}
-          height={dimension.height * 3.5 - frameBorder() * 2 - 1}
+          height={
+            props.item.poster.isPortrait
+              ? dimension.height * 3.5 - frameBorder() * 2 - 1
+              : dimension.width * 3.5 - frameBorder() * 2 - 1
+          }
           fill="#eee"
           shadowBlur={3}
           shadowColor="#ddd"
@@ -213,7 +296,11 @@ const CanvasFrame = (props: Props) => {
         <Rect
           x={pos().x + frameBorder()}
           y={pos().y + frameBorder()}
-          width={dimension.width * 3.5 - frameBorder() * 2 + 1}
+          width={
+            props.item.poster.isPortrait
+              ? dimension.width * 3.5 - frameBorder() * 2 + 1
+              : dimension.height * 3.5 - frameBorder() * 2 + 1
+          }
           height={1}
           fill="#ddd"
           shadowBlur={13}
@@ -223,16 +310,32 @@ const CanvasFrame = (props: Props) => {
         />
         <Rect
           x={pos().x + frameBorder()}
-          y={pos().y + dimension.height * 3.5 - frameBorder()}
-          width={dimension.width * 3.5 - frameBorder() * 2 + 1}
+          y={
+            props.item.poster.isPortrait
+              ? pos().y + dimension.height * 3.5 - frameBorder()
+              : pos().y + dimension.width * 3.5 - frameBorder()
+          }
+          width={
+            props.item.poster.isPortrait
+              ? dimension.width * 3.5 - frameBorder() * 2 + 1
+              : dimension.height * 3.5 - frameBorder() * 2 + 1
+          }
           height={1}
           fill="#fff"
           opacity={0.5}
         />
         <Text
           text={dimension.width + 'x' + dimension.height}
-          x={pos().x + (dimension.width * 3.5) / 2 - 20}
-          y={pos().y + dimension.height * 3.5 + 10}
+          x={
+            props.item.poster.isPortrait
+              ? pos().x + (dimension.width * 3.5) / 2 - 20
+              : pos().x + (dimension.height * 3.5) / 2 - 20
+          }
+          y={
+            props.item.poster.isPortrait
+              ? pos().y + dimension.height * 3.5 + 10
+              : pos().y + dimension.width * 3.5 + 10
+          }
           fontFamily={theme.typography.fontFamily}
           fontSize={Number(theme.typography.body1.fontSize)}
         />
