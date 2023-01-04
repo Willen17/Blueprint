@@ -102,7 +102,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setPoster({ id: '', image: '', isPortrait: undefined });
       setFrameSet({ id: '', size: '', title: '' });
       setWithPassepartout(true);
-      setIsEditingFrame(false);
+      setIsEditingFrame({ isEditing: false });
     }
   }, [item, setIsEditingFrame]);
 

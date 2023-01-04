@@ -1,24 +1,19 @@
 import { Box, Typography } from '@mui/material';
-import { IconPlus } from '@tabler/icons';
+import { IconTrash } from '@tabler/icons';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
-import { sidebarSections } from '../../lib/valSchemas';
 import { theme } from '../theme';
 
-const AddFrameButton = () => {
+const RemoveFrameButton = () => {
   const { setIsEditingFrame, setExpandedAccordion } = useSidebar();
   const { background } = useCanvas();
 
   const handleClick = () => {
-    if (background) {
-      setIsEditingFrame({ isEditing: true });
-      setExpandedAccordion(sidebarSections[1]);
-    }
-    setIsEditingFrame({ isEditing: true });
+    console.log('delete');
   };
   return (
     <Box
-      bgcolor="#3A3335"
+      bgcolor="#E23A22"
       color={theme.palette.primary.contrastText}
       sx={{
         display: 'flex',
@@ -27,16 +22,16 @@ const AddFrameButton = () => {
         gap: 0.5,
         cursor: 'pointer',
         '&:hover': {
-          bgcolor: '#524C4E',
+          bgcolor: '#D13838',
         },
       }}
       height={40}
       onClick={handleClick}
     >
-      <IconPlus size={16} stroke={2} />
-      <Typography variant="body1">Add Frame</Typography>
+      <IconTrash size={16} stroke={2} />
+      <Typography variant="body1">Delete Frame</Typography>
     </Box>
   );
 };
 
-export default AddFrameButton;
+export default RemoveFrameButton;

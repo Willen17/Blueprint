@@ -27,7 +27,7 @@ interface Props {
 // saved in the db, as in that case the canvas wont be empty after reloading... or?
 
 const CanvasFrame = (props: Props) => {
-  const { allFrames } = useSidebar();
+  const { allFrames, handleSelectItem } = useSidebar();
   const dimension =
     frameDimensions[props.item.frame.size as keyof typeof frameDimensions];
   const match = allFrames.filter((frame) => frame.id === props.item.frame.id);
@@ -143,6 +143,13 @@ const CanvasFrame = (props: Props) => {
       draggable
       onDragEnd={handleDragEnd}
       ref={groupRef}
+      onClick={() => handleSelectItem(props.item)}
+      onMouseEnter={(e) =>
+        (e.target.getStage()!.container().style.cursor = 'pointer')
+      }
+      onMouseLeave={(e) =>
+        (e.target.getStage()!.container().style.cursor = 'default')
+      }
     >
       <>
         {match[0].category.includes('Wooden') ? (

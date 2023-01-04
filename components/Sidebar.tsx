@@ -6,6 +6,7 @@ import BgSection from './sidebar/BgSection';
 import FrameSection from './sidebar/FrameSection';
 import MobileSidebar from './sidebar/MobileSidebar';
 import PosterSection from './sidebar/PosterSection';
+import RemoveFrameButton from './sidebar/RemoveFrameButton';
 import { theme } from './theme';
 
 const Sidebar = () => {
@@ -64,12 +65,13 @@ const Sidebar = () => {
               flexDirection: 'column',
             }}
           >
-            {isEditingFrame ? (
+            {isEditingFrame.isEditing ? (
               <>
                 {mobile ? <MobileSidebar /> : null}
                 <BgSection />
                 <FrameSection />
                 <PosterSection />
+                {isEditingFrame.item ? <RemoveFrameButton /> : null}
               </>
             ) : (
               <AddFrameButton />

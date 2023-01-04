@@ -62,3 +62,8 @@ export interface Canvas {
   background?: string; // TODO: put the correct type. Wille is working on this so i dont bother the type here
   items: CanvasItem[];
 }
+
+export interface EditingFrame {
+  isEditing: boolean;
+  item?: CanvasItem;
+}
