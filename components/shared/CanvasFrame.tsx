@@ -1,6 +1,6 @@
 import Konva from 'konva';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { Group, Image, Rect, Text } from 'react-konva';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Group, Image, Rect, Text, Transformer } from 'react-konva';
 import useImage from 'use-image';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
@@ -34,7 +34,6 @@ const CanvasFrame = (props: Props) => {
     frameDimensions[props.item.frame.size as keyof typeof frameDimensions];
   const match = allFrames.filter((frame) => frame.id === props.item.frame.id);
 
-  const groupRef = useRef<Konva.Group>(null);
   const [elementPos, setElementPos] = useState({ x: 20, y: 50 });
 
   const [poster] = useImage(props.item.poster.image);
@@ -132,6 +131,23 @@ const CanvasFrame = (props: Props) => {
       y: newY,
     };
   };
+  const groupRef = useRef<Konva.Group>(null);
+  const trRef = useRef<Konva.Transformer>(null);
+
+  useEffect(() => {
+    if (props.isSelected && trRef.current && groupRef.current) {
+      trRef.current.nodes([groupRef.current]);
+      trRef.current.getLayer()!.batchDraw();
+      trRef.current.centeredScaling(true);
+      // trRef.current.enabledAnchors([
+      //   'top-left',
+      //   'top-right',
+      //   'bottom-left',
+      //   'bottom-right',
+      // ]);
+      trRef.current.flipEnabled(false);
+    }
+  }, [props.isSelected]);
 
   return (
     <>
@@ -311,6 +327,20 @@ const CanvasFrame = (props: Props) => {
           />
         </>
       </Group>
+      {props.isSelected && (
+        <Transformer
+          ref={trRef}
+          rotateEnabled={false}
+          resizeEnabled={false}
+          boundBoxFunc={(oldBox, newBox) => {
+            // limit resize
+            if (newBox.width < 5 || newBox.height < 5) {
+              return oldBox;
+            }
+            return newBox;
+          }}
+        />
+      )}
     </>
   );
 };
