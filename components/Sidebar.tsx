@@ -10,11 +10,14 @@ import RemoveFrameButton from './sidebar/RemoveFrameButton';
 import { theme } from './theme';
 
 const Sidebar = () => {
-  const { anchorSidebar, setAnchorSidebar } = useSidebar();
-
-  const toggleClose = () => setAnchorSidebar(false);
+  const { anchorSidebar, setAnchorSidebar, setIsEditingFrame } = useSidebar();
   const { isEditingFrame } = useSidebar();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const toggleClose = () => {
+    setAnchorSidebar(false);
+    if (isEditingFrame.item) setIsEditingFrame({ isEditing: false });
+  };
 
   return (
     <>

@@ -151,8 +151,6 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setExpandedAccordion(sidebarSections[1]);
   };
 
-  const deleteFrame = () => {};
-
   return (
     <SidebarContext.Provider
       value={{
