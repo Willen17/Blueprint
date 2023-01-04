@@ -22,6 +22,7 @@ const PosterSectionDetails = () => {
     posterCategories,
     setPosterCategories,
     setAnchorSidebar,
+    isEditingFrame,
   } = useSidebar();
 
   /** Handles change of orientation state */
@@ -45,6 +46,11 @@ const PosterSectionDetails = () => {
 
   /** Filters posters by selected orientation and category */
   const filteredPosters = () => {
+    let sizeKey: string;
+    !frameSet.size
+      ? (sizeKey = isEditingFrame.item!.frame.size)
+      : (sizeKey = frameSet.size);
+
     const noCategory = Object.values(posterCategories).every(
       (v) => v === false
     );
@@ -53,11 +59,9 @@ const PosterSectionDetails = () => {
         .filter(
           (size: Dimension) =>
             Number(size.width) ===
-              frameDimensions[frameSet.size as keyof typeof frameDimensions]
-                .width &&
+              frameDimensions[sizeKey as keyof typeof frameDimensions].width &&
             Number(size.height) ===
-              frameDimensions[frameSet.size as keyof typeof frameDimensions]
-                .height
+              frameDimensions[sizeKey as keyof typeof frameDimensions].height
         )
         .map(() => poster)
     );
@@ -78,7 +82,7 @@ const PosterSectionDetails = () => {
     return noCategory ? filteredBySize : filteredByCategory;
   };
 
-  return frameSet.id && frameSet.size ? (
+  return isEditingFrame.item || (frameSet.id && frameSet.size) ? (
     <>
       <SidebarSubtitle subtitle="Poster Type">
         <Box
@@ -191,7 +195,8 @@ const PosterSectionDetails = () => {
                 setAnchorSidebar(false);
               }}
             />
-            {poster.id === p.id ? (
+            {(isEditingFrame.item && isEditingFrame.item.poster.id === p.id) ||
+            poster.id === p.id ? (
               <IconCheck
                 stroke={1}
                 color={theme.palette.primary.contrastText}
