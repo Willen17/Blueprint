@@ -93,7 +93,14 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   /** Detects if the "item" state is complete and pushes it into the "items" state */
   const updateItemsState = useCallback(() => {
     if (item.frame.id && item.poster.id) {
-      setItems((prevState) => [...prevState, item]);
+      if (!isEditingFrame.item) {
+        setItems((prevState) => [...prevState, item]);
+      } else {
+        const index = items.findIndex(
+          (i) => i.frame === isEditingFrame.item?.frame
+        );
+        items[index] = item;
+      }
       /** reset all states below as the item has been pushed to the items array state */
       setItem({
         frame: { id: '', title: '', size: '' },
@@ -106,7 +113,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setWithPassepartout(true);
       setIsEditingFrame({ isEditing: false });
     }
-  }, [item, setIsEditingFrame]);
+  }, [isEditingFrame.item, item, items, setIsEditingFrame]);
 
   /** Updates the "item" state for single item */
   const updateItemState = useCallback(() => {
