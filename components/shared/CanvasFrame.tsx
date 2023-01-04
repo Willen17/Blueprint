@@ -35,7 +35,7 @@ const CanvasFrame = (props: Props) => {
   const groupRef = useRef<Konva.Group>(null);
   const [elementPos, setElementPos] = useState({ x: 20, y: 50 });
 
-  const [poster] = useImage(props.item.poster.src);
+  const [poster] = useImage(props.item.poster.image);
   const [maple] = useImage(
     'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fmaple-surface.jpg?alt=media&token=4d386205-d4fa-4531-b801-543d95101a98'
   );
@@ -109,8 +109,13 @@ const CanvasFrame = (props: Props) => {
     } else {
       scaleFactor = Math.min(props.imageScale.scaleX, props.imageScale.scaleY);
     }
-    imageWidth = dimension.width * multiplyValue * scaleFactor;
-    imageHeight = dimension.height * multiplyValue * scaleFactor;
+    if (props.item.poster.isPortrait) {
+      imageWidth = dimension.width * multiplyValue * scaleFactor;
+      imageHeight = dimension.height * multiplyValue * scaleFactor;
+    } else {
+      imageWidth = dimension.height * multiplyValue * scaleFactor;
+      imageHeight = dimension.width * multiplyValue * scaleFactor;
+    }
   }
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
@@ -124,7 +129,6 @@ const CanvasFrame = (props: Props) => {
   const handleDrag = (pos: Konva.Vector2d) => {
     const newX = Math.max(x!, Math.min(pos.x, x! + width - imageWidth!));
     const newY = Math.max(y!, Math.min(pos.y, y! + height - imageHeight!));
-
     return {
       x: newX,
       y: newY,
@@ -196,7 +200,6 @@ const CanvasFrame = (props: Props) => {
                 height={passepartout() * 1.1 - frameBorder()}
                 fill="#f8f8f8"
               />
-
               <Rect
                 x={frameBorder()}
                 y={imageHeight - passepartout() * 1.1}
@@ -251,53 +254,53 @@ const CanvasFrame = (props: Props) => {
           </>
         ) : null}
         {/* shadow for frame. Sequence: left, right, top, bottom*/}
-        <Rect
-          x={frameBorder()}
-          y={frameBorder() + 1}
-          width={1}
-          height={imageHeight - frameBorder() * 2 - 1}
-          fill="#eee"
-          shadowBlur={3}
-          shadowColor="#ddd"
-          shadowOpacity={0.7}
-          shadowOffset={{ x: 2, y: 0 }}
-        />
-        <Rect
-          x={imageWidth - frameBorder()}
-          y={frameBorder() + 1}
-          width={1}
-          height={imageHeight - frameBorder() * 2 - 1}
-          fill="#eee"
-          shadowBlur={3}
-          shadowColor="#ddd"
-          shadowOpacity={0.7}
-          shadowOffset={{ x: -2, y: 0 }}
-        />
-        <Rect
-          x={frameBorder()}
-          y={frameBorder()}
-          width={imageWidth - frameBorder() * 2 + 1}
-          height={1}
-          fill="#ddd"
-          shadowBlur={13}
-          shadowColor="#000"
-          shadowOpacity={1}
-          shadowOffset={{ x: 0, y: 6 }}
-        />
-        <Rect
-          x={frameBorder()}
-          y={imageHeight - frameBorder()}
-          width={imageWidth - frameBorder() * 2 + 1}
-          height={1}
-          fill="#fff"
-          opacity={0.5}
-        />
+        <Group>
+          <Rect
+            x={frameBorder()}
+            y={frameBorder() + 1}
+            width={1}
+            height={imageHeight - frameBorder() * 2 - 1}
+            fill="#eee"
+            shadowBlur={3}
+            shadowColor="#ddd"
+            shadowOpacity={0.7}
+            shadowOffset={{ x: 2, y: 0 }}
+          />
+          <Rect
+            x={imageWidth - frameBorder()}
+            y={frameBorder() + 1}
+            width={1}
+            height={imageHeight - frameBorder() * 2 - 1}
+            fill="#eee"
+            shadowBlur={3}
+            shadowColor="#ddd"
+            shadowOpacity={0.7}
+            shadowOffset={{ x: -2, y: 0 }}
+          />
+          <Rect
+            x={frameBorder()}
+            y={frameBorder()}
+            width={imageWidth - frameBorder() * 2 + 1}
+            height={1}
+            fill="#ddd"
+            shadowBlur={13}
+            shadowColor="#000"
+            shadowOpacity={1}
+            shadowOffset={{ x: 0, y: 6 }}
+          />
+          <Rect
+            x={frameBorder()}
+            y={imageHeight - frameBorder()}
+            width={imageWidth - frameBorder() * 2 + 1}
+            height={1}
+            fill="#fff"
+            opacity={0.5}
+          />
+        </Group>
         <Text
           text={dimension.width + 'x' + dimension.height}
           x={imageWidth / 2 - 20}
           y={imageHeight + 10}
-          // x={pos().x + (dimension.width * 3.5) / 2 - 20}
-          // y={pos().y + dimension.height * 3.5 + 10}
           fontFamily={theme.typography.fontFamily}
           fontSize={Number(theme.typography.body1.fontSize)}
         />

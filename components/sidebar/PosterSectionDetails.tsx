@@ -1,76 +1,81 @@
-import { Box, Button } from '@mui/material';
+// @ts-nocheck
+import { Box, Button, Typography } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
 import { Key } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
-import posterL from '../../public/tempImages/poster-l.png';
-import posterP from '../../public/tempImages/poster-p.png';
+import { frameDimensions } from '../../data/frameData';
+import { posterCategories as pCategories } from '../../lib/valSchemas';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
-import { posterCategories } from '../types';
 
 const PosterSectionDetails = () => {
-  const { poster, setPoster, posterOrientation, setPosterOrientation } =
-    useCanvas();
-  const { posterCategory, setPosterCategory } = useSidebar();
+  const {
+    poster,
+    setPoster,
+    posterOrientation,
+    setPosterOrientation,
+    frameSet,
+  } = useCanvas();
+  const {
+    allPosters,
+    posterCategories,
+    setPosterCategories,
+    setAnchorSidebar,
+  } = useSidebar();
 
+  /** Handles change of orientation state */
   const handleOrientationChange = (value: string) => {
     posterOrientation !== value
       ? setPosterOrientation(value)
       : setPosterOrientation('');
   };
 
-  const handleCategoryChange = (value: string) => {
-    posterCategory !== value ? setPosterCategory(value) : setPosterCategory('');
-  };
-
-  // To be deleted after we have inserted frames from data
-  const showMePosters = () => {
-    const arr = [];
-    for (let i = 0; i <= 50; i++) {
-      arr.push(
-        {
-          title: 'P1',
-          image: posterP,
-          orientation: 'Portrait',
-          category: 'Abstract',
-        },
-        {
-          title: 'P2',
-          image: posterL,
-          orientation: 'Landscape',
-          category: 'Movies',
-        }
-      );
-      i++;
+  /** Handles selection of one or multiple poster categories */
+  const setCategory = (category: string) => {
+    let newFilter = { ...posterCategories };
+    for (let key in newFilter) {
+      if (key === category) {
+        newFilter[key as keyof typeof posterCategories] =
+          !posterCategories[key as keyof typeof posterCategories];
+      }
     }
-    return arr;
+    setPosterCategories(newFilter);
   };
 
-  // DO NOT delete the below function
   /** Filters posters by selected orientation and category */
   const filteredPosters = () => {
-    if (posterOrientation !== '' && posterCategory !== '') {
-      return showMePosters().filter(
-        (poster) =>
-          poster.orientation === posterOrientation &&
-          poster.category === posterCategory
-      );
-    } else if (posterCategory !== '') {
-      return showMePosters().filter(
-        (poster) => poster.category === posterCategory
-      );
-    } else if (posterOrientation !== '') {
-      return showMePosters().filter(
-        (poster) => poster.orientation === posterOrientation
-      );
-    } else {
-      return showMePosters();
+    const noCategory = Object.values(posterCategories).every(
+      (v) => v === false
+    );
+    const filteredBySize = allPosters.flatMap((poster) =>
+      poster.sizes
+        .filter(
+          (size) =>
+            Number(size.width) === frameDimensions[frameSet.size].width &&
+            Number(size.height) === frameDimensions[frameSet.size].height
+        )
+        .map(() => poster)
+    );
+    const filteredByCategory = filteredBySize.filter((item) => {
+      return Object.keys(posterCategories).some((category) => {
+        return (
+          posterCategories[category as keyof typeof posterCategories] &&
+          item.categories.includes(category)
+        );
+      });
+    });
+
+    if (posterOrientation.length > 0) {
+      let list = [];
+      noCategory ? (list = filteredBySize) : (list = filteredByCategory);
+      return list.filter((poster) => poster.orientation === posterOrientation);
     }
+    return noCategory ? filteredBySize : filteredByCategory;
   };
 
-  return (
+  return frameSet.id && frameSet.size ? (
     <>
       <SidebarSubtitle subtitle="Poster Type">
         <Box
@@ -112,19 +117,21 @@ const PosterSectionDetails = () => {
           justifyContent: 'center',
         }}
       >
-        {posterCategories.map((category: string, index: Key) => (
+        {pCategories.map((category: string, index: Key) => (
           <Button
             key={index}
             value={category}
             sx={{
-              bgcolor:
-                posterCategory === category ? theme.palette.primary.main : null,
-              color:
-                posterCategory === category
-                  ? theme.palette.primary.contrastText
-                  : null,
+              bgcolor: posterCategories[
+                category as keyof typeof posterCategories
+              ]
+                ? theme.palette.primary.main
+                : null,
+              color: posterCategories[category as keyof typeof posterCategories]
+                ? theme.palette.primary.contrastText
+                : null,
             }}
-            onClick={() => handleCategoryChange(category)}
+            onClick={() => setCategory(category)}
           >
             {category}
           </Button>
@@ -136,8 +143,10 @@ const PosterSectionDetails = () => {
           flexWrap: 'wrap',
           gap: 1.5,
           width: '100%',
+          placeContent: 'start',
           justifyContent: 'center',
           my: 2.5,
+          height: '100%',
           overflowY: 'scroll',
           '&::-webkit-scrollbar': {
             width: '0.4em',
@@ -161,20 +170,25 @@ const PosterSectionDetails = () => {
               position: 'relative',
               height: p.orientation === 'Portrait' ? 65 : 55,
               boxShadow:
-                poster.id === index.toString() // TODO: change to ID
-                  ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
-                  : null,
+                poster.id === p.id ? '0px 2px 5px rgba(0, 0, 0, 0.25)' : null,
             }}
           >
             <Image
               width={p.orientation === 'Portrait' ? 55 : 65}
               height={p.orientation === 'Portrait' ? 65 : 55}
-              alt={p.title} // TODO: change to title
+              alt={p.title}
               src={p.image}
-              onClick={() => setPoster({ ...poster, id: index.toString() })}
+              onClick={() => {
+                setPoster({
+                  ...poster,
+                  id: p.id!,
+                  image: p.image,
+                  isPortrait: p.orientation === 'Portrait' ? true : false,
+                });
+                setAnchorSidebar(false);
+              }}
             />
-            {/* TODO: adjust logic - this should not be index but id */}
-            {poster.id === index.toString() ? (
+            {poster.id === p.id ? (
               <IconCheck
                 stroke={1}
                 color={theme.palette.primary.contrastText}
@@ -195,6 +209,10 @@ const PosterSectionDetails = () => {
         ))}
       </Box>
     </>
+  ) : (
+    <Typography mt={3} width={180} mx="auto" textAlign="center">
+      The posters will appear here after selecting a frame.
+    </Typography>
   );
 };
 

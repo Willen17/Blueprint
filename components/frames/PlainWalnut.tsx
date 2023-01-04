@@ -4,10 +4,10 @@ import { useCanvas } from '../../context/CanvasContext';
 import walnut from '../../public/frameBg/walnut-surface.jpeg';
 import monaLisa from '../../public/tempImages/mona-lisa.jpg';
 import PlainFrame from '../shared/PlainFrame';
-import { FrameDimension } from '../types';
+import { Dimension } from '../types';
 
 interface Props {
-  size: FrameDimension;
+  size: Dimension;
 }
 
 const PlainWalnut = (props: Props) => {

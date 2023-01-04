@@ -1,5 +1,4 @@
 import { Box, Drawer, useMediaQuery } from '@mui/material';
-import { useState } from 'react';
 import { useSidebar } from '../context/SidebarContext';
 import SidebarToggleButton from './shared/SidebarToggleButton';
 import AddFrameButton from './sidebar/AddFrameButton';
@@ -10,22 +9,21 @@ import PosterSection from './sidebar/PosterSection';
 import { theme } from './theme';
 
 const Sidebar = () => {
-  const [anchor, setAnchor] = useState<boolean>(true);
-  const toggleClose = () => setAnchor(false);
+  const { anchorSidebar, setAnchorSidebar } = useSidebar();
+
+  const toggleClose = () => setAnchorSidebar(false);
   const { isEditingFrame } = useSidebar();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <>
       {/* Button when drawer is closed */}
-      {/* <Box bgcolor="#FBFBFB" width={5} sx={{ borderLeft: '1px solid #F8F8F8' }}> */}
-      <SidebarToggleButton onClick={() => setAnchor(true)} />
-      {/* </Box> */}
+      <SidebarToggleButton onClick={() => setAnchorSidebar(true)} />
 
       {/* Drawer */}
       <Drawer
         anchor="right"
-        open={anchor}
+        open={anchorSidebar}
         onClose={toggleClose}
         sx={{
           mt: '50px',

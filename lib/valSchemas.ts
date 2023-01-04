@@ -11,6 +11,8 @@ const schemaPoster = yup.object({
   sizes: yup.array().min(1, 'At least one size must be selected').required(),
 });
 
+export const sidebarSections: string[] = ['Background', 'Frame', 'Poster'];
+
 export const posterCategories = [
   'Abstract',
   'Animals',

@@ -4,13 +4,14 @@ import { Fragment } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions, frames } from '../../data/frameData';
+import { sidebarSections } from '../../lib/valSchemas';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const FrameSectionDetails = () => {
   const { frameSet, setFrameSet, setWithPassepartout, withPassepartout } =
     useCanvas();
-  const { allFrames } = useSidebar();
+  const { allFrames, setExpandedAccordion } = useSidebar();
 
   /** Renders correct frame JSX */
   const getFrameJSX = (id: string) => {
@@ -58,7 +59,7 @@ const FrameSectionDetails = () => {
           <Switch
             checked={withPassepartout}
             onChange={() =>
-              setWithPassepartout(withPassepartout ? false : true)
+              setWithPassepartout(() => (withPassepartout ? false : true))
             }
           />
         </Box>
@@ -150,12 +151,13 @@ const FrameSectionDetails = () => {
                   size="small"
                   checked={frameSet.size === dimension.size}
                   sx={{ p: 0 }}
-                  onClick={() =>
+                  onClick={() => {
                     setFrameSet((prevState) => ({
                       ...prevState,
                       size: dimension.size,
-                    }))
-                  }
+                    }));
+                    setExpandedAccordion(sidebarSections[2]);
+                  }}
                 />
               </FormControl>
             ))}

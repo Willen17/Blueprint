@@ -13,16 +13,17 @@ import {
   Canvas,
   CanvasFrameSet,
   CanvasItem,
-  Poster,
+  CanvasPoster,
 } from '../components/types';
+import { useSidebar } from './SidebarContext';
 
 interface CanvasContextValue {
   background: string;
   setBackground: Dispatch<SetStateAction<string>>;
   withPassepartout: boolean;
   setWithPassepartout: Dispatch<SetStateAction<boolean>>;
-  poster: Poster;
-  setPoster: Dispatch<SetStateAction<Poster>>;
+  poster: CanvasPoster;
+  setPoster: Dispatch<SetStateAction<CanvasPoster>>;
   posterOrientation: string;
   setPosterOrientation: Dispatch<SetStateAction<string>>;
   frameSet: CanvasFrameSet;
@@ -38,7 +39,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setBackground: () => '',
   withPassepartout: true,
   setWithPassepartout: () => true,
-  poster: { id: '', src: '' },
+  poster: { id: '', image: '', isPortrait: undefined },
   setPoster: () => '',
   posterOrientation: '',
   setPosterOrientation: () => '',
@@ -51,12 +52,13 @@ export const CanvasContext = createContext<CanvasContextValue>({
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { setIsEditingFrame } = useSidebar();
   const [background, setBackground] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
-  // TODO: the default should be empty but putting something for now for testing
-  const [poster, setPoster] = useState<Poster>({
-    id: 'NzqeB2wLemjDEO9Sqrjq',
-    src: 'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fmilky%20way%20with%20mountains.jpeg?alt=media&token=ead8bbfe-f1e5-423d-89ee-aab6847ebac8',
+  const [poster, setPoster] = useState<CanvasPoster>({
+    id: '',
+    image: '',
+    isPortrait: undefined,
   });
   const [posterOrientation, setPosterOrientation] = useState<string>('');
   const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
@@ -67,8 +69,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [frameSets, setFrameSets] = useState<CanvasFrameSet[]>([]);
   const [item, setItem] = useState<CanvasItem>({
     frame: frameSet,
-    poster: { id: '', src: '' },
-    withPassepartout: true,
+    poster: { id: '', image: '', isPortrait: undefined },
+    withPassepartout: withPassepartout,
     position: { x: 0, y: 0 },
   });
   const [items, setItems] = useState<CanvasItem[]>([]);
@@ -80,37 +82,42 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     items: [item],
   });
 
-  /** Detects the selection under frame section in sidebar and pushes them into the "frameSet" state */
-  const updateFrameSetState = useCallback(() => {
-    if (frameSet.id && frameSet.size && frameSet.title) {
-      setFrameSets([...frameSets, frameSet]);
+  /** Detects the selection under frame section in sidebar and pushes them into the "frameSets" state */
+  const updateFrameSetState = useCallback(
+    () => setFrameSets([...frameSets, frameSet]),
+    [frameSet, frameSets]
+  );
+
+  /** Detects if the "item" state is complete and pushes it into the "items" state */
+  const updateItemsState = useCallback(() => {
+    if (item.frame.id && item.poster.id) {
+      setItems((prevState) => [...prevState, item]);
+      /** reset all states below as the item has been pushed to the items array state */
+      setItem({
+        frame: { id: '', title: '', size: '' },
+        poster: { id: '', image: '', isPortrait: undefined },
+        withPassepartout: true,
+        position: { x: 0, y: 0 },
+      });
+      setPoster({ id: '', image: '', isPortrait: undefined });
       setFrameSet({ id: '', size: '', title: '' });
+      setWithPassepartout(true);
+      setIsEditingFrame(false);
     }
-  }, [frameSet, frameSets]);
+  }, [item, setIsEditingFrame]);
 
   /** Updates the "item" state for single item */
   const updateItemState = useCallback(() => {
-    if (frameSet.id && frameSet.size && poster.id && withPassepartout)
+    if (frameSet.id && frameSet.size && poster.id) {
+      updateFrameSetState();
       setItem({
         frame: frameSet,
         poster: poster,
         withPassepartout: withPassepartout,
         position: { x: 0, y: 0 }, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
       });
-  }, [frameSet, poster, withPassepartout]);
-
-  /** Detects if the "item" state is complete and pushes it into the "items" state */
-  const updateItemsState = useCallback(() => {
-    if (item.frame.id.length > 0 && item.poster.id.length > 0) {
-      setItems((prevState) => [...prevState, item]);
-      setItem({
-        frame: { id: '', title: '', size: '' },
-        poster: { id: '', src: '' },
-        withPassepartout: true,
-        position: { x: 0, y: 0 },
-      });
     }
-  }, [item]);
+  }, [frameSet, poster, updateFrameSetState, withPassepartout]);
 
   /** Detects the states needed for Canvas and pushes them into the "canvas" state */
   /** This function shapes the canvas object for uploading to db - canvas collection */
@@ -123,10 +130,9 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setCanvas((prevState) => ({ ...prevState, items: items }));
   }, [background, items]);
 
-  useEffect(() => updateFrameSetState(), [updateFrameSetState]);
   useEffect(() => updateItemState(), [updateItemState]);
-  useEffect(() => updateItemsState(), [updateItemsState]);
   useEffect(() => updateCanvasState(), [updateCanvasState]);
+  useEffect(() => updateItemsState(), [updateItemsState]);
 
   return (
     <CanvasContext.Provider

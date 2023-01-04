@@ -1,9 +1,9 @@
 import { useMediaQuery } from '@mui/material';
 import { useSidebar } from '../../context/SidebarContext';
+import { sidebarSections } from '../../lib/valSchemas';
 import MobileSidebarContainer from '../shared/MobileSidebarContainer';
 import SidebarAccordion from '../shared/SidebarAccordion';
 import { theme } from '../theme';
-import { sidebarSections } from '../types';
 import PosterSectionDetails from './PosterSectionDetails';
 
 const PosterSection = () => {

@@ -7,9 +7,12 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Background, Frame, sidebarSections } from '../components/types';
+import { Background, Frame, Poster } from '../components/types';
+import { sidebarSections } from '../lib/valSchemas';
 
 interface SidebarContextValue {
+  anchorSidebar: boolean;
+  setAnchorSidebar: Dispatch<SetStateAction<boolean>>;
   expandedAccordion: string | false;
   setExpandedAccordion: Dispatch<SetStateAction<string | false>>;
   openMobileSection: string;
@@ -34,15 +37,39 @@ interface SidebarContextValue {
       Other: boolean;
     }>
   >;
-  posterCategory: string;
-  setPosterCategory: Dispatch<SetStateAction<string>>;
+  posterCategories: {
+    Abstract: boolean;
+    Animals: boolean;
+    Floral: boolean;
+    Minimalistic: boolean;
+    Movies: boolean;
+    Nature: boolean;
+    Painting: boolean;
+    Other: boolean;
+  };
+  setPosterCategories: Dispatch<
+    SetStateAction<{
+      Abstract: boolean;
+      Animals: boolean;
+      Floral: boolean;
+      Minimalistic: boolean;
+      Movies: boolean;
+      Nature: boolean;
+      Painting: boolean;
+      Other: boolean;
+    }>
+  >;
   allFrames: Frame[];
   setAllFrames: Dispatch<SetStateAction<Frame[]>>;
   allBackgrounds: Background[];
   setAllBackgrounds: Dispatch<SetStateAction<Background[]>>;
+  allPosters: Poster[];
+  setAllPosters: Dispatch<SetStateAction<Poster[]>>;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
+  anchorSidebar: true,
+  setAnchorSidebar: () => true,
   expandedAccordion: '',
   setExpandedAccordion: () => '',
   openMobileSection: '',
@@ -58,15 +85,27 @@ export const SidebarContext = createContext<SidebarContextValue>({
     Other: false,
   },
   setBackgroundCategories: () => {},
-  posterCategory: '',
-  setPosterCategory: () => '',
+  posterCategories: {
+    Abstract: false,
+    Animals: false,
+    Floral: false,
+    Minimalistic: false,
+    Movies: false,
+    Nature: false,
+    Painting: false,
+    Other: false,
+  },
+  setPosterCategories: () => {},
   allFrames: [],
   setAllFrames: () => [],
   allBackgrounds: [],
   setAllBackgrounds: () => [],
+  allPosters: [],
+  setAllPosters: () => [],
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [anchorSidebar, setAnchorSidebar] = useState<boolean>(true);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
     sidebarSections[0]
   );
@@ -81,9 +120,19 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     Office: false,
     Other: false,
   });
-  const [posterCategory, setPosterCategory] = useState<string>('');
+  const [posterCategories, setPosterCategories] = useState({
+    Abstract: false,
+    Animals: false,
+    Floral: false,
+    Minimalistic: false,
+    Movies: false,
+    Nature: false,
+    Painting: false,
+    Other: false,
+  });
   const [allFrames, setAllFrames] = useState<Frame[]>([]);
   const [allBackgrounds, setAllBackgrounds] = useState<Background[]>([]);
+  const [allPosters, setAllPosters] = useState<Poster[]>([]);
 
   // TODO: setIsEditingFrame must be set to true when a user clicks a frame in the canvas
   const [isEditingFrame, setIsEditingFrame] = useState<boolean>(false);
@@ -91,6 +140,8 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <SidebarContext.Provider
       value={{
+        anchorSidebar,
+        setAnchorSidebar,
         expandedAccordion,
         setExpandedAccordion,
         openMobileSection,
@@ -99,12 +150,14 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setIsEditingFrame,
         backgroundCategories,
         setBackgroundCategories,
-        posterCategory,
-        setPosterCategory,
+        posterCategories,
+        setPosterCategories,
         allFrames,
         setAllFrames,
         allBackgrounds,
         setAllBackgrounds,
+        allPosters,
+        setAllPosters,
       }}
     >
       {children}
