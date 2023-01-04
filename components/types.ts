@@ -43,7 +43,7 @@ export interface Poster {
   id?: string;
   title: string;
   orientation: string;
-  size: Dimension[];
+  sizes: Dimension[];
 }
 
 export interface CanvasItem {

@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
-import { Key } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
@@ -121,7 +120,7 @@ const PosterSectionDetails = () => {
           justifyContent: 'center',
         }}
       >
-        {pCategories.map((category: string, index: Key) => (
+        {pCategories.map((category: string, index: number) => (
           <Button
             key={index}
             value={category}

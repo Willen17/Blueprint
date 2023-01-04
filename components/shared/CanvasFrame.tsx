@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { Key, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Group, Image, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
 import { useSidebar } from '../../context/SidebarContext';
@@ -9,7 +9,7 @@ import { CanvasItem } from '../types';
 
 interface Props {
   item: CanvasItem;
-  index: Key;
+  index: number;
   imageScale: {
     scaleX: number;
     scaleY: number;
