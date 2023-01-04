@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { Key, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { Group, Image, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
 import { useSidebar } from '../../context/SidebarContext';
@@ -9,7 +9,7 @@ import { CanvasItem } from '../types';
 
 interface Props {
   item: CanvasItem;
-  index: Key;
+  index: number;
   imageScale: {
     scaleX: number;
     scaleY: number;
@@ -20,6 +20,8 @@ interface Props {
     x?: number;
     y?: number;
   };
+  selectShape: Dispatch<SetStateAction<number | null>>;
+  isSelected: boolean;
 }
 
 // TODO: what is missing here is the frame scaling and previous position
@@ -42,10 +44,6 @@ const CanvasFrame = (props: Props) => {
   const [walnut] = useImage(
     'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fwalnut-surface.jpeg?alt=media&token=e0224afc-7b60-414e-8922-63804d3f7f4c'
   );
-  // const pos = () => {
-  //   if (props.index === 0) return { x: 20, y: 30 };
-  //   return { x: 20 * (props.index + 1), y: 30 };
-  // };
 
   const frameBorder = () => {
     let frameBorder;
@@ -136,176 +134,184 @@ const CanvasFrame = (props: Props) => {
   };
 
   return (
-    <Group
-      x={elementPos.x}
-      y={elementPos.y}
-      dragBoundFunc={handleDrag}
-      draggable
-      onDragEnd={handleDragEnd}
-      ref={groupRef}
-    >
-      <>
-        {match[0].category.includes('Wooden') ? (
+    <>
+      <Group
+        x={elementPos.x}
+        y={elementPos.y}
+        dragBoundFunc={handleDrag}
+        draggable
+        onDragEnd={handleDragEnd}
+        ref={groupRef}
+        onClick={() => props.selectShape(props.index)}
+      >
+        <>
+          {match[0].category.includes('Wooden') ? (
+            <Image
+              image={frameColor() as HTMLImageElement}
+              alt={match[0].title}
+              width={imageWidth}
+              height={imageHeight}
+              shadowBlur={15}
+              shadowColor="#000"
+              shadowOpacity={0.5}
+              shadowOffset={{ x: 0, y: 5 }}
+            />
+          ) : (
+            <Rect
+              width={imageWidth}
+              height={imageHeight}
+              fill={frameColor() as string}
+              shadowBlur={15}
+              shadowColor="#000"
+              shadowOpacity={0.5}
+              shadowOffset={{ x: 0, y: 5 }}
+            />
+          )}
           <Image
-            image={frameColor() as HTMLImageElement}
-            alt={match[0].title}
-            width={imageWidth}
-            height={imageHeight}
-            shadowBlur={15}
-            shadowColor="#000"
-            shadowOpacity={0.5}
-            shadowOffset={{ x: 0, y: 5 }}
-          />
-        ) : (
-          <Rect
-            width={imageWidth}
-            height={imageHeight}
-            fill={frameColor() as string}
-            shadowBlur={15}
-            shadowColor="#000"
-            shadowOpacity={0.5}
-            shadowOffset={{ x: 0, y: 5 }}
-          />
-        )}
-        <Image
-          image={poster}
-          alt="cola"
-          x={frameBorder()}
-          y={frameBorder()}
-          width={imageWidth - frameBorder() * 2}
-          height={imageHeight - frameBorder() * 2}
-        />
-        {props.item.withPassepartout ? (
-          <>
-            {/*  passepartout. Sequence: left, right, top, bottom*/}
-            <Group>
-              <Rect
-                x={frameBorder()}
-                y={frameBorder()}
-                width={passepartout() - frameBorder()}
-                height={imageHeight - frameBorder() * 2}
-                fill="#f8f8f8"
-              />
-              <Rect
-                x={imageWidth - passepartout()}
-                y={frameBorder()}
-                width={passepartout() - frameBorder()}
-                height={imageHeight - frameBorder() * 2}
-                fill="#f8f8f8"
-              />
-              <Rect
-                x={frameBorder()}
-                y={frameBorder()}
-                width={imageWidth - frameBorder() * 2}
-                height={passepartout() * 1.1 - frameBorder()}
-                fill="#f8f8f8"
-              />
-              <Rect
-                x={frameBorder()}
-                y={imageHeight - passepartout() * 1.1}
-                width={imageWidth - frameBorder() * 2}
-                height={passepartout() * 1.1 - frameBorder()}
-                fill="#f8f8f8"
-              />
-            </Group>
-            {/* shadow for passepartout. Sequence: left, right, top, bottom*/}
-            <Group>
-              <Rect
-                x={passepartout()}
-                y={passepartout() * 1.1 + 1}
-                width={1}
-                height={imageHeight - passepartout() * 1.1 * 2 - 1}
-                fill="#eee"
-                shadowBlur={0.25}
-                shadowColor="#000"
-                shadowOpacity={0.6}
-                shadowOffset={{ x: 0, y: 0 }}
-              />
-              <Rect
-                x={imageWidth - passepartout()}
-                y={passepartout() * 1.1 + 1}
-                width={1}
-                height={imageHeight - passepartout() * 1.1 * 2 - 1}
-                fill="#eee"
-                shadowBlur={0.25}
-                shadowColor="#000"
-                shadowOpacity={0.6}
-                shadowOffset={{ x: 0, y: 0 }}
-              />
-              <Rect
-                x={passepartout()}
-                y={passepartout() * 1.1}
-                width={imageWidth - passepartout() * 2 + 1}
-                height={1}
-                fill="#ddd"
-                shadowBlur={0.5}
-                shadowColor="#000"
-                shadowOpacity={0.2}
-                shadowOffset={{ x: 0, y: 0 }}
-              />
-              <Rect
-                x={passepartout()}
-                y={imageHeight - passepartout() * 1.1}
-                width={imageWidth - passepartout() * 2 + 1}
-                height={1}
-                fill="#fff"
-              />
-            </Group>
-          </>
-        ) : null}
-        {/* shadow for frame. Sequence: left, right, top, bottom*/}
-        <Group>
-          <Rect
-            x={frameBorder()}
-            y={frameBorder() + 1}
-            width={1}
-            height={imageHeight - frameBorder() * 2 - 1}
-            fill="#eee"
-            shadowBlur={3}
-            shadowColor="#ddd"
-            shadowOpacity={0.7}
-            shadowOffset={{ x: 2, y: 0 }}
-          />
-          <Rect
-            x={imageWidth - frameBorder()}
-            y={frameBorder() + 1}
-            width={1}
-            height={imageHeight - frameBorder() * 2 - 1}
-            fill="#eee"
-            shadowBlur={3}
-            shadowColor="#ddd"
-            shadowOpacity={0.7}
-            shadowOffset={{ x: -2, y: 0 }}
-          />
-          <Rect
+            image={poster}
+            alt="cola"
             x={frameBorder()}
             y={frameBorder()}
-            width={imageWidth - frameBorder() * 2 + 1}
-            height={1}
-            fill="#ddd"
-            shadowBlur={13}
-            shadowColor="#000"
-            shadowOpacity={1}
-            shadowOffset={{ x: 0, y: 6 }}
+            width={imageWidth - frameBorder() * 2}
+            height={imageHeight - frameBorder() * 2}
           />
-          <Rect
-            x={frameBorder()}
-            y={imageHeight - frameBorder()}
-            width={imageWidth - frameBorder() * 2 + 1}
-            height={1}
-            fill="#fff"
-            opacity={0.5}
+          {props.item.withPassepartout ? (
+            <>
+              {/*  passepartout. Sequence: left, right, top, bottom*/}
+              <Group>
+                <Rect
+                  x={frameBorder()}
+                  y={frameBorder()}
+                  width={passepartout() - frameBorder()}
+                  height={imageHeight - frameBorder() * 2}
+                  fill="#f8f8f8"
+                />
+                <Rect
+                  x={imageWidth - passepartout()}
+                  y={frameBorder()}
+                  width={passepartout() - frameBorder()}
+                  height={imageHeight - frameBorder() * 2}
+                  fill="#f8f8f8"
+                />
+                <Rect
+                  x={frameBorder()}
+                  y={frameBorder()}
+                  width={imageWidth - frameBorder() * 2}
+                  height={passepartout() * 1.1 - frameBorder()}
+                  fill="#f8f8f8"
+                />
+                <Rect
+                  x={frameBorder()}
+                  y={imageHeight - passepartout() * 1.1}
+                  width={imageWidth - frameBorder() * 2}
+                  height={passepartout() * 1.1 - frameBorder()}
+                  fill="#f8f8f8"
+                />
+              </Group>
+              {/* shadow for passepartout. Sequence: left, right, top, bottom*/}
+              <Group>
+                <Rect
+                  x={passepartout()}
+                  y={passepartout() * 1.1 + 1}
+                  width={1}
+                  height={imageHeight - passepartout() * 1.1 * 2 - 1}
+                  fill="#eee"
+                  shadowBlur={0.25}
+                  shadowColor="#000"
+                  shadowOpacity={0.6}
+                  shadowOffset={{ x: 0, y: 0 }}
+                />
+                <Rect
+                  x={imageWidth - passepartout()}
+                  y={passepartout() * 1.1 + 1}
+                  width={1}
+                  height={imageHeight - passepartout() * 1.1 * 2 - 1}
+                  fill="#eee"
+                  shadowBlur={0.25}
+                  shadowColor="#000"
+                  shadowOpacity={0.6}
+                  shadowOffset={{ x: 0, y: 0 }}
+                />
+                <Rect
+                  x={passepartout()}
+                  y={passepartout() * 1.1}
+                  width={imageWidth - passepartout() * 2 + 1}
+                  height={1}
+                  fill="#ddd"
+                  shadowBlur={0.5}
+                  shadowColor="#000"
+                  shadowOpacity={0.2}
+                  shadowOffset={{ x: 0, y: 0 }}
+                />
+                <Rect
+                  x={passepartout()}
+                  y={imageHeight - passepartout() * 1.1}
+                  width={imageWidth - passepartout() * 2 + 1}
+                  height={1}
+                  fill="#fff"
+                />
+              </Group>
+            </>
+          ) : null}
+          {/* shadow for frame. Sequence: left, right, top, bottom*/}
+          <Group>
+            <Rect
+              x={frameBorder()}
+              y={frameBorder() + 1}
+              width={1}
+              height={imageHeight - frameBorder() * 2 - 1}
+              fill="#eee"
+              shadowBlur={3}
+              shadowColor="#ddd"
+              shadowOpacity={0.7}
+              shadowOffset={{ x: 2, y: 0 }}
+            />
+            <Rect
+              x={imageWidth - frameBorder()}
+              y={frameBorder() + 1}
+              width={1}
+              height={imageHeight - frameBorder() * 2 - 1}
+              fill="#eee"
+              shadowBlur={3}
+              shadowColor="#ddd"
+              shadowOpacity={0.7}
+              shadowOffset={{ x: -2, y: 0 }}
+            />
+            <Rect
+              x={frameBorder()}
+              y={frameBorder()}
+              width={imageWidth - frameBorder() * 2 + 1}
+              height={1}
+              fill="#ddd"
+              shadowBlur={13}
+              shadowColor="#000"
+              shadowOpacity={1}
+              shadowOffset={{ x: 0, y: 6 }}
+            />
+            <Rect
+              x={frameBorder()}
+              y={imageHeight - frameBorder()}
+              width={imageWidth - frameBorder() * 2 + 1}
+              height={1}
+              fill="#fff"
+              opacity={0.5}
+            />
+          </Group>
+          <Text
+            text={
+              dimension.width +
+              'x' +
+              dimension.height +
+              `${props.isSelected ? 'selected' : 'not selected'}`
+            }
+            x={imageWidth / 2 - 20}
+            y={imageHeight + 10}
+            fontFamily={theme.typography.fontFamily}
+            fontSize={Number(theme.typography.body1.fontSize)}
           />
-        </Group>
-        <Text
-          text={dimension.width + 'x' + dimension.height}
-          x={imageWidth / 2 - 20}
-          y={imageHeight + 10}
-          fontFamily={theme.typography.fontFamily}
-          fontSize={Number(theme.typography.body1.fontSize)}
-        />
-      </>
-    </Group>
+        </>
+      </Group>
+    </>
   );
 };
 
