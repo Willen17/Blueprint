@@ -100,7 +100,7 @@ const CanvasFrame = (props: Props) => {
   const multiplyValue = 20;
 
   let imageAspectRatio,
-    scaleFactor: number | undefined,
+    scaleFactor = 1,
     imageWidth = 1,
     imageHeight = 1;
   if (poster && props.imageScale.scaleX && props.imageScale.scaleY) {
@@ -158,8 +158,8 @@ const CanvasFrame = (props: Props) => {
   const imageRef = useRef<Konva.Image>(null);
   const transformRef = useRef<Konva.Transformer>(null);
   const [size, setSize] = useState<{ width: number; height: number }>({
-    width: 50,
-    height: 70,
+    width: imageWidth,
+    height: imageHeight,
   });
 
   useEffect(() => {
@@ -180,11 +180,26 @@ const CanvasFrame = (props: Props) => {
   const [imagePos, setImagePos] = useState({ x: 50, y: 50 });
 
   const allFrameSizes = [
-    { width: 21, height: 30 },
-    { width: 30, height: 40 },
-    { width: 40, height: 50 },
-    { width: 50, height: 70 },
-    { width: 70, height: 100 },
+    {
+      width: 21 * multiplyValue * scaleFactor,
+      height: 30 * multiplyValue * scaleFactor,
+    },
+    {
+      width: 30 * multiplyValue * scaleFactor,
+      height: 40 * multiplyValue * scaleFactor,
+    },
+    {
+      width: 40 * multiplyValue * scaleFactor,
+      height: 50 * multiplyValue * scaleFactor,
+    },
+    {
+      width: 50 * multiplyValue * scaleFactor,
+      height: 70 * multiplyValue * scaleFactor,
+    },
+    {
+      width: 70 * multiplyValue * scaleFactor,
+      height: 100 * multiplyValue * scaleFactor,
+    },
   ];
 
   const handleTransformEnd = () => {
@@ -385,8 +400,8 @@ const CanvasFrame = (props: Props) => {
       <Image
         image={poster}
         alt="cola"
-        width={50}
-        height={70}
+        width={50 * multiplyValue * scaleFactor}
+        height={70 * multiplyValue * scaleFactor}
         ref={imageRef}
         draggable
         onDragEnd={(e) => {
@@ -409,7 +424,12 @@ const CanvasFrame = (props: Props) => {
               ? curr
               : prev;
           });
-          setSize(closestSize);
+          setSize({
+            width: Math.round(closestSize.width / multiplyValue / scaleFactor),
+            height: Math.round(
+              closestSize.height / multiplyValue / scaleFactor
+            ),
+          });
         }}
         boundBoxFunc={(oldBox, newBox) => {
           // get the current size of the image
@@ -422,21 +442,22 @@ const CanvasFrame = (props: Props) => {
 
           // find the next fixed size based on the distance the user dragged the anchor
           let nextSize = null;
-          if (newBox.width - bbox.width > 20) {
+          if (newBox.width - bbox.width > 20 * multiplyValue * scaleFactor) {
             // find the next larger fixed size
             nextSize = allFrameSizes.find((size) => size.width > bbox.width);
-          } else if (bbox.width - newBox.width > 20) {
+          } else if (
+            bbox.width - newBox.width >
+            20 * multiplyValue * scaleFactor
+          ) {
             // find the next smaller fixed size
             nextSize = allFrameSizes
               .reverse()
               .find((size) => size.width < bbox.width);
-          }
-
-          // return the bounding box with the next fixed size, if found
+          } // return the bounding box with the next fixed size, if found
           if (nextSize) {
             setSize({
-              width: nextSize.width,
-              height: nextSize.height,
+              width: Math.round(nextSize.width / multiplyValue / scaleFactor),
+              height: Math.round(nextSize.height / multiplyValue / scaleFactor),
             });
             return {
               x: bbox.x,
@@ -451,6 +472,7 @@ const CanvasFrame = (props: Props) => {
           return oldBox;
         }}
       />
+
       {size && (
         <Text
           x={imagePos.x + size.width / 2}
