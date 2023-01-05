@@ -24,12 +24,6 @@ interface Props {
   selectShape: Dispatch<SetStateAction<number | null>>;
   isSelected: boolean;
 }
-interface TransformEvent extends Event {
-  scaleX: number;
-  scaleY: number;
-  clientX: number;
-  clientY: number;
-}
 
 // TODO: what is missing here is the frame scaling and previous position
 // but for previous position i guess we are only able to do it once we have the canvas object
@@ -69,9 +63,7 @@ const CanvasFrame = (props: Props) => {
   const multiplyValue = 20;
 
   let imageAspectRatio,
-    scaleFactor = 1,
-    imageWidth = 1,
-    imageHeight = 1;
+    scaleFactor = 1;
   if (poster && props.imageScale.scaleX && props.imageScale.scaleY) {
     imageAspectRatio =
       ((dimension.width * multiplyValue) / dimension.height) * multiplyValue;
@@ -81,16 +73,7 @@ const CanvasFrame = (props: Props) => {
     } else {
       scaleFactor = Math.min(props.imageScale.scaleX, props.imageScale.scaleY);
     }
-    if (props.item.poster.isPortrait) {
-      imageWidth = dimension.width * multiplyValue * scaleFactor;
-      imageHeight = dimension.height * multiplyValue * scaleFactor;
-    } else {
-      imageWidth = dimension.height * multiplyValue * scaleFactor;
-      imageHeight = dimension.width * multiplyValue * scaleFactor;
-    }
   }
-
-  const groupRef = useRef<Konva.Group>(null);
   const imageRef = useRef<Konva.Rect>(null);
   const transformRef = useRef<Konva.Transformer>(null);
   const [size, setSize] = useState<{ width: number; height: number }>({
@@ -400,12 +383,7 @@ const CanvasFrame = (props: Props) => {
             />
           </Group>
           <Text
-            text={
-              size.width +
-              'x' +
-              size.height +
-              `${props.isSelected ? 'selected' : 'not selected'}`
-            }
+            text={size.width + 'x' + size.height}
             x={scaledSizes.width / 2 - 20}
             y={scaledSizes.height + 10}
             fontFamily={theme.typography.fontFamily}
