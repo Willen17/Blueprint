@@ -51,8 +51,8 @@ const CanvasFrame = (props: Props) => {
     'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fwalnut-surface.jpeg?alt=media&token=e0224afc-7b60-414e-8922-63804d3f7f4c'
   );
 
-  const [frameBorder, setFrameBorder] = useState(0);
-  const [passepartout, setPassepartout] = useState(0);
+  const [frameBorder, setFrameBorder] = useState(20);
+  const [passepartout, setPassepartout] = useState(20);
 
   const frameColor = () => {
     if (match[0].category.includes('Wooden')) {
@@ -90,49 +90,12 @@ const CanvasFrame = (props: Props) => {
     }
   }
 
-  const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
-    setElementPos({
-      x: e.target.x(),
-      y: e.target.y(),
-    });
-    props.selectShape(props.index);
-  };
-
-  const { width, height, x, y } = props.bg;
-  const handleDrag = (pos: Konva.Vector2d) => {
-    const newX = Math.max(x!, Math.min(pos.x, x! + width - scaledSizes.width!));
-    const newY = Math.max(
-      y!,
-      Math.min(pos.y, y! + height - scaledSizes.height!)
-    );
-    return {
-      x: newX,
-      y: newY,
-    };
-  };
   const groupRef = useRef<Konva.Group>(null);
-  const trRef = useRef<Konva.Transformer>(null);
-
-  useEffect(() => {
-    if (props.isSelected && trRef.current && groupRef.current) {
-      trRef.current.nodes([groupRef.current]);
-      trRef.current.getLayer()!.batchDraw();
-      trRef.current.centeredScaling(true);
-      // trRef.current.enabledAnchors([
-      //   'top-left',
-      //   'top-right',
-      //   'bottom-left',
-      //   'bottom-right',
-      // ]);
-      trRef.current.flipEnabled(false);
-    }
-  }, [props.isSelected]);
-
   const imageRef = useRef<Konva.Rect>(null);
   const transformRef = useRef<Konva.Transformer>(null);
   const [size, setSize] = useState<{ width: number; height: number }>({
-    width: dimension.width,
-    height: dimension.height,
+    width: props.item.poster.isPortrait ? dimension.width : dimension.height,
+    height: props.item.poster.isPortrait ? dimension.height : dimension.width,
   });
 
   useEffect(() => {
@@ -149,8 +112,6 @@ const CanvasFrame = (props: Props) => {
       transformRef.current.flipEnabled(false);
     }
   }, [props.isSelected]);
-
-  const [imagePos, setImagePos] = useState({ x: 50, y: 50 });
 
   const allFrameSizes = props.item.poster.isPortrait
     ? [
@@ -225,7 +186,9 @@ const CanvasFrame = (props: Props) => {
         : (frameBorder = 10);
       return frameBorder * 5 * scaleFactor;
     });
+  }, [size, scaleFactor, dimension, props]);
 
+  useEffect(() => {
     setPassepartout(() => {
       let passepartout = 0;
       let currentSize = props.item.poster.isPortrait
@@ -243,10 +206,28 @@ const CanvasFrame = (props: Props) => {
 
       return passepartout * 5 * scaleFactor + frameBorder;
     });
+  }, [frameBorder, scaleFactor, dimension, props, size]);
 
-    console.log(scaleFactor);
-  }, [size, scaleFactor, dimension]);
+  const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    setElementPos({
+      x: e.target.x(),
+      y: e.target.y(),
+    });
+    props.selectShape(props.index);
+  };
 
+  const handleDrag = (pos: Konva.Vector2d) => {
+    const { width, height, x, y } = props.bg;
+    const newX = Math.max(x!, Math.min(pos.x, x! + width - scaledSizes.width!));
+    const newY = Math.max(
+      y!,
+      Math.min(pos.y, y! + height - scaledSizes.height!)
+    );
+    return {
+      x: newX,
+      y: newY,
+    };
+  };
   return (
     <>
       <Rect
