@@ -158,8 +158,8 @@ const CanvasFrame = (props: Props) => {
   const imageRef = useRef<Konva.Image>(null);
   const transformRef = useRef<Konva.Transformer>(null);
   const [size, setSize] = useState<{ width: number; height: number }>({
-    width: imageWidth,
-    height: imageHeight,
+    width: dimension.width,
+    height: dimension.height,
   });
 
   useEffect(() => {
@@ -179,28 +179,51 @@ const CanvasFrame = (props: Props) => {
 
   const [imagePos, setImagePos] = useState({ x: 50, y: 50 });
 
-  const allFrameSizes = [
-    {
-      width: 21 * multiplyValue * scaleFactor,
-      height: 30 * multiplyValue * scaleFactor,
-    },
-    {
-      width: 30 * multiplyValue * scaleFactor,
-      height: 40 * multiplyValue * scaleFactor,
-    },
-    {
-      width: 40 * multiplyValue * scaleFactor,
-      height: 50 * multiplyValue * scaleFactor,
-    },
-    {
-      width: 50 * multiplyValue * scaleFactor,
-      height: 70 * multiplyValue * scaleFactor,
-    },
-    {
-      width: 70 * multiplyValue * scaleFactor,
-      height: 100 * multiplyValue * scaleFactor,
-    },
-  ];
+  const allFrameSizes = props.item.poster.isPortrait
+    ? [
+        {
+          width: 21 * multiplyValue * scaleFactor,
+          height: 30 * multiplyValue * scaleFactor,
+        },
+        {
+          width: 30 * multiplyValue * scaleFactor,
+          height: 40 * multiplyValue * scaleFactor,
+        },
+        {
+          width: 40 * multiplyValue * scaleFactor,
+          height: 50 * multiplyValue * scaleFactor,
+        },
+        {
+          width: 50 * multiplyValue * scaleFactor,
+          height: 70 * multiplyValue * scaleFactor,
+        },
+        {
+          width: 70 * multiplyValue * scaleFactor,
+          height: 100 * multiplyValue * scaleFactor,
+        },
+      ]
+    : [
+        {
+          height: 21 * multiplyValue * scaleFactor,
+          width: 30 * multiplyValue * scaleFactor,
+        },
+        {
+          height: 30 * multiplyValue * scaleFactor,
+          width: 40 * multiplyValue * scaleFactor,
+        },
+        {
+          height: 40 * multiplyValue * scaleFactor,
+          width: 50 * multiplyValue * scaleFactor,
+        },
+        {
+          height: 50 * multiplyValue * scaleFactor,
+          width: 70 * multiplyValue * scaleFactor,
+        },
+        {
+          height: 70 * multiplyValue * scaleFactor,
+          width: 100 * multiplyValue * scaleFactor,
+        },
+      ];
 
   const handleTransformEnd = () => {
     const node = imageRef.current;
@@ -400,8 +423,8 @@ const CanvasFrame = (props: Props) => {
       <Image
         image={poster}
         alt="cola"
-        width={50 * multiplyValue * scaleFactor}
-        height={70 * multiplyValue * scaleFactor}
+        width={imageWidth}
+        height={imageHeight}
         ref={imageRef}
         draggable
         onDragEnd={(e) => {
