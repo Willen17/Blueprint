@@ -109,7 +109,6 @@ const CanvasFrame = (props: Props) => {
         'bottom-left',
         'bottom-right',
       ]);
-      transformRef.current.flipEnabled(false);
     }
   }, [props.isSelected]);
 
@@ -245,7 +244,6 @@ const CanvasFrame = (props: Props) => {
         draggable
         onDragStart={() => props.selectShape(null)}
         onDragEnd={handleDragEnd}
-        ref={groupRef}
         onClick={() => props.selectShape(props.index)}
       >
         <>
@@ -421,6 +419,7 @@ const CanvasFrame = (props: Props) => {
           ref={transformRef}
           rotateEnabled={false}
           keepRatio={false}
+          flipEnabled={false}
           onMouseUp={() => {
             const node = imageRef.current;
             if (!node) return;
@@ -473,8 +472,8 @@ const CanvasFrame = (props: Props) => {
               return {
                 x: bbox.x,
                 y: bbox.y,
-                width: nextSize.width,
-                height: nextSize.height,
+                width: scaledSizes.width,
+                height: scaledSizes.height,
                 rotation: rotation, // add the rotation property
               };
             }
