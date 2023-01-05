@@ -25,9 +25,14 @@ const FrameSectionDetails = () => {
 
   /** Gets and renders available frame sizes from frame data */
   const getFrameSizes = () => {
+    let frameId: string;
+    !frameSet.id
+      ? (frameId = isEditingFrame.item!.frame.id)
+      : (frameId = frameSet.id);
+
     const arr = [];
     const currentFrame = allFrames
-      .filter((fr) => fr.id === frameSet.id)
+      .filter((fr) => fr.id === frameId)
       .map((fr) => fr);
     const dimensionArr = Object.keys(frameDimensions).flatMap(
       (dimension) => dimension

@@ -15,6 +15,7 @@ import {
   Poster,
 } from '../components/types';
 import { sidebarSections } from '../lib/valSchemas';
+import { useCanvas } from './CanvasContext';
 
 interface SidebarContextValue {
   anchorSidebar: boolean;
@@ -113,6 +114,7 @@ export const SidebarContext = createContext<SidebarContextValue>({
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { setWithPassepartout } = useCanvas();
   const [anchorSidebar, setAnchorSidebar] = useState<boolean>(true);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
     sidebarSections[0]
@@ -146,8 +148,10 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   });
 
   const handleSelectItem = (item: CanvasItem) => {
-    setAnchorSidebar(true);
+    setAnchorSidebar(true); // turn off before sending PR
     setIsEditingFrame({ isEditing: true, item });
+    setWithPassepartout(item.withPassepartout);
+
     setExpandedAccordion(sidebarSections[2]);
   };
 
