@@ -23,6 +23,12 @@ interface Props {
   selectShape: Dispatch<SetStateAction<number | null>>;
   isSelected: boolean;
 }
+interface TransformEvent extends Event {
+  scaleX: number;
+  scaleY: number;
+  clientX: number;
+  clientY: number;
+}
 
 // TODO: what is missing here is the frame scaling and previous position
 // but for previous position i guess we are only able to do it once we have the canvas object
@@ -148,6 +154,55 @@ const CanvasFrame = (props: Props) => {
       trRef.current.flipEnabled(false);
     }
   }, [props.isSelected]);
+
+  const imageRef = useRef<Konva.Image>(null);
+  const transformRef = useRef<Konva.Transformer>(null);
+  const [size, setSize] = useState<{ width: number; height: number }>({
+    width: 50,
+    height: 70,
+  });
+
+  useEffect(() => {
+    if (transformRef.current && imageRef.current) {
+      transformRef.current.nodes([imageRef.current]);
+      transformRef.current.getLayer()!.batchDraw();
+      transformRef.current.centeredScaling(true);
+      transformRef.current.enabledAnchors([
+        'top-left',
+        'top-right',
+        'bottom-left',
+        'bottom-right',
+      ]);
+      transformRef.current.flipEnabled(false);
+    }
+  }, []);
+
+  const [imagePos, setImagePos] = useState({ x: 50, y: 50 });
+
+  const allFrameSizes = [
+    { width: 21, height: 30 },
+    { width: 30, height: 40 },
+    { width: 40, height: 50 },
+    { width: 50, height: 70 },
+    { width: 70, height: 100 },
+  ];
+
+  const handleTransformEnd = () => {
+    const node = imageRef.current;
+    if (!node) return;
+    const bbox = node.getClientRect();
+
+    const closestSize = allFrameSizes.reduce((prev, curr) => {
+      return Math.abs(curr.width - bbox.width) <
+        Math.abs(prev.width - bbox.width)
+        ? curr
+        : prev;
+    });
+
+    node.width(closestSize.width);
+    node.height(closestSize.height);
+    node.getLayer()!.batchDraw();
+  };
 
   return (
     <>
@@ -327,18 +382,90 @@ const CanvasFrame = (props: Props) => {
           />
         </>
       </Group>
+      <Image
+        image={poster}
+        alt="cola"
+        width={50}
+        height={70}
+        ref={imageRef}
+        draggable
+        onDragEnd={(e) => {
+          setImagePos({
+            x: e.target.x(),
+            y: e.target.y(),
+          });
+        }}
+      />
+      <Transformer
+        ref={transformRef}
+        rotateEnabled={false}
+        onMouseUp={() => {
+          const node = imageRef.current;
+          if (!node) return;
+          const bbox = node.getClientRect();
+          const closestSize = allFrameSizes.reduce((prev, curr) => {
+            return Math.abs(curr.width - bbox.width) <
+              Math.abs(prev.width - bbox.width)
+              ? curr
+              : prev;
+          });
+          setSize(closestSize);
+        }}
+        boundBoxFunc={(oldBox, newBox) => {
+          // get the current size of the image
+          const node = imageRef.current;
+          if (!node) {
+            return oldBox;
+          }
+          const bbox = node.getClientRect();
+          const rotation = node.rotation();
+
+          // find the next fixed size based on the distance the user dragged the anchor
+          let nextSize = null;
+          if (newBox.width - bbox.width > 20) {
+            // find the next larger fixed size
+            nextSize = allFrameSizes.find((size) => size.width > bbox.width);
+          } else if (bbox.width - newBox.width > 20) {
+            // find the next smaller fixed size
+            nextSize = allFrameSizes
+              .reverse()
+              .find((size) => size.width < bbox.width);
+          }
+
+          // return the bounding box with the next fixed size, if found
+          if (nextSize) {
+            setSize({
+              width: nextSize.width,
+              height: nextSize.height,
+            });
+            return {
+              x: bbox.x,
+              y: bbox.y,
+              width: nextSize.width,
+              height: nextSize.height,
+              rotation: rotation, // add the rotation property
+            };
+          }
+
+          // otherwise, return the original bounding box
+          return oldBox;
+        }}
+      />
+      {size && (
+        <Text
+          x={imagePos.x + size.width / 2}
+          y={imagePos.y + size.height * 2}
+          fontFamily={theme.typography.fontFamily}
+          fontSize={Number(theme.typography.body1.fontSize)}
+          text={`${size.width}x${size.height}`}
+        />
+      )}
       {props.isSelected && (
         <Transformer
           ref={trRef}
           rotateEnabled={false}
           resizeEnabled={false}
-          boundBoxFunc={(oldBox, newBox) => {
-            // limit resize
-            if (newBox.width < 5 || newBox.height < 5) {
-              return oldBox;
-            }
-            return newBox;
-          }}
+          onTransformEnd={handleTransformEnd}
         />
       )}
     </>
