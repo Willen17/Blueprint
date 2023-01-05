@@ -1,4 +1,5 @@
 import Konva from 'konva';
+import { isEqual } from 'lodash';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Group, Image, Rect, Text, Transformer } from 'react-konva';
 import useImage from 'use-image';
@@ -50,41 +51,9 @@ const CanvasFrame = (props: Props) => {
     'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/frames%2Fwalnut-surface.jpeg?alt=media&token=e0224afc-7b60-414e-8922-63804d3f7f4c'
   );
 
-  const frameBorder = () => {
-    let frameBorder;
-    dimension === frameDimensions.xs
-      ? (frameBorder = 8)
-      : dimension === frameDimensions.sm
-      ? (frameBorder = 8)
-      : dimension === frameDimensions.md
-      ? (frameBorder = 9)
-      : dimension === frameDimensions.lg
-      ? (frameBorder = 10)
-      : (frameBorder = 10);
-    return (
-      frameBorder *
-      5 *
-      Math.min(props.imageScale.scaleX, props.imageScale.scaleY)
-    );
-  };
-  const passepartout = () => {
-    let passepartout = 0;
-    dimension === frameDimensions.xs
-      ? (passepartout = 12)
-      : dimension === frameDimensions.sm
-      ? (passepartout = 16)
-      : dimension === frameDimensions.md
-      ? (passepartout = 21)
-      : dimension === frameDimensions.lg
-      ? (passepartout = 26)
-      : (passepartout = 33);
-    return (
-      passepartout *
-        5 *
-        Math.min(props.imageScale.scaleX, props.imageScale.scaleY) +
-      frameBorder()
-    );
-  };
+  const [frameBorder, setFrameBorder] = useState(0);
+  const [passepartout, setPassepartout] = useState(0);
+
   const frameColor = () => {
     if (match[0].category.includes('Wooden')) {
       if (match[0].title.toLowerCase().includes('maple')) return maple;
@@ -130,8 +99,11 @@ const CanvasFrame = (props: Props) => {
 
   const { width, height, x, y } = props.bg;
   const handleDrag = (pos: Konva.Vector2d) => {
-    const newX = Math.max(x!, Math.min(pos.x, x! + width - imageWidth!));
-    const newY = Math.max(y!, Math.min(pos.y, y! + height - imageHeight!));
+    const newX = Math.max(x!, Math.min(pos.x, x! + width - scaledSizes.width!));
+    const newY = Math.max(
+      y!,
+      Math.min(pos.y, y! + height - scaledSizes.height!)
+    );
     return {
       x: newX,
       y: newY,
@@ -225,6 +197,55 @@ const CanvasFrame = (props: Props) => {
         },
       ];
 
+  const [scaledSizes, setScaledSizes] = useState({
+    width: size.width * multiplyValue * scaleFactor,
+    height: size.height * multiplyValue * scaleFactor,
+  });
+
+  useEffect(() => {
+    setScaledSizes({
+      width: size.width * multiplyValue * scaleFactor,
+      height: size.height * multiplyValue * scaleFactor,
+    });
+
+    setFrameBorder(() => {
+      let frameBorder;
+      let currentSize = props.item.poster.isPortrait
+        ? size
+        : { width: size.height, height: size.width };
+      isEqual(currentSize, frameDimensions.xs)
+        ? (frameBorder = 8)
+        : isEqual(currentSize, frameDimensions.sm)
+        ? (frameBorder = 8)
+        : isEqual(currentSize, frameDimensions.md)
+        ? (frameBorder = 9)
+        : isEqual(currentSize, frameDimensions.lg)
+        ? (frameBorder = 10)
+        : (frameBorder = 10);
+      return frameBorder * 5 * scaleFactor;
+    });
+
+    setPassepartout(() => {
+      let passepartout = 0;
+      let currentSize = props.item.poster.isPortrait
+        ? size
+        : { width: size.height, height: size.width };
+      isEqual(currentSize, frameDimensions.xs)
+        ? (passepartout = 12)
+        : isEqual(currentSize, frameDimensions.sm)
+        ? (passepartout = 16)
+        : isEqual(currentSize, frameDimensions.md)
+        ? (passepartout = 21)
+        : isEqual(currentSize, frameDimensions.lg)
+        ? (passepartout = 26)
+        : (passepartout = 33);
+
+      return passepartout * 5 * scaleFactor + frameBorder;
+    });
+
+    console.log(scaleFactor);
+  }, [size, scaleFactor, dimension]);
+
   const handleTransformEnd = () => {
     const node = imageRef.current;
     if (!node) return;
@@ -258,8 +279,8 @@ const CanvasFrame = (props: Props) => {
             <Image
               image={frameColor() as HTMLImageElement}
               alt={match[0].title}
-              width={imageWidth}
-              height={imageHeight}
+              width={scaledSizes.width}
+              height={scaledSizes.height}
               shadowBlur={15}
               shadowColor="#000"
               shadowOpacity={0.5}
@@ -267,8 +288,8 @@ const CanvasFrame = (props: Props) => {
             />
           ) : (
             <Rect
-              width={imageWidth}
-              height={imageHeight}
+              width={scaledSizes.width}
+              height={scaledSizes.height}
               fill={frameColor() as string}
               shadowBlur={15}
               shadowColor="#000"
@@ -279,51 +300,51 @@ const CanvasFrame = (props: Props) => {
           <Image
             image={poster}
             alt="cola"
-            x={frameBorder()}
-            y={frameBorder()}
-            width={imageWidth - frameBorder() * 2}
-            height={imageHeight - frameBorder() * 2}
+            x={frameBorder}
+            y={frameBorder}
+            width={scaledSizes.width - frameBorder * 2}
+            height={scaledSizes.height - frameBorder * 2}
           />
           {props.item.withPassepartout ? (
             <>
               {/*  passepartout. Sequence: left, right, top, bottom*/}
               <Group>
                 <Rect
-                  x={frameBorder()}
-                  y={frameBorder()}
-                  width={passepartout() - frameBorder()}
-                  height={imageHeight - frameBorder() * 2}
+                  x={frameBorder}
+                  y={frameBorder}
+                  width={passepartout - frameBorder}
+                  height={scaledSizes.height - frameBorder * 2}
                   fill="#f8f8f8"
                 />
                 <Rect
-                  x={imageWidth - passepartout()}
-                  y={frameBorder()}
-                  width={passepartout() - frameBorder()}
-                  height={imageHeight - frameBorder() * 2}
+                  x={scaledSizes.width - passepartout}
+                  y={frameBorder}
+                  width={passepartout - frameBorder}
+                  height={scaledSizes.height - frameBorder * 2}
                   fill="#f8f8f8"
                 />
                 <Rect
-                  x={frameBorder()}
-                  y={frameBorder()}
-                  width={imageWidth - frameBorder() * 2}
-                  height={passepartout() * 1.1 - frameBorder()}
+                  x={frameBorder}
+                  y={frameBorder}
+                  width={scaledSizes.width - frameBorder * 2}
+                  height={passepartout * 1.1 - frameBorder}
                   fill="#f8f8f8"
                 />
                 <Rect
-                  x={frameBorder()}
-                  y={imageHeight - passepartout() * 1.1}
-                  width={imageWidth - frameBorder() * 2}
-                  height={passepartout() * 1.1 - frameBorder()}
+                  x={frameBorder}
+                  y={scaledSizes.height - passepartout * 1.1}
+                  width={scaledSizes.width - frameBorder * 2}
+                  height={passepartout * 1.1 - frameBorder}
                   fill="#f8f8f8"
                 />
               </Group>
               {/* shadow for passepartout. Sequence: left, right, top, bottom*/}
               <Group>
                 <Rect
-                  x={passepartout()}
-                  y={passepartout() * 1.1 + 1}
+                  x={passepartout}
+                  y={passepartout * 1.1 + 1}
                   width={1}
-                  height={imageHeight - passepartout() * 1.1 * 2 - 1}
+                  height={scaledSizes.height - passepartout * 1.1 * 2 - 1}
                   fill="#eee"
                   shadowBlur={0.25}
                   shadowColor="#000"
@@ -331,10 +352,10 @@ const CanvasFrame = (props: Props) => {
                   shadowOffset={{ x: 0, y: 0 }}
                 />
                 <Rect
-                  x={imageWidth - passepartout()}
-                  y={passepartout() * 1.1 + 1}
+                  x={scaledSizes.width - passepartout}
+                  y={passepartout * 1.1 + 1}
                   width={1}
-                  height={imageHeight - passepartout() * 1.1 * 2 - 1}
+                  height={scaledSizes.height - passepartout * 1.1 * 2 - 1}
                   fill="#eee"
                   shadowBlur={0.25}
                   shadowColor="#000"
@@ -342,9 +363,9 @@ const CanvasFrame = (props: Props) => {
                   shadowOffset={{ x: 0, y: 0 }}
                 />
                 <Rect
-                  x={passepartout()}
-                  y={passepartout() * 1.1}
-                  width={imageWidth - passepartout() * 2 + 1}
+                  x={passepartout}
+                  y={passepartout * 1.1}
+                  width={scaledSizes.width - passepartout * 2 + 1}
                   height={1}
                   fill="#ddd"
                   shadowBlur={0.5}
@@ -353,9 +374,9 @@ const CanvasFrame = (props: Props) => {
                   shadowOffset={{ x: 0, y: 0 }}
                 />
                 <Rect
-                  x={passepartout()}
-                  y={imageHeight - passepartout() * 1.1}
-                  width={imageWidth - passepartout() * 2 + 1}
+                  x={passepartout}
+                  y={scaledSizes.height - passepartout * 1.1}
+                  width={scaledSizes.width - passepartout * 2 + 1}
                   height={1}
                   fill="#fff"
                 />
@@ -365,10 +386,10 @@ const CanvasFrame = (props: Props) => {
           {/* shadow for frame. Sequence: left, right, top, bottom*/}
           <Group>
             <Rect
-              x={frameBorder()}
-              y={frameBorder() + 1}
+              x={frameBorder}
+              y={frameBorder + 1}
               width={1}
-              height={imageHeight - frameBorder() * 2 - 1}
+              height={scaledSizes.height - frameBorder * 2 - 1}
               fill="#eee"
               shadowBlur={3}
               shadowColor="#ddd"
@@ -376,10 +397,10 @@ const CanvasFrame = (props: Props) => {
               shadowOffset={{ x: 2, y: 0 }}
             />
             <Rect
-              x={imageWidth - frameBorder()}
-              y={frameBorder() + 1}
+              x={scaledSizes.width - frameBorder}
+              y={frameBorder + 1}
               width={1}
-              height={imageHeight - frameBorder() * 2 - 1}
+              height={scaledSizes.height - frameBorder * 2 - 1}
               fill="#eee"
               shadowBlur={3}
               shadowColor="#ddd"
@@ -387,9 +408,9 @@ const CanvasFrame = (props: Props) => {
               shadowOffset={{ x: -2, y: 0 }}
             />
             <Rect
-              x={frameBorder()}
-              y={frameBorder()}
-              width={imageWidth - frameBorder() * 2 + 1}
+              x={frameBorder}
+              y={frameBorder}
+              width={scaledSizes.width - frameBorder * 2 + 1}
               height={1}
               fill="#ddd"
               shadowBlur={13}
@@ -398,9 +419,9 @@ const CanvasFrame = (props: Props) => {
               shadowOffset={{ x: 0, y: 6 }}
             />
             <Rect
-              x={frameBorder()}
-              y={imageHeight - frameBorder()}
-              width={imageWidth - frameBorder() * 2 + 1}
+              x={frameBorder}
+              y={scaledSizes.height - frameBorder}
+              width={scaledSizes.width - frameBorder * 2 + 1}
               height={1}
               fill="#fff"
               opacity={0.5}
@@ -408,13 +429,13 @@ const CanvasFrame = (props: Props) => {
           </Group>
           <Text
             text={
-              dimension.width +
+              size.width +
               'x' +
-              dimension.height +
+              size.height +
               `${props.isSelected ? 'selected' : 'not selected'}`
             }
-            x={imageWidth / 2 - 20}
-            y={imageHeight + 10}
+            x={scaledSizes.width / 2 - 20}
+            y={scaledSizes.height + 10}
             fontFamily={theme.typography.fontFamily}
             fontSize={Number(theme.typography.body1.fontSize)}
           />
