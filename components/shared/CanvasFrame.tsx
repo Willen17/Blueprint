@@ -95,6 +95,7 @@ const CanvasFrame = (props: Props) => {
       x: e.target.x(),
       y: e.target.y(),
     });
+    props.selectShape(props.index);
   };
 
   const { width, height, x, y } = props.bg;
@@ -127,7 +128,7 @@ const CanvasFrame = (props: Props) => {
     }
   }, [props.isSelected]);
 
-  const imageRef = useRef<Konva.Image>(null);
+  const imageRef = useRef<Konva.Rect>(null);
   const transformRef = useRef<Konva.Transformer>(null);
   const [size, setSize] = useState<{ width: number; height: number }>({
     width: dimension.width,
@@ -135,7 +136,7 @@ const CanvasFrame = (props: Props) => {
   });
 
   useEffect(() => {
-    if (transformRef.current && imageRef.current) {
+    if (transformRef.current && imageRef.current && props.isSelected) {
       transformRef.current.nodes([imageRef.current]);
       transformRef.current.getLayer()!.batchDraw();
       transformRef.current.centeredScaling(true);
@@ -147,7 +148,7 @@ const CanvasFrame = (props: Props) => {
       ]);
       transformRef.current.flipEnabled(false);
     }
-  }, []);
+  }, [props.isSelected]);
 
   const [imagePos, setImagePos] = useState({ x: 50, y: 50 });
 
@@ -246,30 +247,22 @@ const CanvasFrame = (props: Props) => {
     console.log(scaleFactor);
   }, [size, scaleFactor, dimension]);
 
-  const handleTransformEnd = () => {
-    const node = imageRef.current;
-    if (!node) return;
-    const bbox = node.getClientRect();
-
-    const closestSize = allFrameSizes.reduce((prev, curr) => {
-      return Math.abs(curr.width - bbox.width) <
-        Math.abs(prev.width - bbox.width)
-        ? curr
-        : prev;
-    });
-
-    node.width(closestSize.width);
-    node.height(closestSize.height);
-    node.getLayer()!.batchDraw();
-  };
-
   return (
     <>
+      <Rect
+        fill="transparent"
+        width={scaledSizes.width}
+        height={scaledSizes.height}
+        ref={imageRef}
+        x={elementPos.x}
+        y={elementPos.y}
+      />
       <Group
         x={elementPos.x}
         y={elementPos.y}
         dragBoundFunc={handleDrag}
         draggable
+        onDragStart={() => props.selectShape(null)}
         onDragEnd={handleDragEnd}
         ref={groupRef}
         onClick={() => props.selectShape(props.index)}
@@ -441,97 +434,73 @@ const CanvasFrame = (props: Props) => {
           />
         </>
       </Group>
-      <Image
-        image={poster}
-        alt="cola"
-        width={imageWidth}
-        height={imageHeight}
-        ref={imageRef}
-        draggable
-        onDragEnd={(e) => {
-          setImagePos({
-            x: e.target.x(),
-            y: e.target.y(),
-          });
-        }}
-      />
-      <Transformer
-        ref={transformRef}
-        rotateEnabled={false}
-        onMouseUp={() => {
-          const node = imageRef.current;
-          if (!node) return;
-          const bbox = node.getClientRect();
-          const closestSize = allFrameSizes.reduce((prev, curr) => {
-            return Math.abs(curr.width - bbox.width) <
-              Math.abs(prev.width - bbox.width)
-              ? curr
-              : prev;
-          });
-          setSize({
-            width: Math.round(closestSize.width / multiplyValue / scaleFactor),
-            height: Math.round(
-              closestSize.height / multiplyValue / scaleFactor
-            ),
-          });
-        }}
-        boundBoxFunc={(oldBox, newBox) => {
-          // get the current size of the image
-          const node = imageRef.current;
-          if (!node) {
-            return oldBox;
-          }
-          const bbox = node.getClientRect();
-          const rotation = node.rotation();
 
-          // find the next fixed size based on the distance the user dragged the anchor
-          let nextSize = null;
-          if (newBox.width - bbox.width > 20 * multiplyValue * scaleFactor) {
-            // find the next larger fixed size
-            nextSize = allFrameSizes.find((size) => size.width > bbox.width);
-          } else if (
-            bbox.width - newBox.width >
-            20 * multiplyValue * scaleFactor
-          ) {
-            // find the next smaller fixed size
-            nextSize = allFrameSizes
-              .reverse()
-              .find((size) => size.width < bbox.width);
-          } // return the bounding box with the next fixed size, if found
-          if (nextSize) {
-            setSize({
-              width: Math.round(nextSize.width / multiplyValue / scaleFactor),
-              height: Math.round(nextSize.height / multiplyValue / scaleFactor),
-            });
-            return {
-              x: bbox.x,
-              y: bbox.y,
-              width: nextSize.width,
-              height: nextSize.height,
-              rotation: rotation, // add the rotation property
-            };
-          }
-
-          // otherwise, return the original bounding box
-          return oldBox;
-        }}
-      />
-
-      {size && (
-        <Text
-          x={imagePos.x + size.width / 2}
-          y={imagePos.y + size.height * 2}
-          fontFamily={theme.typography.fontFamily}
-          fontSize={Number(theme.typography.body1.fontSize)}
-          text={`${size.width}x${size.height}`}
-        />
-      )}
       {props.isSelected && (
         <Transformer
-          ref={trRef}
+          ref={transformRef}
           rotateEnabled={false}
-          resizeEnabled={false}
-          onTransformEnd={handleTransformEnd}
+          keepRatio={false}
+          onMouseUp={() => {
+            const node = imageRef.current;
+            if (!node) return;
+            const bbox = node.getClientRect();
+            const closestSize = allFrameSizes.reduce((prev, curr) => {
+              return Math.abs(curr.width - bbox.width) <
+                Math.abs(prev.width - bbox.width)
+                ? curr
+                : prev;
+            });
+            setSize({
+              width: Math.round(
+                closestSize.width / multiplyValue / scaleFactor
+              ),
+              height: Math.round(
+                closestSize.height / multiplyValue / scaleFactor
+              ),
+            });
+          }}
+          boundBoxFunc={(oldBox, newBox) => {
+            // get the current size of the image
+            const node = imageRef.current;
+            if (!node) {
+              return oldBox;
+            }
+            const bbox = node.getClientRect();
+            const rotation = node.rotation();
+
+            // find the next fixed size based on the distance the user dragged the anchor
+            let nextSize = null;
+            if (newBox.width - bbox.width > 20 * multiplyValue * scaleFactor) {
+              // find the next larger fixed size
+              nextSize = allFrameSizes.find((size) => size.width > bbox.width);
+            } else if (
+              bbox.width - newBox.width >
+              20 * multiplyValue * scaleFactor
+            ) {
+              // find the next smaller fixed size
+              nextSize = allFrameSizes
+                .reverse()
+                .find((size) => size.width < bbox.width);
+            } // return the bounding box with the next fixed size, if found
+            if (nextSize) {
+              setSize({
+                width: Math.round(nextSize.width / multiplyValue / scaleFactor),
+                height: Math.round(
+                  nextSize.height / multiplyValue / scaleFactor
+                ),
+              });
+              return {
+                x: bbox.x,
+                y: bbox.y,
+                width: nextSize.width,
+                height: nextSize.height,
+                rotation: rotation, // add the rotation property
+              };
+            }
+
+            // otherwise, return the original bounding box
+            return oldBox;
+          }}
         />
       )}
     </>
