@@ -7,7 +7,7 @@ import { theme } from '../theme';
 import PosterSectionDetails from './PosterSectionDetails';
 
 const PosterSection = () => {
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const mobile = useMediaQuery(theme.breakpoints.down(800));
   const { openMobileSection } = useSidebar();
 
   return mobile && openMobileSection !== sidebarSections[2] ? null : mobile &&

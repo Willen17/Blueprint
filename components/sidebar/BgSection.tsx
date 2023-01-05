@@ -7,7 +7,7 @@ import { theme } from '../theme';
 import BgSectionDetails from './BgSectionDetails';
 
 const BgSection = () => {
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const mobile = useMediaQuery(theme.breakpoints.down(800));
   const { openMobileSection } = useSidebar();
 
   return mobile && openMobileSection !== sidebarSections[0] ? null : mobile &&

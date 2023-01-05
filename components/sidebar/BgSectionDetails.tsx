@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
@@ -11,6 +11,7 @@ const BgSectionDetails = () => {
   const { background, setBackground } = useCanvas();
   const { setBackgroundCategories, backgroundCategories, allBackgrounds } =
     useSidebar();
+  const mobile = useMediaQuery(theme.breakpoints.down(800));
 
   function setCategory(category: string) {
     let newFilter = { ...backgroundCategories };
@@ -79,7 +80,7 @@ const BgSectionDetails = () => {
           width: '100%',
           justifyContent: 'center',
           my: 2,
-          overflowY: 'scroll',
+          overflowY: !mobile ? 'scroll' : 'null',
           '&::-webkit-scrollbar': {
             width: '0.4em',
           },

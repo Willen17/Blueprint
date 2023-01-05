@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
@@ -24,6 +24,7 @@ const PosterSectionDetails = () => {
     setAnchorSidebar,
     isEditingFrame,
   } = useSidebar();
+  const mobile = useMediaQuery(theme.breakpoints.down(800));
 
   /** Handles change of orientation state */
   const handleOrientationChange = (value: string) => {
@@ -154,7 +155,7 @@ const PosterSectionDetails = () => {
           justifyContent: 'center',
           my: 2.5,
           height: '100%',
-          overflowY: 'scroll',
+          overflowY: !mobile ? 'scroll' : null,
           '&::-webkit-scrollbar': {
             width: '0.4em',
           },
