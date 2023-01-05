@@ -1,14 +1,13 @@
-// @ts-nocheck
 import { Box, Button, Typography } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
-import { Key } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
+import { Dimension } from '../types';
 
 const PosterSectionDetails = () => {
   const {
@@ -52,9 +51,13 @@ const PosterSectionDetails = () => {
     const filteredBySize = allPosters.flatMap((poster) =>
       poster.sizes
         .filter(
-          (size) =>
-            Number(size.width) === frameDimensions[frameSet.size].width &&
-            Number(size.height) === frameDimensions[frameSet.size].height
+          (size: Dimension) =>
+            Number(size.width) ===
+              frameDimensions[frameSet.size as keyof typeof frameDimensions]
+                .width &&
+            Number(size.height) ===
+              frameDimensions[frameSet.size as keyof typeof frameDimensions]
+                .height
         )
         .map(() => poster)
     );
@@ -117,7 +120,7 @@ const PosterSectionDetails = () => {
           justifyContent: 'center',
         }}
       >
-        {pCategories.map((category: string, index: Key) => (
+        {pCategories.map((category: string, index: number) => (
           <Button
             key={index}
             value={category}

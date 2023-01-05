@@ -38,8 +38,10 @@ const FrameSectionDetails = () => {
 
     for (let i = 0; i < matches.length; i++) {
       if (dimensionArr.indexOf(matches[i]) !== -1)
-        // @ts-ignore
-        arr.push({ ...frameDimensions[matches[i]], size: matches[i] });
+        arr.push({
+          ...frameDimensions[matches[i] as keyof typeof frameDimensions],
+          size: matches[i],
+        });
     }
     return arr.sort((a, b) => a.width - b.width);
   };

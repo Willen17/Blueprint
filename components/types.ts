@@ -43,7 +43,7 @@ export interface Poster {
   id?: string;
   title: string;
   orientation: string;
-  size: Dimension[];
+  sizes: Dimension[];
 }
 
 export interface CanvasItem {
@@ -61,4 +61,9 @@ export interface Canvas {
   updatedAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
   background?: string; // TODO: put the correct type. Wille is working on this so i dont bother the type here
   items: CanvasItem[];
+}
+
+export interface EditingFrame {
+  isEditing: boolean;
+  item?: CanvasItem;
 }

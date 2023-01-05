@@ -69,6 +69,7 @@ const Header = () => {
             alt={currentUser.displayName || currentUser.email}
             src={currentUser.photoURL}
             sx={{
+              fontSize: 11,
               width: 25,
               height: 25,
               cursor: 'pointer',

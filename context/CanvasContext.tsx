@@ -32,6 +32,7 @@ interface CanvasContextValue {
   setFrameSets: Dispatch<SetStateAction<CanvasFrameSet[]>>;
   canvas: Canvas;
   setCanvas: Dispatch<SetStateAction<Canvas>>;
+  deleteFrame: () => void;
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
@@ -49,10 +50,11 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setFrameSets: () => [],
   canvas: { user: undefined, items: [] },
   setCanvas: () => {},
+  deleteFrame: () => {},
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { setIsEditingFrame } = useSidebar();
+  const { setIsEditingFrame, isEditingFrame, setAnchorSidebar } = useSidebar();
   const [background, setBackground] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [poster, setPoster] = useState<CanvasPoster>({
@@ -102,7 +104,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setPoster({ id: '', image: '', isPortrait: undefined });
       setFrameSet({ id: '', size: '', title: '' });
       setWithPassepartout(true);
-      setIsEditingFrame(false);
+      setIsEditingFrame({ isEditing: false });
     }
   }, [item, setIsEditingFrame]);
 
@@ -119,6 +121,14 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   }, [frameSet, poster, updateFrameSetState, withPassepartout]);
 
+  /** Handles click for deleting a frame in the canvas */
+  const deleteFrame = () => {
+    const newList = items.filter((i) => i !== isEditingFrame.item);
+    setItems(newList);
+    if (newList.length > 0) setAnchorSidebar(false);
+    setIsEditingFrame({ isEditing: false });
+  };
+
   /** Detects the states needed for Canvas and pushes them into the "canvas" state */
   /** This function shapes the canvas object for uploading to db - canvas collection */
   const updateCanvasState = useCallback(() => {
@@ -126,7 +136,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     // Now there is only backgournd and items, but missing all other things under type "Canvas"
     if (background)
       setCanvas((prevState) => ({ ...prevState, background: background }));
-    if (items.length > 0)
+    if (items.length >= 0)
       setCanvas((prevState) => ({ ...prevState, items: items }));
   }, [background, items]);
 
@@ -151,6 +161,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setFrameSets,
         canvas,
         setCanvas,
+        deleteFrame,
       }}
     >
       {children}

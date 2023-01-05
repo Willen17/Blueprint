@@ -6,14 +6,18 @@ import BgSection from './sidebar/BgSection';
 import FrameSection from './sidebar/FrameSection';
 import MobileSidebar from './sidebar/MobileSidebar';
 import PosterSection from './sidebar/PosterSection';
+import RemoveFrameButton from './sidebar/RemoveFrameButton';
 import { theme } from './theme';
 
 const Sidebar = () => {
-  const { anchorSidebar, setAnchorSidebar } = useSidebar();
-
-  const toggleClose = () => setAnchorSidebar(false);
+  const { anchorSidebar, setAnchorSidebar, setIsEditingFrame } = useSidebar();
   const { isEditingFrame } = useSidebar();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const toggleClose = () => {
+    setAnchorSidebar(false);
+    if (isEditingFrame.item) setIsEditingFrame({ isEditing: false });
+  };
 
   return (
     <>
@@ -64,12 +68,13 @@ const Sidebar = () => {
               flexDirection: 'column',
             }}
           >
-            {isEditingFrame ? (
+            {isEditingFrame.isEditing ? (
               <>
                 {mobile ? <MobileSidebar /> : null}
                 <BgSection />
                 <FrameSection />
                 <PosterSection />
+                {isEditingFrame.item ? <RemoveFrameButton /> : null}
               </>
             ) : (
               <AddFrameButton />
