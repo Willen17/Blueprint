@@ -11,10 +11,10 @@ const AddFrameButton = () => {
 
   const handleClick = () => {
     if (background) {
-      setIsEditingFrame(true);
+      setIsEditingFrame({ isEditing: true });
       setExpandedAccordion(sidebarSections[1]);
     }
-    setIsEditingFrame(true);
+    setIsEditingFrame({ isEditing: true });
   };
   return (
     <Box

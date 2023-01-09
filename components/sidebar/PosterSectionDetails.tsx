@@ -1,14 +1,13 @@
-// @ts-nocheck
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import Image from 'next/image';
-import { Key } from 'react';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
+import { Dimension } from '../types';
 
 const PosterSectionDetails = () => {
   const {
@@ -23,7 +22,9 @@ const PosterSectionDetails = () => {
     posterCategories,
     setPosterCategories,
     setAnchorSidebar,
+    isEditingFrame,
   } = useSidebar();
+  const mobile = useMediaQuery(theme.breakpoints.down(800));
 
   /** Handles change of orientation state */
   const handleOrientationChange = (value: string) => {
@@ -46,15 +47,22 @@ const PosterSectionDetails = () => {
 
   /** Filters posters by selected orientation and category */
   const filteredPosters = () => {
+    let sizeKey: string;
+    !frameSet.size
+      ? (sizeKey = isEditingFrame.item!.frame.size)
+      : (sizeKey = frameSet.size);
+
     const noCategory = Object.values(posterCategories).every(
       (v) => v === false
     );
     const filteredBySize = allPosters.flatMap((poster) =>
       poster.sizes
         .filter(
-          (size) =>
-            Number(size.width) === frameDimensions[frameSet.size].width &&
-            Number(size.height) === frameDimensions[frameSet.size].height
+          (size: Dimension) =>
+            Number(size.width) ===
+              frameDimensions[sizeKey as keyof typeof frameDimensions].width &&
+            Number(size.height) ===
+              frameDimensions[sizeKey as keyof typeof frameDimensions].height
         )
         .map(() => poster)
     );
@@ -75,7 +83,7 @@ const PosterSectionDetails = () => {
     return noCategory ? filteredBySize : filteredByCategory;
   };
 
-  return frameSet.id && frameSet.size ? (
+  return isEditingFrame.item || (frameSet.id && frameSet.size) ? (
     <>
       <SidebarSubtitle subtitle="Poster Type">
         <Box
@@ -117,7 +125,7 @@ const PosterSectionDetails = () => {
           justifyContent: 'center',
         }}
       >
-        {pCategories.map((category: string, index: Key) => (
+        {pCategories.map((category: string, index: number) => (
           <Button
             key={index}
             value={category}
@@ -147,7 +155,7 @@ const PosterSectionDetails = () => {
           justifyContent: 'center',
           my: 2.5,
           height: '100%',
-          overflowY: 'scroll',
+          overflowY: !mobile ? 'scroll' : null,
           '&::-webkit-scrollbar': {
             width: '0.4em',
           },
@@ -189,7 +197,8 @@ const PosterSectionDetails = () => {
                 setAnchorSidebar(false);
               }}
             />
-            {poster.id === p.id ? (
+            {(isEditingFrame.item && isEditingFrame.item.poster.id === p.id) ||
+            poster.id === p.id ? (
               <IconCheck
                 stroke={1}
                 color={theme.palette.primary.contrastText}

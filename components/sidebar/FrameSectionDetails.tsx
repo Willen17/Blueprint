@@ -11,7 +11,7 @@ import { theme } from '../theme';
 const FrameSectionDetails = () => {
   const { frameSet, setFrameSet, setWithPassepartout, withPassepartout } =
     useCanvas();
-  const { allFrames, setExpandedAccordion } = useSidebar();
+  const { allFrames, setExpandedAccordion, isEditingFrame } = useSidebar();
 
   /** Renders correct frame JSX */
   const getFrameJSX = (id: string) => {
@@ -25,9 +25,14 @@ const FrameSectionDetails = () => {
 
   /** Gets and renders available frame sizes from frame data */
   const getFrameSizes = () => {
+    let frameId: string;
+    !frameSet.id
+      ? (frameId = isEditingFrame.item!.frame.id)
+      : (frameId = frameSet.id);
+
     const arr = [];
     const currentFrame = allFrames
-      .filter((fr) => fr.id === frameSet.id)
+      .filter((fr) => fr.id === frameId)
       .map((fr) => fr);
     const dimensionArr = Object.keys(frameDimensions).flatMap(
       (dimension) => dimension
@@ -38,8 +43,10 @@ const FrameSectionDetails = () => {
 
     for (let i = 0; i < matches.length; i++) {
       if (dimensionArr.indexOf(matches[i]) !== -1)
-        // @ts-ignore
-        arr.push({ ...frameDimensions[matches[i]], size: matches[i] });
+        arr.push({
+          ...frameDimensions[matches[i] as keyof typeof frameDimensions],
+          size: matches[i],
+        });
     }
     return arr.sort((a, b) => a.width - b.width);
   };
@@ -97,7 +104,24 @@ const FrameSectionDetails = () => {
             }}
           >
             {getFrameJSX(fr.id!)}
-            {frameSet.id === fr.id ? (
+            {isEditingFrame.item &&
+            !frameSet.id &&
+            isEditingFrame.item.frame.id === fr.id ? (
+              <IconCheck
+                stroke={1}
+                color={theme.palette.primary.contrastText}
+                size={15}
+                style={{
+                  background: theme.palette.primary.main,
+                  opacity: 0.7,
+                  borderRadius: 50,
+                  padding: 2,
+                  position: 'absolute',
+                  right: 3,
+                  bottom: 3,
+                }}
+              />
+            ) : frameSet.id === fr.id ? (
               <IconCheck
                 stroke={1}
                 color={theme.palette.primary.contrastText}
@@ -117,7 +141,7 @@ const FrameSectionDetails = () => {
         ))}
       </Box>
 
-      {frameSet.id ? (
+      {frameSet.id || isEditingFrame.item?.frame ? (
         <>
           <SidebarSubtitle subtitle="Size (cm)" />
           <Box
@@ -149,7 +173,11 @@ const FrameSectionDetails = () => {
                 <Checkbox
                   value={dimension.width + 'x' + dimension.height}
                   size="small"
-                  checked={frameSet.size === dimension.size}
+                  checked={
+                    !frameSet.size
+                      ? isEditingFrame.item?.frame.size === dimension.size
+                      : frameSet.size === dimension.size
+                  }
                   sx={{ p: 0 }}
                   onClick={() => {
                     setFrameSet((prevState) => ({

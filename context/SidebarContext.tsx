@@ -7,8 +7,15 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Background, Frame, Poster } from '../components/types';
+import {
+  Background,
+  CanvasItem,
+  EditingFrame,
+  Frame,
+  Poster,
+} from '../components/types';
 import { sidebarSections } from '../lib/valSchemas';
+import { useCanvas } from './CanvasContext';
 
 interface SidebarContextValue {
   anchorSidebar: boolean;
@@ -17,8 +24,8 @@ interface SidebarContextValue {
   setExpandedAccordion: Dispatch<SetStateAction<string | false>>;
   openMobileSection: string;
   setOpenMobileSection: Dispatch<SetStateAction<string>>;
-  isEditingFrame: boolean;
-  setIsEditingFrame: Dispatch<SetStateAction<boolean>>;
+  isEditingFrame: EditingFrame;
+  setIsEditingFrame: Dispatch<SetStateAction<EditingFrame>>;
   backgroundCategories: {
     'Living room': boolean;
     Bedroom: boolean;
@@ -65,6 +72,7 @@ interface SidebarContextValue {
   setAllBackgrounds: Dispatch<SetStateAction<Background[]>>;
   allPosters: Poster[];
   setAllPosters: Dispatch<SetStateAction<Poster[]>>;
+  handleSelectItem: (item: CanvasItem) => void;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -74,8 +82,8 @@ export const SidebarContext = createContext<SidebarContextValue>({
   setExpandedAccordion: () => '',
   openMobileSection: '',
   setOpenMobileSection: () => '',
-  isEditingFrame: false,
-  setIsEditingFrame: () => false,
+  isEditingFrame: { isEditing: false },
+  setIsEditingFrame: () => {},
   backgroundCategories: {
     'Living room': false,
     Bedroom: false,
@@ -102,9 +110,11 @@ export const SidebarContext = createContext<SidebarContextValue>({
   setAllBackgrounds: () => [],
   allPosters: [],
   setAllPosters: () => [],
+  handleSelectItem: () => {},
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { setWithPassepartout } = useCanvas();
   const [anchorSidebar, setAnchorSidebar] = useState<boolean>(true);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
     sidebarSections[0]
@@ -133,9 +143,17 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [allFrames, setAllFrames] = useState<Frame[]>([]);
   const [allBackgrounds, setAllBackgrounds] = useState<Background[]>([]);
   const [allPosters, setAllPosters] = useState<Poster[]>([]);
+  const [isEditingFrame, setIsEditingFrame] = useState<EditingFrame>({
+    isEditing: false,
+  });
 
-  // TODO: setIsEditingFrame must be set to true when a user clicks a frame in the canvas
-  const [isEditingFrame, setIsEditingFrame] = useState<boolean>(false);
+  const handleSelectItem = (item: CanvasItem) => {
+    setAnchorSidebar(true); // turn off before sending PR
+    setIsEditingFrame({ isEditing: true, item });
+    setWithPassepartout(item.withPassepartout);
+
+    setExpandedAccordion(sidebarSections[2]);
+  };
 
   return (
     <SidebarContext.Provider
@@ -158,6 +176,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setAllBackgrounds,
         allPosters,
         setAllPosters,
+        handleSelectItem,
       }}
     >
       {children}

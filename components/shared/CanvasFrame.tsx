@@ -30,7 +30,7 @@ interface Props {
 // saved in the db, as in that case the canvas wont be empty after reloading... or?
 
 const CanvasFrame = (props: Props) => {
-  const { allFrames } = useSidebar();
+  const { allFrames, handleSelectItem } = useSidebar();
   const dimension =
     frameDimensions[props.item.frame.size as keyof typeof frameDimensions];
   const match = allFrames.filter((frame) => frame.id === props.item.frame.id);
@@ -223,7 +223,12 @@ const CanvasFrame = (props: Props) => {
         draggable
         onDragStart={() => props.selectShape(null)}
         onDragEnd={handleDragEnd}
-        onClick={() => props.selectShape(props.index)}
+        onClick={() => {
+          props.selectShape(props.index), handleSelectItem(props.item);
+        }}
+        onTap={() => {
+          props.selectShape(props.index), handleSelectItem(props.item);
+        }}
       >
         <>
           {match[0].category.includes('Wooden') ? (
