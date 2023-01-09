@@ -132,8 +132,14 @@ const CanvasFrame = (props: Props) => {
   });
 
   const [scaledSizes, setScaledSizes] = useState({
-    width: size.width * multiplyValue * scaleFactor,
-    height: size.height * multiplyValue * scaleFactor,
+    width:
+      (props.item.poster.isPortrait ? dimension.width : dimension.height) *
+      multiplyValue *
+      scaleFactor,
+    height:
+      (props.item.poster.isPortrait ? dimension.height : dimension.width) *
+      multiplyValue *
+      scaleFactor,
   });
 
   useEffect(() => {
@@ -372,13 +378,15 @@ const CanvasFrame = (props: Props) => {
               opacity={0.5}
             />
           </Group>
-          <Text
-            text={size.width + 'x' + size.height}
-            x={scaledSizes.width / 2 - 20}
-            y={scaledSizes.height + 10}
-            fontFamily={theme.typography.fontFamily}
-            fontSize={Number(theme.typography.body1.fontSize)}
-          />
+          {props.isSelected && (
+            <Text
+              text={size.width + 'x' + size.height}
+              x={scaledSizes.width / 2 - 20}
+              y={scaledSizes.height + 10}
+              fontFamily={theme.typography.fontFamily}
+              fontSize={Number(theme.typography.body1.fontSize)}
+            />
+          )}
           {props.isSelected && posterSizes.length < 2 && (
             <Text
               text="This poster only has this size"
