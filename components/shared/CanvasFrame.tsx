@@ -95,51 +95,41 @@ const CanvasFrame = (props: Props) => {
     }
   }, [props.isSelected]);
 
+  const posterSizes = props.item.poster.sizes.sort((a, b) => a.width - b.width);
   const allFrameSizes = props.item.poster.isPortrait
-    ? [
-        {
-          width: 21 * multiplyValue * scaleFactor,
-          height: 30 * multiplyValue * scaleFactor,
-        },
-        {
-          width: 30 * multiplyValue * scaleFactor,
-          height: 40 * multiplyValue * scaleFactor,
-        },
-        {
-          width: 40 * multiplyValue * scaleFactor,
-          height: 50 * multiplyValue * scaleFactor,
-        },
-        {
-          width: 50 * multiplyValue * scaleFactor,
-          height: 70 * multiplyValue * scaleFactor,
-        },
-        {
-          width: 70 * multiplyValue * scaleFactor,
-          height: 100 * multiplyValue * scaleFactor,
-        },
-      ]
-    : [
-        {
-          height: 21 * multiplyValue * scaleFactor,
-          width: 30 * multiplyValue * scaleFactor,
-        },
-        {
-          height: 30 * multiplyValue * scaleFactor,
-          width: 40 * multiplyValue * scaleFactor,
-        },
-        {
-          height: 40 * multiplyValue * scaleFactor,
-          width: 50 * multiplyValue * scaleFactor,
-        },
-        {
-          height: 50 * multiplyValue * scaleFactor,
-          width: 70 * multiplyValue * scaleFactor,
-        },
-        {
-          height: 70 * multiplyValue * scaleFactor,
-          width: 100 * multiplyValue * scaleFactor,
-        },
-      ];
+    ? posterSizes
+        .map((posterSize) => {
+          return {
+            width: posterSize.width * multiplyValue * scaleFactor,
+            height: posterSize.height * multiplyValue * scaleFactor,
+          };
+        })
+        .sort((a, b) => a.width - b.width)
+    : posterSizes
+        .map((posterSize) => {
+          return {
+            width: posterSize.height * multiplyValue * scaleFactor,
+            height: posterSize.width * multiplyValue * scaleFactor,
+          };
+        })
+        .sort((a, b) => a.height - b.height);
+
+  const hasRequiredPairs = posterSizes.some((posterSize, index, array) => {
+    return (
+      (Number(posterSize.width) === 21 &&
+        Number(posterSize.height) === 30 &&
+        Number(array[index + 1]?.width) === 30 &&
+        Number(array[index + 1]?.height) === 40) ||
+      (Number(posterSize.width) === 30 &&
+        Number(posterSize.height) === 40 &&
+        Number(array[index + 1]?.width) === 40 &&
+        Number(array[index + 1]?.height) === 50) ||
+      (Number(posterSize.width) === 40 &&
+        Number(posterSize.height) === 50 &&
+        Number(array[index + 1]?.width) === 50 &&
+        Number(array[index + 1]?.height) === 70)
+    );
+  });
 
   const [scaledSizes, setScaledSizes] = useState({
     width: size.width * multiplyValue * scaleFactor,
@@ -389,10 +379,19 @@ const CanvasFrame = (props: Props) => {
             fontFamily={theme.typography.fontFamily}
             fontSize={Number(theme.typography.body1.fontSize)}
           />
+          {props.isSelected && posterSizes.length < 2 && (
+            <Text
+              text="This poster only has this size"
+              x={scaledSizes.width / 2 - 70}
+              y={scaledSizes.height + 20}
+              fontFamily={theme.typography.fontFamily}
+              fontSize={Number(theme.typography.body1.fontSize)}
+            />
+          )}
         </>
       </Group>
 
-      {props.isSelected && (
+      {props.isSelected && posterSizes.length > 1 && (
         <Transformer
           ref={transformRef}
           rotateEnabled={false}
@@ -428,12 +427,27 @@ const CanvasFrame = (props: Props) => {
 
             // find the next fixed size based on the distance the user dragged the anchor
             let nextSize = null;
-            if (newBox.width - bbox.width > 20 * multiplyValue * scaleFactor) {
+            if (
+              newBox.width - bbox.width >
+              (hasRequiredPairs
+                ? 20
+                : !props.item.poster.isPortrait
+                ? 40
+                : 30) *
+                multiplyValue *
+                scaleFactor
+            ) {
               // find the next larger fixed size
               nextSize = allFrameSizes.find((size) => size.width > bbox.width);
             } else if (
               bbox.width - newBox.width >
-              20 * multiplyValue * scaleFactor
+              (hasRequiredPairs
+                ? 20
+                : !props.item.poster.isPortrait
+                ? 40
+                : 30) *
+                multiplyValue *
+                scaleFactor
             ) {
               // find the next smaller fixed size
               nextSize = allFrameSizes
