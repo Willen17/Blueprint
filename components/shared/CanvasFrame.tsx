@@ -3,6 +3,7 @@ import { isEqual } from 'lodash';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Group, Image, Rect, Text, Transformer } from 'react-konva';
 import useImage from 'use-image';
+import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
 import { theme } from '../theme';
@@ -31,6 +32,8 @@ interface Props {
 
 const CanvasFrame = (props: Props) => {
   const { allFrames, handleSelectItem } = useSidebar();
+  // TODO: call setFrameSet to change the frame size whenever the user has resized it.
+  const { setFrameSet } = useCanvas();
   const dimension =
     frameDimensions[props.item.frame.size as keyof typeof frameDimensions];
   const match = allFrames.filter((frame) => frame.id === props.item.frame.id);
@@ -186,6 +189,13 @@ const CanvasFrame = (props: Props) => {
     });
   }, [frameBorder, scaleFactor, dimension, props, size]);
 
+  useEffect(() => {
+    setSize({
+      width: props.item.poster.isPortrait ? dimension.width : dimension.height,
+      height: props.item.poster.isPortrait ? dimension.height : dimension.width,
+    });
+  }, [dimension, props.item.poster.isPortrait]);
+
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
     setElementPos({
       x: e.target.x(),
@@ -206,7 +216,7 @@ const CanvasFrame = (props: Props) => {
       y: newY,
     };
   };
-  return (
+  return poster ? (
     <>
       <Rect
         fill="transparent"
@@ -489,7 +499,7 @@ const CanvasFrame = (props: Props) => {
         />
       )}
     </>
-  );
+  ) : null;
 };
 
 export default CanvasFrame;
