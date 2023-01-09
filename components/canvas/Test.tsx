@@ -39,7 +39,6 @@ function Test() {
 
   const [canvasBackground] = useImage(background);
 
-  // let x:  number, y:number, width: number, height: number, scaleX:number, scaleY:number;
   let x = 0,
     y = 0,
     width = 0,
@@ -65,25 +64,6 @@ function Test() {
   }
 
   const [selectedId, selectShape] = useState<number | null>(null);
-  // const shapeRef = useRef<Konva.Rect>(null);
-  // const trRef = useRef<Konva.Transformer>(null);
-  // const [rectangles, setRectangles] = useState(initialRec);
-  // const [selected, setSelected] = useState(false);
-
-  // useEffect(() => {
-  //   if (selected && trRef.current && shapeRef.current) {
-  //     trRef.current.nodes([shapeRef.current]);
-  //     trRef.current.getLayer().batchDraw();
-  //     trRef.current.centeredScaling(true);
-  //     // trRef.current.enabledAnchors([
-  //     //   'top-left',
-  //     //   'top-right',
-  //     //   'bottom-left',
-  //     //   'bottom-right',
-  //     // ]);
-  //     trRef.current.flipEnabled(false);
-  //   }
-  // }, [selected]);
 
   const checkDeselect = (e: Konva.KonvaEventObject<MouseEvent>) => {
     // deselect when clicked on empty area
@@ -127,72 +107,7 @@ function Test() {
             ) : null
           )}
         </Layer>
-        <Layer>
-          {/* <>
-            <Rect
-              draggable
-              ref={shapeRef}
-              x={rectangles.x}
-              y={rectangles.y}
-              width={rectangles.width}
-              height={rectangles.height}
-              fill={rectangles.fill}
-              onClick={() => setSelected(true)}
-              onTap={() => setSelected(true)}
-              onDragEnd={(e) => {
-                setRectangles({
-                  ...rectangles,
-                  x: e.target.x(),
-                  y: e.target.y(),
-                });
-              }}
-              onTransformEnd={(e) => {
-                // transformer is changing scale of the node
-                // and NOT its width or height
-                // but in the store we have only width and height
-                // to match the data better we will reset scale on transform end
-                const node = shapeRef.current;
-                if (node) {
-                  let maxW = 200;
-
-                  let scaleX = node.scaleX();
-                  let scaleY = node.scaleY();
-                  const width = node.width() * scaleX;
-                  const height = node.width() * scaleY;
-                  if (width > maxW) {
-                    scaleX = maxW / node.width();
-                  }
-                  if (height > maxW) {
-                    scaleY = maxW / node.height();
-                  }
-                  // we will reset it back
-                  node.scaleX(1);
-                  node.scaleY(1);
-                  setRectangles({
-                    ...rectangles,
-                    x: node.x(),
-                    y: node.y(),
-                    // set minimal value
-                    width: Math.max(5, node.width() * scaleX),
-                    height: Math.max(5, node.height() * scaleY),
-                  });
-                }
-              }}
-            />
-
-            <Transformer
-              ref={trRef}
-              rotateEnabled={false}
-              boundBoxFunc={(oldBox, newBox) => {
-                // limit resize
-                if (newBox.width < 5 || newBox.height < 5) {
-                  return oldBox;
-                }
-                return newBox;
-              }}
-            /> */}
-          {/* </> */}
-        </Layer>
+        <Layer></Layer>
       </Stage>
     </Container>
   );
