@@ -184,6 +184,7 @@ const PosterSectionDetails = () => {
                   id: p.id!,
                   image: p.image,
                   isPortrait: p.orientation === 'Portrait' ? true : false,
+                  sizes: p.sizes,
                 });
                 setAnchorSidebar(false);
               }}

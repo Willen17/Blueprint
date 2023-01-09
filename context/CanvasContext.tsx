@@ -39,7 +39,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setBackground: () => '',
   withPassepartout: true,
   setWithPassepartout: () => true,
-  poster: { id: '', image: '', isPortrait: undefined },
+  poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
   setPoster: () => '',
   posterOrientation: '',
   setPosterOrientation: () => '',
@@ -59,6 +59,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     id: '',
     image: '',
     isPortrait: undefined,
+    sizes: [],
   });
   const [posterOrientation, setPosterOrientation] = useState<string>('');
   const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
@@ -69,7 +70,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [frameSets, setFrameSets] = useState<CanvasFrameSet[]>([]);
   const [item, setItem] = useState<CanvasItem>({
     frame: frameSet,
-    poster: { id: '', image: '', isPortrait: undefined },
+    poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
     withPassepartout: withPassepartout,
     position: { x: 0, y: 0 },
   });
@@ -95,11 +96,11 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       /** reset all states below as the item has been pushed to the items array state */
       setItem({
         frame: { id: '', title: '', size: '' },
-        poster: { id: '', image: '', isPortrait: undefined },
+        poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
         withPassepartout: true,
         position: { x: 0, y: 0 },
       });
-      setPoster({ id: '', image: '', isPortrait: undefined });
+      setPoster({ id: '', image: '', isPortrait: undefined, sizes: [] });
       setFrameSet({ id: '', size: '', title: '' });
       setWithPassepartout(true);
       setIsEditingFrame(false);
