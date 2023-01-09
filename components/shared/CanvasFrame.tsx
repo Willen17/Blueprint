@@ -144,6 +144,7 @@ const CanvasFrame = (props: Props) => {
       onDragEnd={handleDragEnd}
       ref={groupRef}
       onClick={() => handleSelectItem(props.item)}
+      onTap={() => handleSelectItem(props.item)}
       onMouseEnter={(e) =>
         (e.target.getStage()!.container().style.cursor = 'pointer')
       }

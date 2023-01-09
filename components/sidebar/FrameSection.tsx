@@ -7,7 +7,7 @@ import { theme } from '../theme';
 import FrameSectionDetails from './FrameSectionDetails';
 
 const FrameSection = () => {
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const mobile = useMediaQuery(theme.breakpoints.down(800));
   const { openMobileSection } = useSidebar();
 
   return mobile && openMobileSection !== sidebarSections[1] ? null : mobile &&

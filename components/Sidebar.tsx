@@ -12,7 +12,7 @@ import { theme } from './theme';
 const Sidebar = () => {
   const { anchorSidebar, setAnchorSidebar, setIsEditingFrame } = useSidebar();
   const { isEditingFrame } = useSidebar();
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const mobile = useMediaQuery(theme.breakpoints.down(800));
 
   const toggleClose = () => {
     setAnchorSidebar(false);
@@ -30,16 +30,30 @@ const Sidebar = () => {
         open={anchorSidebar}
         onClose={toggleClose}
         sx={{
-          mt: '50px',
           display: 'flex',
           flexDirection: 'row',
           '& .MuiDrawer-paper': {
             position: 'absolute',
-            height: 'calc(100vh - 50px)',
-            maxHeight: 'calc(100vh - 50px)',
+            right: 0,
+            top: 50,
             bgcolor: 'transparent',
             boxShadow: 0,
-            overflowY: 'clip',
+            overflowX: 'clip',
+            // the below scrollbar is not supposed to be seen on desktop
+            // it's here only because the user couldnt scroll to the delete button on iphone
+            // other phone models not tested
+            overflowY: isEditingFrame && mobile ? 'scroll' : 'clip',
+            '&::-webkit-scrollbar': {
+              width: 0,
+            },
+            '&::-webkit-scrollbar-track': {
+              boxShadow: 'none',
+              webkitBoxShadow: 'none',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'transparent',
+              outline: 'none',
+            },
           },
         }}
       >
@@ -61,8 +75,8 @@ const Sidebar = () => {
             minWidth={280}
             position="relative"
             sx={{
-              height: 'calc(100vh - 50px)',
-              maxHeight: 'calc(100vh - 50px)',
+              height: mobile ? '100vh' : 'calc(100vh - 50px)',
+              maxHeight: mobile ? '100vh' : 'calc(100vh - 50px)',
               borderLeft: '1px solid #F1F1F1',
               display: 'flex',
               flexDirection: 'column',

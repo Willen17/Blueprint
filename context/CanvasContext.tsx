@@ -84,34 +84,56 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     items: [item],
   });
 
+  /** reset all states below as the item has been pushed to the items array state */
+  const clearStates = useCallback(() => {
+    setItem({
+      frame: { id: '', title: '', size: '' },
+      poster: { id: '', image: '', isPortrait: undefined },
+      withPassepartout: true,
+      position: { x: 0, y: 0 },
+    });
+    setFrameSet({ id: '', size: '', title: '' });
+    setPoster({ id: '', image: '', isPortrait: undefined });
+  }, []);
+
   /** Detects the selection under frame section in sidebar and pushes them into the "frameSets" state */
-  const updateFrameSetState = useCallback(
-    () => setFrameSets([...frameSets, frameSet]),
-    [frameSet, frameSets]
-  );
+  const updateFrameSetsState = useCallback(() => {
+    setFrameSets([...frameSets, frameSet]);
+  }, [frameSet, frameSets]);
 
   /** Detects if the "item" state is complete and pushes it into the "items" state */
   const updateItemsState = useCallback(() => {
     if (item.frame.id && item.poster.id) {
-      setItems((prevState) => [...prevState, item]);
-      /** reset all states below as the item has been pushed to the items array state */
-      setItem({
-        frame: { id: '', title: '', size: '' },
-        poster: { id: '', image: '', isPortrait: undefined },
-        withPassepartout: true,
-        position: { x: 0, y: 0 },
-      });
-      setPoster({ id: '', image: '', isPortrait: undefined });
-      setFrameSet({ id: '', size: '', title: '' });
-      setWithPassepartout(true);
+      if (isEditingFrame.item) {
+        const index = items.findIndex(
+          (i) => i.frame === isEditingFrame.item?.frame
+        );
+        items[index] = item;
+      } else {
+        setItems((prevState) => [...prevState, item]);
+      }
+      clearStates();
       setIsEditingFrame({ isEditing: false });
     }
-  }, [item, setIsEditingFrame]);
+  }, [clearStates, isEditingFrame.item, item, items, setIsEditingFrame]);
 
   /** Updates the "item" state for single item */
   const updateItemState = useCallback(() => {
-    if (frameSet.id && frameSet.size && poster.id) {
-      updateFrameSetState();
+    if (isEditingFrame.item) {
+      setItem({
+        frame: {
+          id: frameSet.id ? frameSet.id : isEditingFrame.item.frame.id,
+          title: frameSet.title
+            ? frameSet.title
+            : isEditingFrame.item.frame.title,
+          size: frameSet.size ? frameSet.size : isEditingFrame.item.frame.size,
+        },
+        poster: poster ? poster : isEditingFrame.item.poster,
+        withPassepartout: withPassepartout,
+        position: isEditingFrame.item.position, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
+      });
+    } else if (frameSet.id && frameSet.size && poster.id) {
+      updateFrameSetsState();
       setItem({
         frame: frameSet,
         poster: poster,
@@ -119,7 +141,13 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         position: { x: 0, y: 0 }, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
       });
     }
-  }, [frameSet, poster, updateFrameSetState, withPassepartout]);
+  }, [
+    frameSet,
+    isEditingFrame.item,
+    poster,
+    updateFrameSetsState,
+    withPassepartout,
+  ]);
 
   /** Handles click for deleting a frame in the canvas */
   const deleteFrame = () => {
