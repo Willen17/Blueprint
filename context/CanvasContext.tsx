@@ -40,7 +40,7 @@ export const CanvasContext = createContext<CanvasContextValue>({
   setBackground: () => '',
   withPassepartout: true,
   setWithPassepartout: () => true,
-  poster: { id: '', image: '', isPortrait: undefined },
+  poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
   setPoster: () => '',
   posterOrientation: '',
   setPosterOrientation: () => '',
@@ -61,6 +61,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     id: '',
     image: '',
     isPortrait: undefined,
+    sizes: [],
   });
   const [posterOrientation, setPosterOrientation] = useState<string>('');
   const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
@@ -71,7 +72,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [frameSets, setFrameSets] = useState<CanvasFrameSet[]>([]);
   const [item, setItem] = useState<CanvasItem>({
     frame: frameSet,
-    poster: { id: '', image: '', isPortrait: undefined },
+    poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
     withPassepartout: withPassepartout,
     position: { x: 0, y: 0 },
   });
@@ -88,12 +89,12 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const clearStates = useCallback(() => {
     setItem({
       frame: { id: '', title: '', size: '' },
-      poster: { id: '', image: '', isPortrait: undefined },
+      poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
       withPassepartout: true,
       position: { x: 0, y: 0 },
     });
     setFrameSet({ id: '', size: '', title: '' });
-    setPoster({ id: '', image: '', isPortrait: undefined });
+    setPoster({ id: '', image: '', isPortrait: undefined, sizes: [] });
   }, []);
 
   /** Detects the selection under frame section in sidebar and pushes them into the "frameSets" state */

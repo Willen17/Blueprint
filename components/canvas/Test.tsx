@@ -1,4 +1,5 @@
 import { Container } from '@mui/material';
+import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
 import { Image, Layer, Stage } from 'react-konva';
 import useImage from 'use-image';
@@ -38,7 +39,6 @@ function Test() {
 
   const [canvasBackground] = useImage(background);
 
-  // let x:  number, y:number, width: number, height: number, scaleX:number, scaleY:number;
   let x = 0,
     y = 0,
     width = 0,
@@ -63,9 +63,25 @@ function Test() {
     y = (dimensions.height - height) / 2;
   }
 
+  const [selectedId, selectShape] = useState<number | null>(null);
+
+  const checkDeselect = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    // deselect when clicked on empty area
+    const clickedOnEmpty =
+      e.target === e.target.getStage() ||
+      e.target.attrs.alt === 'Canvas background';
+    if (clickedOnEmpty) {
+      selectShape(null);
+    }
+  };
+
   return (
     <Container sx={{ height: '100%' }} ref={stageCanvasRef}>
-      <Stage height={dimensions.height} width={dimensions.width}>
+      <Stage
+        height={dimensions.height}
+        width={dimensions.width}
+        onMouseDown={checkDeselect}
+      >
         <Layer>
           {canvasBackground && (
             <Image
@@ -85,10 +101,13 @@ function Test() {
                 index={index}
                 imageScale={{ scaleX, scaleY }}
                 bg={{ width, height, x, y }}
+                selectShape={selectShape}
+                isSelected={index === selectedId}
               />
             ) : null
           )}
         </Layer>
+        <Layer></Layer>
       </Stage>
     </Container>
   );

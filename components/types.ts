@@ -34,6 +34,7 @@ export interface CanvasPoster {
   id: string;
   image: string;
   isPortrait: boolean | undefined;
+  sizes: Dimension[];
 }
 
 export interface Poster {
