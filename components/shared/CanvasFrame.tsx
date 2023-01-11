@@ -6,8 +6,9 @@ import useImage from 'use-image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
+import { getSizeString } from '../helper';
 import { theme } from '../theme';
-import { CanvasItem } from '../types';
+import { CanvasItem, Dimension } from '../types';
 
 interface Props {
   item: CanvasItem;
@@ -26,13 +27,8 @@ interface Props {
   isSelected: boolean;
 }
 
-// TODO: what is missing here is the frame scaling and previous position
-// but for previous position i guess we are only able to do it once we have the canvas object
-// saved in the db, as in that case the canvas wont be empty after reloading... or?
-
 const CanvasFrame = (props: Props) => {
   const { allFrames, handleSelectItem } = useSidebar();
-  // TODO: call setFrameSet to change the frame size whenever the user has resized it.
   const { setFrameSet } = useCanvas();
   const dimension =
     frameDimensions[props.item.frame.size as keyof typeof frameDimensions];
@@ -79,7 +75,7 @@ const CanvasFrame = (props: Props) => {
   }
   const imageRef = useRef<Konva.Rect>(null);
   const transformRef = useRef<Konva.Transformer>(null);
-  const [size, setSize] = useState<{ width: number; height: number }>({
+  const [size, setSize] = useState<Dimension>({
     width: props.item.poster.isPortrait ? dimension.width : dimension.height,
     height: props.item.poster.isPortrait ? dimension.height : dimension.width,
   });
@@ -196,11 +192,15 @@ const CanvasFrame = (props: Props) => {
     });
   }, [dimension, props.item.poster.isPortrait]);
 
+  useEffect(() => {
+    setFrameSet((prevState) => ({
+      ...prevState,
+      size: getSizeString(size),
+    }));
+  }, [setFrameSet, size]);
+
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
-    setElementPos({
-      x: e.target.x(),
-      y: e.target.y(),
-    });
+    setElementPos({ x: e.target.x(), y: e.target.y() });
     props.selectShape(props.index);
   };
 
@@ -211,10 +211,7 @@ const CanvasFrame = (props: Props) => {
       y!,
       Math.min(pos.y, y! + height - scaledSizes.height!)
     );
-    return {
-      x: newX,
-      y: newY,
-    };
+    return { x: newX, y: newY };
   };
   return poster ? (
     <>
@@ -231,7 +228,9 @@ const CanvasFrame = (props: Props) => {
         y={elementPos.y}
         dragBoundFunc={handleDrag}
         draggable
-        onDragStart={() => props.selectShape(null)}
+        onDragStart={() => {
+          props.selectShape(null), handleSelectItem(props.item);
+        }}
         onDragEnd={handleDragEnd}
         onClick={() => {
           props.selectShape(props.index), handleSelectItem(props.item);
