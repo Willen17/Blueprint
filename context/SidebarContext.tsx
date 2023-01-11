@@ -114,7 +114,7 @@ export const SidebarContext = createContext<SidebarContextValue>({
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { setWithPassepartout } = useCanvas();
+  const { setWithPassepartout, setPoster, setFrameSet } = useCanvas();
   const [anchorSidebar, setAnchorSidebar] = useState<boolean>(true);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
     sidebarSections[0]
@@ -148,10 +148,9 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   });
 
   const handleSelectItem = (item: CanvasItem) => {
-    setAnchorSidebar(true); // turn off before sending PR
+    // setAnchorSidebar(true);
     setIsEditingFrame({ isEditing: true, item });
     setWithPassepartout(item.withPassepartout);
-
     setExpandedAccordion(sidebarSections[2]);
   };
 
