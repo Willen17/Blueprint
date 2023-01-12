@@ -1,5 +1,6 @@
-import { AppBar, Avatar, Box, Link, Modal, Typography } from '@mui/material';
+import { AppBar, Avatar, Box, Modal, Typography } from '@mui/material';
 import {
+  IconArtboard,
   IconDeviceFloppy,
   IconDownload,
   IconLogout,
@@ -8,6 +9,7 @@ import {
   IconUser,
 } from '@tabler/icons';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useUser } from '../context/UserContext';
 import bpLogo from '../public/logo/bp-logo.png';
@@ -127,21 +129,32 @@ const Header = () => {
             px: 1,
           }}
         >
-          {isAuthenticated ? (
-            <>
-              <Link href="/admin/createBackground" underline="none">
-                <IconWithText text="Add Background" icon={IconPhotoPlus} />
-              </Link>
-              <Link href="/admin/createPoster" underline="none">
-                <IconWithText text="Add Poster" icon={IconTexture} />
-              </Link>
-            </>
-          ) : null}
-          <IconWithText
-            text="Sign out"
-            icon={IconLogout}
-            onClick={handleClickSignOut}
-          />
+          <Box sx={{ pl: 1, py: 0.5, textAlign: 'center' }}>
+            {isAuthenticated ? (
+              <>
+                <Link href="/" style={{ textDecoration: 'none' }}>
+                  <IconWithText text="Canvas" icon={IconArtboard} />
+                </Link>
+                <Link
+                  href="/admin/createBackground"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <IconWithText text="Add Background" icon={IconPhotoPlus} />
+                </Link>
+                <Link
+                  href="/admin/createPoster"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <IconWithText text="Add Poster" icon={IconTexture} />
+                </Link>
+              </>
+            ) : null}
+            <IconWithText
+              text="Sign out"
+              icon={IconLogout}
+              onClick={handleClickSignOut}
+            />
+          </Box>
         </Box>
       </Modal>
     </>
