@@ -29,8 +29,11 @@ const Layout = (props: Props) => {
         >
           {props.children}
         </main>
-        {!router.pathname.includes('admin') ||
-          (router.route !== '404' && <Sidebar />)}
+
+        {router.pathname.includes('admin') ||
+        router.pathname === '/404' ? null : (
+          <Sidebar />
+        )}
       </Box>
     </>
   );

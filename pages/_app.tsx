@@ -14,11 +14,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <SidebarContextProvider>
         <CanvasContextProvider>
           <UserContextProvider>
-            <Layout>
-              <ProtectedRoute>
+            <ProtectedRoute>
+              <Layout>
                 <Component {...pageProps} />
-              </ProtectedRoute>
-            </Layout>
+              </Layout>
+            </ProtectedRoute>
           </UserContextProvider>
         </CanvasContextProvider>
       </SidebarContextProvider>
