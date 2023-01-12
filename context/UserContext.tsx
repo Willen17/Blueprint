@@ -1,4 +1,9 @@
-import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  User,
+} from 'firebase/auth';
 import {
   createContext,
   FC,
@@ -10,26 +15,35 @@ import {
 import { auth } from '../firebase/firebaseConfig';
 
 interface UserContextValue {
-  currentUser: any;
+  currentUser: User | null;
+  isAuthenticated: boolean;
   handleGoogleSignIn: () => void;
   handleSignOut: () => void;
 }
 
 const UserContext = createContext<UserContextValue>({
-  currentUser: undefined,
+  currentUser: null,
+  isAuthenticated: false,
   handleGoogleSignIn: () => {},
   handleSignOut: () => {},
 });
 
 const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<any>();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenicated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-    });
+    const unsubscribe = auth.onAuthStateChanged((user) =>
+      setCurrentUser(user as User)
+    );
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (currentUser?.uid === '9ZT8CTmPj1ZRZoYGPHGv7afPJix1')
+      setIsAuthenicated(true);
+  }, [currentUser]);
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -43,13 +57,19 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const handleSignOut = async () =>
     await signOut(auth).then(() => {
-      setCurrentUser(undefined);
+      setCurrentUser(null);
+      setIsAuthenicated(false);
       // TODO: more actions
     });
 
   return (
     <UserContext.Provider
-      value={{ currentUser, handleGoogleSignIn, handleSignOut }}
+      value={{
+        currentUser,
+        isAuthenticated,
+        handleGoogleSignIn,
+        handleSignOut,
+      }}
     >
       {children}
     </UserContext.Provider>
