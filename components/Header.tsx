@@ -1,8 +1,10 @@
-import { AppBar, Avatar, Box, Modal, Typography } from '@mui/material';
+import { AppBar, Avatar, Box, Link, Modal, Typography } from '@mui/material';
 import {
   IconDeviceFloppy,
   IconDownload,
   IconLogout,
+  IconPhotoPlus,
+  IconTexture,
   IconUser,
 } from '@tabler/icons';
 import Image from 'next/image';
@@ -13,7 +15,8 @@ import IconWithText from './shared/IconWithText';
 import { theme } from './theme';
 
 const Header = () => {
-  const { currentUser, handleGoogleSignIn, handleSignOut } = useUser();
+  const { currentUser, handleGoogleSignIn, handleSignOut, isAuthenticated } =
+    useUser();
   const [openUser, setOpenUser] = useState<boolean>(false);
   const [openSave, setOpenSave] = useState<boolean>(false);
   const [isHovering, setIsHovered] = useState(false);
@@ -66,8 +69,8 @@ const Header = () => {
         {currentUser ? (
           <Avatar
             onClick={() => setOpenUser(true)}
-            alt={currentUser.displayName || currentUser.email}
-            src={currentUser.photoURL}
+            alt={currentUser.displayName! || currentUser.email!}
+            src={currentUser.photoURL!}
             sx={{
               fontSize: 11,
               width: 25,
@@ -124,6 +127,16 @@ const Header = () => {
             px: 1,
           }}
         >
+          {isAuthenticated ? (
+            <>
+              <Link href="/admin/createBackground" underline="none">
+                <IconWithText text="Add Background" icon={IconPhotoPlus} />
+              </Link>
+              <Link href="/admin/createPoster" underline="none">
+                <IconWithText text="Add Poster" icon={IconTexture} />
+              </Link>
+            </>
+          ) : null}
           <IconWithText
             text="Sign out"
             icon={IconLogout}
