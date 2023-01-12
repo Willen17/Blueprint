@@ -59,7 +59,6 @@ interface CreatePosterData {
 const PosterForm = ({
   onSubmit,
   formHandleSubmit,
-  register,
   errors,
   control,
   setFile,
@@ -108,7 +107,7 @@ const PosterForm = ({
   return (
     <>
       <Head>
-        <title>Admin - Poster form</title>
+        <title>Admin - Poster Form | Blue print | Visualize your frames</title>
         <meta name="description" content="Post your posters to the database" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -123,11 +122,11 @@ const PosterForm = ({
         }}
       >
         <Box>
-          <Typography variant="h3" sx={{ ml: 5 }}>
+          <Typography variant="h5" component="h1" sx={{ textAlign: 'center' }}>
             Create a poster
           </Typography>
         </Box>
-        <Paper elevation={3}>
+        <Paper elevation={3} sx={{ maxWidth: 600, m: 'auto' }}>
           <Box
             component="form"
             onSubmit={formHandleSubmit(onSubmit)}
@@ -138,7 +137,7 @@ const PosterForm = ({
               padding: 5,
             }}
           >
-            <Alert severity="info">
+            <Alert severity="info" sx={{ fontSize: 11 }}>
               Here you can add posters to the database. All posters uploaded
               will be added to the database and visible for all of our users.
             </Alert>
@@ -171,7 +170,6 @@ const PosterForm = ({
                 variant="standard"
               >
                 <Button
-                  variant="contained"
                   sx={{
                     padding: '2 4',
                     flex: file && '0 0 10em',
@@ -207,8 +205,9 @@ const PosterForm = ({
                       label="Title"
                       {...field}
                       error={Boolean(errors.title)}
+                      variant="standard"
                     />
-                    <FormHelperText>
+                    <FormHelperText sx={{ ml: 0 }}>
                       {errors.title
                         ? errors.title.message
                         : 'The title for the poster'}
@@ -224,7 +223,12 @@ const PosterForm = ({
               render={({ field }) => (
                 <FormControl error={Boolean(errors.orientation)}>
                   <FormLabel id="orientation">Orientation</FormLabel>
-                  <RadioGroup aria-labelledby="orientation" {...field}>
+                  <RadioGroup
+                    aria-labelledby="orientation"
+                    {...field}
+                    sx={{ justifyContent: 'flex-start', columnGap: 10 }}
+                    row
+                  >
                     <FormControlLabel
                       value="Portrait"
                       id="Portrait"
@@ -250,9 +254,7 @@ const PosterForm = ({
               <FormLabel id="categories">Categories</FormLabel>
               <FormGroup
                 aria-label="categories"
-                sx={{
-                  justifyContent: 'flex-start',
-                }}
+                sx={{ justifyContent: 'flex-start' }}
                 row
               >
                 <PosterCheckBox
@@ -288,7 +290,7 @@ const PosterForm = ({
                   : 'What sizes is the poster?'}
               </FormHelperText>
             </FormControl>
-            <Button type="submit" variant="contained" sx={{ padding: '2 4' }}>
+            <Button type="submit" sx={{ padding: '2 4' }}>
               Create poster
             </Button>
           </Box>
