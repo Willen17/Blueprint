@@ -4,6 +4,7 @@ import {
   signOut,
   User,
 } from 'firebase/auth';
+import { useRouter } from 'next/router';
 import {
   createContext,
   FC,
@@ -31,7 +32,7 @@ const UserContext = createContext<UserContextValue>({
 const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenicated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) =>
@@ -41,7 +42,10 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (currentUser?.uid === '9ZT8CTmPj1ZRZoYGPHGv7afPJix1')
+    if (
+      currentUser?.uid === 'kU5Nz9W9PiYf6QSCStgKtQzh9XV2' ||
+      currentUser?.uid === '025MQhK3n7P1q61Tddnh9jJFP5k2'
+    )
       setIsAuthenicated(true);
   }, [currentUser]);
 
@@ -59,7 +63,7 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
     await signOut(auth).then(() => {
       setCurrentUser(null);
       setIsAuthenicated(false);
-      // TODO: more actions
+      router.push('/');
     });
 
   return (
