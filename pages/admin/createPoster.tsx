@@ -15,7 +15,7 @@ export default function FormTest() {
   const [imageError, setImageError] = useState<{ message: string }>();
   const [percent, setPercent] = useState<number>(0);
   const postersCollectionRef = collection(db, 'posters');
-  const { setNotification } = useNotification();
+  const { setNotification, setIsLoading } = useNotification();
   const router = useRouter();
   const {
     register,
@@ -37,9 +37,6 @@ export default function FormTest() {
     else if (!imageError) {
       console.log({ ...data }, file);
       handleUpload(file, data);
-      router.reload();
-      // reloading not the best practice, should use reset() and setFile(undefined) instead
-      // but the checkbox (2 levels down) has a local state so we only improve this practice if we have more time
     }
   };
 
@@ -82,20 +79,23 @@ export default function FormTest() {
       await addDoc(postersCollectionRef, newPoster)
         .then(() => {
           setPercent(0);
+          router.reload(); // reloading not the best practice, should use reset() and setFile(undefined) instead
+          // but the checkbox (2 levels down) has a local state so we only improve this practice if we have more time
+          setIsLoading({ isLoading: false });
           setNotification({
             message: `Poster ${title} was succesfully added to the database`,
             type: 'Success',
           });
-          // TODO: reset form
         })
         .catch((error) => {
+          setIsLoading({ isLoading: false });
           setNotification({
             message: `${error.Code} - ${error}`,
             type: 'Warning',
           });
         });
     },
-    [postersCollectionRef, setNotification]
+    [postersCollectionRef, router, setIsLoading, setNotification]
   );
   return (
     <>

@@ -34,7 +34,7 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenicated] = useState<boolean>(false);
   const router = useRouter();
-  const { setNotification } = useNotification();
+  const { setNotification, setIsLoading } = useNotification();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) =>
@@ -52,6 +52,10 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [currentUser]);
 
   const handleGoogleSignIn = async () => {
+    setIsLoading({
+      isLoading: true,
+      message: 'Please sign in via the pop-up window',
+    });
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider)
       .then(() => {
@@ -59,28 +63,30 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
           message: 'You are logged in as ' + auth.currentUser?.displayName,
           type: 'Success',
         });
+        setIsLoading({ isLoading: false });
       })
       .catch((error) => {
         setNotification({
           message: `${error.code} - ${error}`,
           type: 'Warning',
         });
+        setIsLoading({ isLoading: false });
       });
   };
 
-  const handleSignOut = async () =>
+  const handleSignOut = async () => {
+    setIsLoading({ isLoading: true });
     await signOut(auth).then(() => {
+      setCurrentUser(null);
+      setIsAuthenicated(false);
       router.push('/');
       setNotification({
         message: 'You are logged out',
         type: 'Success',
       });
-      setTimeout(() => {
-        // not the best practice but do for now in order to avoid showing the 403 page
-        setCurrentUser(null);
-        setIsAuthenicated(false);
-      }, 2000);
     });
+    setTimeout(() => setIsLoading({ isLoading: false }), 1000);
+  };
 
   return (
     <UserContext.Provider
