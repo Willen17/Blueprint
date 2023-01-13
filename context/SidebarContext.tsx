@@ -7,9 +7,12 @@ import {
   useContext,
   useState,
 } from 'react';
+
 import {
   Background,
+  CanvasFrameSet,
   CanvasItem,
+  CanvasPoster,
   EditingFrame,
   Frame,
   Poster,
@@ -74,6 +77,14 @@ interface SidebarContextValue {
   setAllPosters: Dispatch<SetStateAction<Poster[]>>;
   handleSelectItem: (item: CanvasItem) => void;
   endEditMode: () => void;
+  withPassepartout: boolean;
+  setWithPassepartout: Dispatch<SetStateAction<boolean>>;
+  poster: CanvasPoster;
+  setPoster: Dispatch<SetStateAction<CanvasPoster>>;
+  posterOrientation: string;
+  setPosterOrientation: Dispatch<SetStateAction<string>>;
+  frameSet: CanvasFrameSet;
+  setFrameSet: Dispatch<SetStateAction<CanvasFrameSet>>;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -113,10 +124,18 @@ export const SidebarContext = createContext<SidebarContextValue>({
   setAllPosters: () => [],
   handleSelectItem: () => {},
   endEditMode: () => {},
+  withPassepartout: true,
+  setWithPassepartout: () => true,
+  poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
+  setPoster: () => {},
+  posterOrientation: '',
+  setPosterOrientation: () => '',
+  frameSet: { id: '', title: '', size: '' },
+  setFrameSet: () => {},
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { setWithPassepartout, setPoster, setFrameSet } = useCanvas();
+  const { addItem } = useCanvas();
   const [anchorSidebar, setAnchorSidebar] = useState<boolean>(true);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
     sidebarSections[0]
@@ -149,6 +168,21 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     isEditing: false,
   });
 
+  const [background, setBackground] = useState<string>('');
+  const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
+  const [poster, setPoster] = useState<CanvasPoster>({
+    id: '',
+    image: '',
+    isPortrait: undefined,
+    sizes: [],
+  });
+  const [posterOrientation, setPosterOrientation] = useState<string>('');
+  const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
+    id: '',
+    title: '',
+    size: '',
+  });
+
   const handleSelectItem = (item: CanvasItem) => {
     setAnchorSidebar(true);
     setIsEditingFrame({ isEditing: true, item });
@@ -159,6 +193,13 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const endEditMode = () => {
     if (isEditingFrame) setIsEditingFrame({ isEditing: false });
     setFrameSet({ id: '', title: '', size: '' });
+    setPoster({
+      id: '',
+      image: '',
+      isPortrait: undefined,
+      sizes: [],
+    });
+    setPosterOrientation('');
   };
 
   return (
@@ -184,6 +225,14 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setAllPosters,
         handleSelectItem,
         endEditMode,
+        withPassepartout,
+        setWithPassepartout,
+        poster,
+        setPoster,
+        posterOrientation,
+        setPosterOrientation,
+        frameSet,
+        setFrameSet,
       }}
     >
       {children}
