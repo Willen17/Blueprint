@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import Header from './Header';
+import CustomSnackbar from './shared/CustomSnackbar';
 import Sidebar from './Sidebar';
 
 interface Props {
@@ -35,6 +36,7 @@ const Layout = (props: Props) => {
           <Sidebar />
         )}
       </Box>
+      <CustomSnackbar />
     </>
   );
 };
