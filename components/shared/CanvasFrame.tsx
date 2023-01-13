@@ -22,7 +22,7 @@ interface Props {
     x?: number;
     y?: number;
   };
-  selectShape: Dispatch<SetStateAction<number | null>>;
+  selectShape: Dispatch<SetStateAction<string | null>>;
   isSelected: boolean;
 }
 
@@ -201,7 +201,7 @@ const CanvasFrame = (props: Props) => {
       x: e.target.x(),
       y: e.target.y(),
     });
-    props.selectShape(props.index);
+    props.selectShape(props.item.id);
   };
 
   const handleDrag = (pos: Konva.Vector2d) => {
@@ -234,10 +234,10 @@ const CanvasFrame = (props: Props) => {
         onDragStart={() => props.selectShape(null)}
         onDragEnd={handleDragEnd}
         onClick={() => {
-          props.selectShape(props.index), handleSelectItem(props.item);
+          props.selectShape(props.item.id), handleSelectItem(props.item);
         }}
         onTap={() => {
-          props.selectShape(props.index), handleSelectItem(props.item);
+          props.selectShape(props.item.id), handleSelectItem(props.item);
         }}
       >
         <>

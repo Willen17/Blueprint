@@ -63,7 +63,7 @@ function Test() {
     y = (dimensions.height - height) / 2;
   }
 
-  const [selectedId, selectShape] = useState<number | null>(null);
+  const [selectedId, selectShape] = useState<string | null>(null);
 
   const checkDeselect = (e: Konva.KonvaEventObject<MouseEvent>) => {
     // deselect when clicked on empty area
@@ -102,7 +102,7 @@ function Test() {
                 imageScale={{ scaleX, scaleY }}
                 bg={{ width, height, x, y }}
                 selectShape={selectShape}
-                isSelected={index === selectedId}
+                isSelected={item.id === selectedId}
               />
             ) : null
           )}

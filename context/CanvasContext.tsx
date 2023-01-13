@@ -9,6 +9,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Canvas,
   CanvasFrameSet,
@@ -75,6 +76,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
     withPassepartout: withPassepartout,
     position: { x: 0, y: 0 },
+    id: '',
   });
   const [items, setItems] = useState<CanvasItem[]>([]);
   const [canvas, setCanvas] = useState<Canvas>({
@@ -82,7 +84,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     background: '',
     id: '',
     user: undefined,
-    items: [item],
+    items: [],
   });
 
   /** reset all states below as the item has been pushed to the items array state */
@@ -92,6 +94,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
       withPassepartout: true,
       position: { x: 0, y: 0 },
+      id: '',
     });
     setFrameSet({ id: '', size: '', title: '' });
     setPoster({ id: '', image: '', isPortrait: undefined, sizes: [] });
@@ -107,7 +110,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     if (item.frame.id && item.poster.id) {
       if (isEditingFrame.item) {
         const index = items.findIndex(
-          (i) => i.frame === isEditingFrame.item?.frame
+          (i) => i.frame.id === isEditingFrame.item?.frame.id
         );
         items[index] = item;
       } else {
@@ -132,6 +135,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         poster: poster ? poster : isEditingFrame.item.poster,
         withPassepartout: withPassepartout,
         position: isEditingFrame.item.position, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
+        id: isEditingFrame.item.id,
       });
     } else if (frameSet.id && frameSet.size && poster.id) {
       updateFrameSetsState();
@@ -140,6 +144,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         poster: poster,
         withPassepartout: withPassepartout,
         position: { x: 0, y: 0 }, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
+        id: uuidv4(),
       });
     }
   }, [
@@ -172,6 +177,10 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => updateItemState(), [updateItemState]);
   useEffect(() => updateCanvasState(), [updateCanvasState]);
   useEffect(() => updateItemsState(), [updateItemsState]);
+
+  useEffect(() => {
+    console.log(canvas);
+  }, [canvas]);
 
   return (
     <CanvasContext.Provider

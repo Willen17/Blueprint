@@ -52,6 +52,7 @@ export interface CanvasItem {
   poster: CanvasPoster;
   withPassepartout: boolean;
   position: { x: number; y: number };
+  id: string;
 }
 
 export interface Canvas {
