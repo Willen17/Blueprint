@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@emotion/react';
 import type { AppProps } from 'next/app';
 import Layout from '../components/Layout';
+import ProtectedRoute from '../components/Protected';
 import { theme } from '../components/theme';
 import CanvasContextProvider from '../context/CanvasContext';
 import SidebarContextProvider from '../context/SidebarContext';
@@ -13,9 +14,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <SidebarContextProvider>
         <CanvasContextProvider>
           <UserContextProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ProtectedRoute>
           </UserContextProvider>
         </CanvasContextProvider>
       </SidebarContextProvider>

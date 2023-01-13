@@ -1,4 +1,10 @@
-import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  User,
+} from 'firebase/auth';
+import { useRouter } from 'next/router';
 import {
   createContext,
   FC,
@@ -10,26 +16,38 @@ import {
 import { auth } from '../firebase/firebaseConfig';
 
 interface UserContextValue {
-  currentUser: any;
+  currentUser: User | null;
+  isAuthenticated: boolean;
   handleGoogleSignIn: () => void;
   handleSignOut: () => void;
 }
 
 const UserContext = createContext<UserContextValue>({
-  currentUser: undefined,
+  currentUser: null,
+  isAuthenticated: false,
   handleGoogleSignIn: () => {},
   handleSignOut: () => {},
 });
 
 const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<any>();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenicated] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-    });
+    const unsubscribe = auth.onAuthStateChanged((user) =>
+      setCurrentUser(user as User)
+    );
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (
+      currentUser?.uid === 'kU5Nz9W9PiYf6QSCStgKtQzh9XV2' ||
+      currentUser?.uid === '025MQhK3n7P1q61Tddnh9jJFP5k2'
+    )
+      setIsAuthenicated(true);
+  }, [currentUser]);
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -43,13 +61,19 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const handleSignOut = async () =>
     await signOut(auth).then(() => {
-      setCurrentUser(undefined);
-      // TODO: more actions
+      setCurrentUser(null);
+      setIsAuthenicated(false);
+      router.push('/');
     });
 
   return (
     <UserContext.Provider
-      value={{ currentUser, handleGoogleSignIn, handleSignOut }}
+      value={{
+        currentUser,
+        isAuthenticated,
+        handleGoogleSignIn,
+        handleSignOut,
+      }}
     >
       {children}
     </UserContext.Provider>

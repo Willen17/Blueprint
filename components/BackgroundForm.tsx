@@ -105,7 +105,9 @@ const BackgroundForm = ({
   return (
     <>
       <Head>
-        <title>Admin - Background form</title>
+        <title>
+          Admin - Background Form | Blue print | Visualize your frames
+        </title>
         <meta
           name="description"
           content="Post your backgrounds to the database"
@@ -123,11 +125,11 @@ const BackgroundForm = ({
         }}
       >
         <Box>
-          <Typography variant="h3" sx={{ ml: 5 }}>
+          <Typography variant="h5" component="h1" sx={{ textAlign: 'center' }}>
             Create a background
           </Typography>
         </Box>
-        <Paper elevation={3}>
+        <Paper elevation={3} sx={{ maxWidth: 600, m: 'auto' }}>
           <Box
             component="form"
             onSubmit={formHandleSubmit(onSubmit)}
@@ -138,7 +140,7 @@ const BackgroundForm = ({
               padding: 5,
             }}
           >
-            <Alert severity="info">
+            <Alert severity="info" sx={{ fontSize: 11 }}>
               Here you can add backgrounds to the database. All backgrounds
               uploaded will be added to the database and visible for all of our
               users.
@@ -172,7 +174,6 @@ const BackgroundForm = ({
                 variant="standard"
               >
                 <Button
-                  variant="contained"
                   sx={{
                     padding: '2 4',
                     flex: file && '0 0 10em',
@@ -208,8 +209,9 @@ const BackgroundForm = ({
                       label="Title"
                       {...field}
                       error={Boolean(errors.title)}
+                      variant="standard"
                     />
-                    <FormHelperText>
+                    <FormHelperText sx={{ ml: 0 }}>
                       {errors.title
                         ? errors.title.message
                         : 'The title for the poster'}
@@ -223,9 +225,7 @@ const BackgroundForm = ({
               <FormLabel id="categories">Categories</FormLabel>
               <FormGroup
                 aria-label="categories"
-                sx={{
-                  justifyContent: 'flex-start',
-                }}
+                sx={{ justifyContent: 'flex-start' }}
                 row
               >
                 <BgCheckBox
@@ -241,7 +241,7 @@ const BackgroundForm = ({
               </FormHelperText>
             </FormControl>
 
-            <Button type="submit" variant="contained" sx={{ padding: '2 4' }}>
+            <Button type="submit" sx={{ padding: '2 4' }}>
               Create background
             </Button>
           </Box>
