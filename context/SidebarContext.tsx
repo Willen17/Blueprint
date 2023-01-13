@@ -148,7 +148,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   });
 
   const handleSelectItem = (item: CanvasItem) => {
-    // setAnchorSidebar(true);
+    setAnchorSidebar(true);
     setIsEditingFrame({ isEditing: true, item });
     setWithPassepartout(item.withPassepartout);
     setExpandedAccordion(sidebarSections[2]);

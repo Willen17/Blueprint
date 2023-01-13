@@ -11,9 +11,12 @@ import { theme } from './theme';
 
 const Sidebar = () => {
   const { anchorSidebar, setAnchorSidebar } = useSidebar();
-  const { isEditingFrame } = useSidebar();
+  const { isEditingFrame, setIsEditingFrame } = useSidebar();
   const mobile = useMediaQuery(theme.breakpoints.down(800));
-  const toggleClose = () => setAnchorSidebar(false);
+  const toggleClose = () => {
+    setAnchorSidebar(false);
+    if (isEditingFrame.item) setIsEditingFrame({ isEditing: false });
+  };
 
   return (
     <>

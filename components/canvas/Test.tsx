@@ -74,7 +74,6 @@ function Test() {
       e.target.attrs.alt === 'Canvas background';
     if (clickedOnEmpty) {
       selectShape(null);
-      if (isEditingFrame.item) setIsEditingFrame({ isEditing: false });
     }
   };
 

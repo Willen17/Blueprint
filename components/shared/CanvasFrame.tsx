@@ -229,7 +229,7 @@ const CanvasFrame = (props: Props) => {
         dragBoundFunc={handleDrag}
         draggable
         onDragStart={() => {
-          props.selectShape(null), handleSelectItem(props.item);
+          props.selectShape(null);
         }}
         onDragEnd={handleDragEnd}
         onClick={() => {

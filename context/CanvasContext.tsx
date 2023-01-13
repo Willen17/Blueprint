@@ -100,7 +100,6 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   /** Detects if the "item" state is complete and pushes it into the "items" state */
   const updateItemsState = useCallback(() => {
-    console.log(item);
     if (item.frame.id && item.poster.id) {
       if (isEditingFrame.item) {
         const index = items.findIndex(
@@ -126,14 +125,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
             : isEditingFrame.item.frame.title,
           size: frameSet.size ? frameSet.size : isEditingFrame.item.frame.size,
         },
-        poster: {
-          id: poster.id ? poster.id : isEditingFrame.item.poster.id,
-          image: poster.id ? poster.image : isEditingFrame.item.poster.image,
-          isPortrait: poster.id
-            ? poster.isPortrait
-            : isEditingFrame.item.poster.isPortrait,
-          sizes: poster.id ? poster.sizes : isEditingFrame.item.poster.sizes,
-        },
+        poster: poster ? poster : isEditingFrame.item.poster,
         withPassepartout: withPassepartout,
         position: isEditingFrame.item.position, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
       });
