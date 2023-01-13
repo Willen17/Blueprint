@@ -10,13 +10,13 @@ import RemoveFrameButton from './sidebar/RemoveFrameButton';
 import { theme } from './theme';
 
 const Sidebar = () => {
-  const { anchorSidebar, setAnchorSidebar, setIsEditingFrame } = useSidebar();
-  const { isEditingFrame } = useSidebar();
-  const mobile = useMediaQuery(theme.breakpoints.down(800));
+  const { anchorSidebar, setAnchorSidebar, isEditingFrame, endEditMode } =
+    useSidebar();
 
+  const mobile = useMediaQuery(theme.breakpoints.down(800));
   const toggleClose = () => {
     setAnchorSidebar(false);
-    if (isEditingFrame.item) setIsEditingFrame({ isEditing: false });
+    endEditMode();
   };
 
   return (

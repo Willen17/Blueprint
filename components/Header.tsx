@@ -1,11 +1,15 @@
 import { AppBar, Avatar, Box, Modal, Typography } from '@mui/material';
 import {
+  IconArtboard,
   IconDeviceFloppy,
   IconDownload,
   IconLogout,
+  IconPhotoPlus,
+  IconTexture,
   IconUser,
 } from '@tabler/icons';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useUser } from '../context/UserContext';
 import bpLogo from '../public/logo/bp-logo.png';
@@ -13,7 +17,8 @@ import IconWithText from './shared/IconWithText';
 import { theme } from './theme';
 
 const Header = () => {
-  const { currentUser, handleGoogleSignIn, handleSignOut } = useUser();
+  const { currentUser, handleGoogleSignIn, handleSignOut, isAuthenticated } =
+    useUser();
   const [openUser, setOpenUser] = useState<boolean>(false);
   const [openSave, setOpenSave] = useState<boolean>(false);
   const [isHovering, setIsHovered] = useState(false);
@@ -66,8 +71,8 @@ const Header = () => {
         {currentUser ? (
           <Avatar
             onClick={() => setOpenUser(true)}
-            alt={currentUser.displayName || currentUser.email}
-            src={currentUser.photoURL}
+            alt={currentUser.displayName! || currentUser.email!}
+            src={currentUser.photoURL!}
             sx={{
               fontSize: 11,
               width: 25,
@@ -124,11 +129,32 @@ const Header = () => {
             px: 1,
           }}
         >
-          <IconWithText
-            text="Sign out"
-            icon={IconLogout}
-            onClick={handleClickSignOut}
-          />
+          <Box sx={{ pl: 1, py: 0.5, textAlign: 'center' }}>
+            {isAuthenticated ? (
+              <>
+                <Link href="/" style={{ textDecoration: 'none' }}>
+                  <IconWithText text="Canvas" icon={IconArtboard} />
+                </Link>
+                <Link
+                  href="/admin/createBackground"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <IconWithText text="Add Background" icon={IconPhotoPlus} />
+                </Link>
+                <Link
+                  href="/admin/createPoster"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <IconWithText text="Add Poster" icon={IconTexture} />
+                </Link>
+              </>
+            ) : null}
+            <IconWithText
+              text="Sign out"
+              icon={IconLogout}
+              onClick={handleClickSignOut}
+            />
+          </Box>
         </Box>
       </Modal>
     </>

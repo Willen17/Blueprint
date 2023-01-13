@@ -73,6 +73,7 @@ interface SidebarContextValue {
   allPosters: Poster[];
   setAllPosters: Dispatch<SetStateAction<Poster[]>>;
   handleSelectItem: (item: CanvasItem) => void;
+  endEditMode: () => void;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -111,10 +112,11 @@ export const SidebarContext = createContext<SidebarContextValue>({
   allPosters: [],
   setAllPosters: () => [],
   handleSelectItem: () => {},
+  endEditMode: () => {},
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { setWithPassepartout } = useCanvas();
+  const { setWithPassepartout, setPoster, setFrameSet } = useCanvas();
   const [anchorSidebar, setAnchorSidebar] = useState<boolean>(true);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(
     sidebarSections[0]
@@ -148,11 +150,15 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   });
 
   const handleSelectItem = (item: CanvasItem) => {
-    setAnchorSidebar(true); // turn off before sending PR
+    setAnchorSidebar(true);
     setIsEditingFrame({ isEditing: true, item });
     setWithPassepartout(item.withPassepartout);
-
     setExpandedAccordion(sidebarSections[2]);
+  };
+
+  const endEditMode = () => {
+    if (isEditingFrame) setIsEditingFrame({ isEditing: false });
+    setFrameSet({ id: '', title: '', size: '' });
   };
 
   return (
@@ -177,6 +183,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         allPosters,
         setAllPosters,
         handleSelectItem,
+        endEditMode,
       }}
     >
       {children}

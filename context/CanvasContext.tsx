@@ -15,6 +15,7 @@ import {
   CanvasFrameSet,
   CanvasItem,
   CanvasPoster,
+  Dimension,
 } from '../components/types';
 import { useSidebar } from './SidebarContext';
 
@@ -29,11 +30,11 @@ interface CanvasContextValue {
   setPosterOrientation: Dispatch<SetStateAction<string>>;
   frameSet: CanvasFrameSet;
   setFrameSet: Dispatch<SetStateAction<CanvasFrameSet>>;
-  frameSets: CanvasFrameSet[];
-  setFrameSets: Dispatch<SetStateAction<CanvasFrameSet[]>>;
   canvas: Canvas;
   setCanvas: Dispatch<SetStateAction<Canvas>>;
   deleteFrame: () => void;
+  size: Dimension;
+  setSize: Dispatch<SetStateAction<Dimension>>;
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
@@ -42,20 +43,21 @@ export const CanvasContext = createContext<CanvasContextValue>({
   withPassepartout: true,
   setWithPassepartout: () => true,
   poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
-  setPoster: () => '',
+  setPoster: () => {},
   posterOrientation: '',
   setPosterOrientation: () => '',
   frameSet: { id: '', title: '', size: '' },
   setFrameSet: () => {},
-  frameSets: [],
-  setFrameSets: () => [],
   canvas: { user: undefined, items: [] },
   setCanvas: () => {},
   deleteFrame: () => {},
+  size: { width: 30, height: 21 },
+  setSize: () => {},
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { setIsEditingFrame, isEditingFrame, setAnchorSidebar } = useSidebar();
+  const { setIsEditingFrame, isEditingFrame, setAnchorSidebar, endEditMode } =
+    useSidebar();
   const [background, setBackground] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [poster, setPoster] = useState<CanvasPoster>({
@@ -70,7 +72,6 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     title: '',
     size: '',
   });
-  const [frameSets, setFrameSets] = useState<CanvasFrameSet[]>([]);
   const [item, setItem] = useState<CanvasItem>({
     frame: frameSet,
     poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
@@ -86,6 +87,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     user: undefined,
     items: [],
   });
+  const [size, setSize] = useState<Dimension>({ width: 0, height: 0 });
 
   /** reset all states below as the item has been pushed to the items array state */
   const clearStates = useCallback(() => {
@@ -100,11 +102,6 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setPoster({ id: '', image: '', isPortrait: undefined, sizes: [] });
   }, []);
 
-  /** Detects the selection under frame section in sidebar and pushes them into the "frameSets" state */
-  const updateFrameSetsState = useCallback(() => {
-    setFrameSets([...frameSets, frameSet]);
-  }, [frameSet, frameSets]);
-
   /** Detects if the "item" state is complete and pushes it into the "items" state */
   const updateItemsState = useCallback(() => {
     if (item.frame.id && item.poster.id) {
@@ -118,6 +115,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       }
       clearStates();
       setIsEditingFrame({ isEditing: false });
+      setFrameSet({ id: '', title: '', size: '' });
     }
   }, [clearStates, isEditingFrame.item, item, items, setIsEditingFrame]);
 
@@ -138,7 +136,6 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         id: isEditingFrame.item.id,
       });
     } else if (frameSet.id && frameSet.size && poster.id) {
-      updateFrameSetsState();
       setItem({
         frame: frameSet,
         poster: poster,
@@ -147,20 +144,14 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         id: uuidv4(),
       });
     }
-  }, [
-    frameSet,
-    isEditingFrame.item,
-    poster,
-    updateFrameSetsState,
-    withPassepartout,
-  ]);
+  }, [frameSet, isEditingFrame.item, poster, withPassepartout]);
 
   /** Handles click for deleting a frame in the canvas */
   const deleteFrame = () => {
     const newList = items.filter((i) => i !== isEditingFrame.item);
     setItems(newList);
     if (newList.length > 0) setAnchorSidebar(false);
-    setIsEditingFrame({ isEditing: false });
+    endEditMode();
   };
 
   /** Detects the states needed for Canvas and pushes them into the "canvas" state */
@@ -168,15 +159,13 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const updateCanvasState = useCallback(() => {
     // TODO: add all missing properties.
     // Now there is only backgournd and items, but missing all other things under type "Canvas"
-    if (background)
-      setCanvas((prevState) => ({ ...prevState, background: background }));
-    if (items.length >= 0)
-      setCanvas((prevState) => ({ ...prevState, items: items }));
+    if (background) setCanvas((prevState) => ({ ...prevState, background }));
+    if (items.length >= 0) setCanvas((prevState) => ({ ...prevState, items }));
   }, [background, items]);
 
   useEffect(() => updateItemState(), [updateItemState]);
-  useEffect(() => updateCanvasState(), [updateCanvasState]);
   useEffect(() => updateItemsState(), [updateItemsState]);
+  useEffect(() => updateCanvasState(), [updateCanvasState]);
 
   useEffect(() => {
     console.log(canvas);
@@ -195,11 +184,11 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setPosterOrientation,
         frameSet,
         setFrameSet,
-        frameSets,
-        setFrameSets,
         canvas,
         setCanvas,
         deleteFrame,
+        size,
+        setSize,
       }}
     >
       {children}
