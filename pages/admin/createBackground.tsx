@@ -2,6 +2,7 @@ import { collection } from '@firebase/firestore';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { addDoc, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import BackgroundForm from '../../components/BackgroundForm';
@@ -15,6 +16,7 @@ export default function FormTest() {
   const [percent, setPercent] = useState<number>(0);
   const backgroundsCollectionRef = collection(db, 'backgrounds');
   const { setNotification } = useNotification();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -34,6 +36,9 @@ export default function FormTest() {
     else if (!imageError) {
       console.log({ ...data }, file);
       handleUpload(file, data);
+      router.reload();
+      // reloading not the best practice, should use reset() and setFile(undefined) instead
+      // but the checkbox (2 levels down) has a local state so we only improve this practice if we have more time
     }
   };
 
@@ -78,7 +83,6 @@ export default function FormTest() {
             message: `Background ${title} was succesfully added to the database`,
             type: 'Success',
           });
-          // TODO: reset form
         })
         .catch((error) => {
           setNotification({
