@@ -187,7 +187,7 @@ const FrameSectionDetails = () => {
                 <Checkbox
                   disabled={
                     isEditingFrame.item?.poster.id
-                      ? isEditingFrame.item.poster.sizes.some((item) => {
+                      ? !isEditingFrame.item.poster.sizes.some((item) => {
                           return (
                             parseInt(item.width as unknown as string) ===
                               dimension.width &&
