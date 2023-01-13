@@ -9,7 +9,7 @@ import CanvasFrame from '../shared/CanvasFrame';
 
 // this component is just for testing - many values to be changed later
 function Test() {
-  const { background, canvas } = useCanvas();
+  const { canvas, getBackground } = useCanvas();
   const { isEditingFrame, endEditMode } = useSidebar();
 
   const stageCanvasRef = useRef<HTMLDivElement>(null);
@@ -39,7 +39,7 @@ function Test() {
     };
   }, [stageCanvasRef]);
 
-  const [canvasBackground] = useImage(background);
+  const [canvasBackground] = useImage(getBackground());
 
   let x = 0,
     y = 0,

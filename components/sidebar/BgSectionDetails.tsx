@@ -8,7 +8,7 @@ import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const BgSectionDetails = () => {
-  const { background, setBackground } = useCanvas();
+  const { getBackground, setBackground } = useCanvas();
   const { setBackgroundCategories, backgroundCategories, allBackgrounds } =
     useSidebar();
   const mobile = useMediaQuery(theme.breakpoints.down(800));
@@ -104,7 +104,7 @@ const BgSectionDetails = () => {
                   position: 'relative',
                   height: 55,
                   boxShadow:
-                    background === bg.image
+                    getBackground() === bg.image
                       ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
                       : null,
                 }}
@@ -116,7 +116,7 @@ const BgSectionDetails = () => {
                   src={bg.image}
                   onClick={() => setBackground(bg.image)}
                 />
-                {background === bg.image ? (
+                {getBackground() === bg.image ? (
                   <IconCheck
                     stroke={1}
                     color={theme.palette.primary.contrastText}
@@ -143,7 +143,7 @@ const BgSectionDetails = () => {
                   position: 'relative',
                   height: 55,
                   boxShadow:
-                    background === bg.image
+                    getBackground() === bg.image
                       ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
                       : null,
                 }}
@@ -155,7 +155,7 @@ const BgSectionDetails = () => {
                   src={bg.image}
                   onClick={() => setBackground(bg.image)}
                 />
-                {background === bg.image ? (
+                {getBackground() === bg.image ? (
                   <IconCheck
                     stroke={1}
                     color={theme.palette.primary.contrastText}

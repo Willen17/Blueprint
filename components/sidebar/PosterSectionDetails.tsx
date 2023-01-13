@@ -1,5 +1,6 @@
 import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
+import { isEqual } from 'lodash';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
@@ -11,19 +12,19 @@ import { Dimension } from '../types';
 
 const PosterSectionDetails = () => {
   const {
-    poster,
-    setPoster,
-    posterOrientation,
-    setPosterOrientation,
-    frameSet,
-  } = useCanvas();
-  const {
     allPosters,
     posterCategories,
     setPosterCategories,
     setAnchorSidebar,
     isEditingFrame,
+    poster,
+    setPoster,
+    posterOrientation,
+    setPosterOrientation,
+    frameSet,
+    withPassepartout,
   } = useSidebar();
+  const { updateItem } = useCanvas();
   const mobile = useMediaQuery(theme.breakpoints.down(800));
 
   /** Handles change of orientation state */
@@ -187,13 +188,31 @@ const PosterSectionDetails = () => {
               alt={p.title}
               src={p.image}
               onClick={() => {
-                setPoster((prevState) => ({
-                  ...prevState,
-                  id: p.id!,
-                  image: p.image,
-                  isPortrait: p.orientation === 'Portrait' ? true : false,
-                  sizes: p.sizes,
-                }));
+                isEditingFrame.item?.poster.id
+                  ? updateItem({
+                      frame: isEqual(frameSet, {
+                        id: '',
+                        title: '',
+                        size: '',
+                      })
+                        ? isEditingFrame.item.frame
+                        : frameSet,
+                      id: isEditingFrame.item.id,
+                      position: isEditingFrame.item.position,
+                      poster: {
+                        id: p.id!,
+                        image: p.image,
+                        isPortrait: p.orientation === 'Portrait' ? true : false,
+                        sizes: p.sizes,
+                      },
+                      withPassepartout: isEditingFrame.item.withPassepartout,
+                    })
+                  : setPoster({
+                      id: p.id!,
+                      image: p.image,
+                      isPortrait: p.orientation === 'Portrait' ? true : false,
+                      sizes: p.sizes,
+                    });
                 setAnchorSidebar(false);
               }}
             />

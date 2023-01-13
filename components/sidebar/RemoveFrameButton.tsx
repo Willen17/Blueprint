@@ -1,10 +1,12 @@
 import { Box, Typography } from '@mui/material';
 import { IconTrash } from '@tabler/icons';
 import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import { theme } from '../theme';
 
 const RemoveFrameButton = () => {
-  const { deleteFrame } = useCanvas();
+  const { deleteItem } = useCanvas();
+  const { isEditingFrame } = useSidebar();
 
   return (
     <Box
@@ -21,7 +23,7 @@ const RemoveFrameButton = () => {
         },
       }}
       height={40}
-      onClick={deleteFrame}
+      onClick={() => deleteItem(isEditingFrame.item!)}
     >
       <IconTrash size={16} stroke={2} />
       <Typography variant="body1">Delete Frame</Typography>

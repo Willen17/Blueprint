@@ -34,3 +34,13 @@ export const getSizeString = (size: Dimension) => {
     return 'xl';
   }
 };
+
+export const hasMatchingObjects = (arr1: any[], arr2: any[]): boolean => {
+  return arr1.some((obj1) => {
+    return arr2.some((obj2) => {
+      return Object.entries(obj1).every(
+        ([key, value]) => obj2[key] === (value as number | string).toString()
+      );
+    });
+  });
+};
