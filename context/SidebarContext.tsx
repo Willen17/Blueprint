@@ -73,6 +73,7 @@ interface SidebarContextValue {
   allPosters: Poster[];
   setAllPosters: Dispatch<SetStateAction<Poster[]>>;
   handleSelectItem: (item: CanvasItem) => void;
+  endEditMode: () => void;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -111,6 +112,7 @@ export const SidebarContext = createContext<SidebarContextValue>({
   allPosters: [],
   setAllPosters: () => [],
   handleSelectItem: () => {},
+  endEditMode: () => {},
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -154,6 +156,11 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setExpandedAccordion(sidebarSections[2]);
   };
 
+  const endEditMode = () => {
+    if (isEditingFrame) setIsEditingFrame({ isEditing: false });
+    setFrameSet({ id: '', title: '', size: '' });
+  };
+
   return (
     <SidebarContext.Provider
       value={{
@@ -176,6 +183,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         allPosters,
         setAllPosters,
         handleSelectItem,
+        endEditMode,
       }}
     >
       {children}

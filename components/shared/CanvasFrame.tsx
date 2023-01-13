@@ -28,7 +28,7 @@ interface Props {
 }
 
 const CanvasFrame = (props: Props) => {
-  const { allFrames, handleSelectItem } = useSidebar();
+  const { allFrames, handleSelectItem, isEditingFrame } = useSidebar();
   const { setFrameSet } = useCanvas();
   const dimension =
     frameDimensions[props.item.frame.size as keyof typeof frameDimensions];
@@ -193,11 +193,13 @@ const CanvasFrame = (props: Props) => {
   }, [dimension, props.item.poster.isPortrait]);
 
   useEffect(() => {
-    setFrameSet((prevState) => ({
-      ...prevState,
-      size: getSizeString(size),
-    }));
-  }, [setFrameSet, size]);
+    if (isEditingFrame.item) {
+      setFrameSet((prevState) => ({
+        ...prevState,
+        size: getSizeString(size),
+      }));
+    }
+  }, [isEditingFrame.item, setFrameSet, size]);
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
     setElementPos({ x: e.target.x(), y: e.target.y() });

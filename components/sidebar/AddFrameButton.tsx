@@ -10,10 +10,7 @@ const AddFrameButton = () => {
   const { background } = useCanvas();
 
   const handleClick = () => {
-    if (background) {
-      setIsEditingFrame({ isEditing: true });
-      setExpandedAccordion(sidebarSections[1]);
-    }
+    if (background) setExpandedAccordion(sidebarSections[1]);
     setIsEditingFrame({ isEditing: true });
   };
   return (

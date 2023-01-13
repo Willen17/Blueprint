@@ -10,7 +10,7 @@ import CanvasFrame from '../shared/CanvasFrame';
 // this component is just for testing - many values to be changed later
 function Test() {
   const { background, canvas } = useCanvas();
-  const { setIsEditingFrame, isEditingFrame } = useSidebar();
+  const { isEditingFrame, endEditMode } = useSidebar();
 
   const stageCanvasRef = useRef<HTMLDivElement>(null);
 
@@ -74,6 +74,7 @@ function Test() {
       e.target.attrs.alt === 'Canvas background';
     if (clickedOnEmpty) {
       selectShape(null);
+      endEditMode();
     }
   };
 

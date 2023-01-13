@@ -55,7 +55,8 @@ export const CanvasContext = createContext<CanvasContextValue>({
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { setIsEditingFrame, isEditingFrame, setAnchorSidebar } = useSidebar();
+  const { setIsEditingFrame, isEditingFrame, setAnchorSidebar, endEditMode } =
+    useSidebar();
   const [background, setBackground] = useState<string>('');
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [poster, setPoster] = useState<CanvasPoster>({
@@ -111,6 +112,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
       }
       clearStates();
       setIsEditingFrame({ isEditing: false });
+      setFrameSet({ id: '', title: '', size: '' });
     }
   }, [clearStates, isEditingFrame.item, item, items, setIsEditingFrame]);
 
@@ -144,7 +146,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     const newList = items.filter((i) => i !== isEditingFrame.item);
     setItems(newList);
     if (newList.length > 0) setAnchorSidebar(false);
-    setIsEditingFrame({ isEditing: false });
+    endEditMode();
   };
 
   /** Detects the states needed for Canvas and pushes them into the "canvas" state */
