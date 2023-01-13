@@ -14,6 +14,7 @@ import {
   useState,
 } from 'react';
 import { auth } from '../firebase/firebaseConfig';
+import { useNotification } from './NotificationContext';
 
 interface UserContextValue {
   currentUser: User | null;
@@ -33,6 +34,7 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenicated] = useState<boolean>(false);
   const router = useRouter();
+  const { setNotification } = useNotification();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) =>
@@ -52,18 +54,32 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider)
-      .then(() => {})
+      .then(() => {
+        setNotification({
+          message: 'You are logged in as ' + auth.currentUser?.displayName,
+          type: 'Success',
+        });
+      })
       .catch((error) => {
-        const errorCode = error.code;
-        console.log(errorCode, error);
+        setNotification({
+          message: `${error.code} - ${error}`,
+          type: 'Warning',
+        });
       });
   };
 
   const handleSignOut = async () =>
     await signOut(auth).then(() => {
-      setCurrentUser(null);
-      setIsAuthenicated(false);
       router.push('/');
+      setNotification({
+        message: 'You are logged out',
+        type: 'Success',
+      });
+      setTimeout(() => {
+        // not the best practice but do for now in order to avoid showing the 403 page
+        setCurrentUser(null);
+        setIsAuthenicated(false);
+      }, 2000);
     });
 
   return (

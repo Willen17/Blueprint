@@ -17,6 +17,7 @@ import PlainBlack from '../../components/frames/PlainBlack';
 import PlainMaple from '../../components/frames/PlainMaple';
 import PlainWalnut from '../../components/frames/PlainWalnut';
 import PlainWhite from '../../components/frames/PlainWhite';
+import { useNotification } from '../../context/NotificationContext';
 import { frameDimensions } from '../../data/frameData';
 import { db, storage } from '../../firebase/firebaseConfig';
 const inter = Inter({ subsets: ['latin'] });
@@ -25,6 +26,7 @@ export default function Home(props: any) {
   const postersCollectionRef = collection(db, 'posters');
   const [file, setFile] = useState<any>('');
   const [percent, setPercent] = useState<number>(0);
+  const { setNotification } = useNotification();
 
   // Handles input change event and updates state
   function handleChange(event: any) {
@@ -32,7 +34,11 @@ export default function Home(props: any) {
   }
 
   function handleUpload() {
-    if (!file) alert('Please choose a file first!');
+    if (!file)
+      return setNotification({
+        message: 'Please choose a file first!',
+        type: 'Warning',
+      });
     const storageRef = ref(storage, `/posters/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
