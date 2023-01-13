@@ -187,13 +187,13 @@ const PosterSectionDetails = () => {
               alt={p.title}
               src={p.image}
               onClick={() => {
-                setPoster({
-                  ...poster,
+                setPoster((prevState) => ({
+                  ...prevState,
                   id: p.id!,
                   image: p.image,
                   isPortrait: p.orientation === 'Portrait' ? true : false,
                   sizes: p.sizes,
-                });
+                }));
                 setAnchorSidebar(false);
               }}
             />

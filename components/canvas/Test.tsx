@@ -4,11 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Image, Layer, Stage } from 'react-konva';
 import useImage from 'use-image';
 import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import CanvasFrame from '../shared/CanvasFrame';
 
 // this component is just for testing - many values to be changed later
 function Test() {
   const { background, canvas } = useCanvas();
+  const { isEditingFrame, endEditMode } = useSidebar();
 
   const stageCanvasRef = useRef<HTMLDivElement>(null);
 
@@ -72,6 +74,7 @@ function Test() {
       e.target.attrs.alt === 'Canvas background';
     if (clickedOnEmpty) {
       selectShape(null);
+      endEditMode();
     }
   };
 
