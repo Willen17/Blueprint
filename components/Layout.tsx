@@ -16,7 +16,7 @@ const Layout = (props: Props) => {
   const { isLoading } = useNotification();
   return (
     <>
-      <Header />
+      {router.pathname === '/' ? null : <Header />}
       <Box
         display="flex"
         height="calc(100vh - 50px)"
@@ -38,7 +38,8 @@ const Layout = (props: Props) => {
               {props.children}
             </main>
             {router.pathname.includes('admin') ||
-            router.pathname === '/404' ? null : (
+            router.pathname === '/404' ||
+            router.pathname === '/' ? null : (
               <Sidebar />
             )}
           </>
