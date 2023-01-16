@@ -9,9 +9,16 @@ import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
 const FrameSectionDetails = () => {
-  const { frameSet, setFrameSet, setWithPassepartout, withPassepartout } =
-    useCanvas();
-  const { allFrames, setExpandedAccordion, isEditingFrame } = useSidebar();
+  const {
+    allFrames,
+    setExpandedAccordion,
+    isEditingFrame,
+    frameSet,
+    setFrameSet,
+    setWithPassepartout,
+    withPassepartout,
+  } = useSidebar();
+  const { updateItem } = useCanvas();
 
   /** Renders correct frame JSX */
   const getFrameJSX = (id: string) => {
@@ -65,9 +72,7 @@ const FrameSectionDetails = () => {
           <Typography variant="body2">Passepartout</Typography>
           <Switch
             checked={withPassepartout}
-            onChange={() =>
-              setWithPassepartout(() => (withPassepartout ? false : true))
-            }
+            onChange={() => setWithPassepartout(!withPassepartout)}
           />
         </Box>
       </SidebarSubtitle>
@@ -85,11 +90,20 @@ const FrameSectionDetails = () => {
           <Box
             key={fr.id}
             onClick={() =>
-              setFrameSet((prevState) => ({
-                ...prevState,
-                id: fr.id!,
-                title: fr.title,
-              }))
+              isEditingFrame.item?.poster.id
+                ? updateItem({
+                    ...isEditingFrame.item,
+                    frame: {
+                      ...isEditingFrame.item.frame,
+                      id: fr.id!,
+                      title: fr.title,
+                    },
+                  })
+                : setFrameSet({
+                    id: fr.id!,
+                    title: fr.title,
+                    size: '',
+                  })
             }
             sx={{
               cursor: 'pointer',
@@ -171,6 +185,18 @@ const FrameSectionDetails = () => {
                 </Typography>
 
                 <Checkbox
+                  disabled={
+                    isEditingFrame.item?.poster.id
+                      ? !isEditingFrame.item.poster.sizes.some((item) => {
+                          return (
+                            parseInt(item.width as unknown as string) ===
+                              dimension.width &&
+                            parseFloat(item.height as unknown as string) ===
+                              dimension.height
+                          );
+                        })
+                      : false
+                  }
                   value={dimension.width + 'x' + dimension.height}
                   size="small"
                   checked={
@@ -180,10 +206,18 @@ const FrameSectionDetails = () => {
                   }
                   sx={{ p: 0 }}
                   onClick={() => {
-                    setFrameSet((prevState) => ({
-                      ...prevState,
-                      size: dimension.size,
-                    }));
+                    isEditingFrame.item?.poster.id
+                      ? updateItem({
+                          ...isEditingFrame.item,
+                          frame: {
+                            ...isEditingFrame.item.frame,
+                            size: dimension.size,
+                          },
+                        })
+                      : setFrameSet((prevState) => ({
+                          ...prevState,
+                          size: dimension.size,
+                        }));
                     setExpandedAccordion(sidebarSections[2]);
                   }}
                 />

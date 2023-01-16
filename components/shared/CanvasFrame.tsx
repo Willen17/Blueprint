@@ -23,18 +23,19 @@ interface Props {
     x?: number;
     y?: number;
   };
-  selectShape: Dispatch<SetStateAction<number | null>>;
+  selectShape: Dispatch<SetStateAction<string | null>>;
   isSelected: boolean;
 }
 
 const CanvasFrame = (props: Props) => {
-  const { allFrames, handleSelectItem, isEditingFrame } = useSidebar();
-  const { setFrameSet } = useCanvas();
+  const { allFrames, handleSelectItem, isEditingFrame, endEditMode } =
+    useSidebar();
+  const { updateItem, setCanvas, canvas } = useCanvas();
   const dimension =
     frameDimensions[props.item.frame.size as keyof typeof frameDimensions];
   const match = allFrames.filter((frame) => frame.id === props.item.frame.id);
 
-  const [elementPos, setElementPos] = useState({ x: 20, y: 50 });
+  const [elementPos, setElementPos] = useState(props.item.position);
 
   const [poster] = useImage(props.item.poster.image);
   const [maple] = useImage(
@@ -193,17 +194,33 @@ const CanvasFrame = (props: Props) => {
   }, [dimension, props.item.poster.isPortrait]);
 
   useEffect(() => {
-    if (isEditingFrame.item) {
-      setFrameSet((prevState) => ({
-        ...prevState,
-        size: getSizeString(size),
-      }));
+    if (props.item.frame.size !== getSizeString(size) && !isEditingFrame) {
+      updateItem({
+        ...props.item,
+        frame: { ...props.item.frame, size: getSizeString(size) },
+      });
     }
-  }, [isEditingFrame.item, setFrameSet, size]);
+  }, [isEditingFrame, props.item, updateItem, size]);
+
+  useEffect(() => {
+    let copyOfCanvasItems = canvas.items.map((item) => {
+      if (item.id === props.item.id) {
+        return { ...item, position: { x: elementPos.x, y: elementPos.y } };
+      }
+      return item;
+    });
+    if (canvas.items !== copyOfCanvasItems) {
+      setCanvas({ ...canvas, items: copyOfCanvasItems });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [elementPos]);
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
-    setElementPos({ x: e.target.x(), y: e.target.y() });
-    props.selectShape(props.index);
+    setElementPos({
+      x: e.target.x(),
+      y: e.target.y(),
+    });
+    props.selectShape(props.item.id);
   };
 
   const handleDrag = (pos: Konva.Vector2d) => {
@@ -235,10 +252,10 @@ const CanvasFrame = (props: Props) => {
         }}
         onDragEnd={handleDragEnd}
         onClick={() => {
-          props.selectShape(props.index), handleSelectItem(props.item);
+          props.selectShape(props.item.id), handleSelectItem(props.item);
         }}
         onTap={() => {
-          props.selectShape(props.index), handleSelectItem(props.item);
+          props.selectShape(props.item.id), handleSelectItem(props.item);
         }}
       >
         <>

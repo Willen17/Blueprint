@@ -7,10 +7,10 @@ import { theme } from '../theme';
 
 const AddFrameButton = () => {
   const { setIsEditingFrame, setExpandedAccordion } = useSidebar();
-  const { background } = useCanvas();
+  const { getBackground } = useCanvas();
 
   const handleClick = () => {
-    if (background) setExpandedAccordion(sidebarSections[1]);
+    if (getBackground()) setExpandedAccordion(sidebarSections[1]);
     setIsEditingFrame({ isEditing: true });
   };
   return (

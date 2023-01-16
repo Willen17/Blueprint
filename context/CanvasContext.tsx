@@ -4,182 +4,139 @@ import {
   FC,
   PropsWithChildren,
   SetStateAction,
-  useCallback,
   useContext,
   useEffect,
   useState,
 } from 'react';
-import {
-  Canvas,
-  CanvasFrameSet,
-  CanvasItem,
-  CanvasPoster,
-  Dimension,
-} from '../components/types';
+import { v4 as uuidv4 } from 'uuid';
+import { Canvas, CanvasItem } from '../components/types';
 import { useSidebar } from './SidebarContext';
 
 interface CanvasContextValue {
-  background: string;
-  setBackground: Dispatch<SetStateAction<string>>;
-  withPassepartout: boolean;
-  setWithPassepartout: Dispatch<SetStateAction<boolean>>;
-  poster: CanvasPoster;
-  setPoster: Dispatch<SetStateAction<CanvasPoster>>;
-  posterOrientation: string;
-  setPosterOrientation: Dispatch<SetStateAction<string>>;
-  frameSet: CanvasFrameSet;
-  setFrameSet: Dispatch<SetStateAction<CanvasFrameSet>>;
   canvas: Canvas;
+  setBackground: (background: string) => void;
+  getBackground: () => string;
+  getItems: () => CanvasItem[];
+  addItem: (item: CanvasItem) => void;
+  updateItem: (item: CanvasItem) => void;
+  deleteItem: (item: CanvasItem) => void;
   setCanvas: Dispatch<SetStateAction<Canvas>>;
-  deleteFrame: () => void;
-  size: Dimension;
-  setSize: Dispatch<SetStateAction<Dimension>>;
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
-  background: '',
-  setBackground: () => '',
-  withPassepartout: true,
-  setWithPassepartout: () => true,
-  poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
-  setPoster: () => {},
-  posterOrientation: '',
-  setPosterOrientation: () => '',
-  frameSet: { id: '', title: '', size: '' },
-  setFrameSet: () => {},
   canvas: { user: undefined, items: [] },
+  setBackground: () => '',
+  getBackground: () => '',
+  getItems: () => [],
+  addItem: () => {},
+  updateItem: () => {},
+  deleteItem: () => {},
   setCanvas: () => {},
-  deleteFrame: () => {},
-  size: { width: 30, height: 21 },
-  setSize: () => {},
 });
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { setIsEditingFrame, isEditingFrame, setAnchorSidebar, endEditMode } =
-    useSidebar();
-  const [background, setBackground] = useState<string>('');
-  const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
-  const [poster, setPoster] = useState<CanvasPoster>({
-    id: '',
-    image: '',
-    isPortrait: undefined,
-    sizes: [],
-  });
-  const [posterOrientation, setPosterOrientation] = useState<string>('');
-  const [frameSet, setFrameSet] = useState<CanvasFrameSet>({
-    id: '',
-    title: '',
-    size: '',
-  });
-  const [item, setItem] = useState<CanvasItem>({
-    frame: frameSet,
-    poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
-    withPassepartout: withPassepartout,
-    position: { x: 0, y: 0 },
-  });
-  const [items, setItems] = useState<CanvasItem[]>([]);
-  const [canvas, setCanvas] = useState<Canvas>({
-    title: '',
-    background: '',
-    id: '',
-    user: undefined,
-    items: [item],
-  });
-  const [size, setSize] = useState<Dimension>({ width: 0, height: 0 });
+  const {
+    setIsEditingFrame,
+    isEditingFrame,
+    setAnchorSidebar,
+    endEditMode,
+    poster,
+    frameSet,
+    withPassepartout,
+  } = useSidebar();
 
-  /** reset all states below as the item has been pushed to the items array state */
-  const clearStates = useCallback(() => {
-    setItem({
-      frame: { id: '', title: '', size: '' },
-      poster: { id: '', image: '', isPortrait: undefined, sizes: [] },
-      withPassepartout: true,
-      position: { x: 0, y: 0 },
+  const [canvas, setCanvas] = useState<Canvas>(() => {
+    if (typeof window !== 'undefined') {
+      const localData = localStorage.getItem('canvas');
+      return localData
+        ? JSON.parse(localData)
+        : {
+            title: '',
+            background: '',
+            id: '',
+            user: undefined,
+            items: [],
+          };
+    }
+  });
+
+  const setBackground = (background: string) => {
+    const newCanvas = { ...canvas, background: background };
+    setCanvas({ ...canvas, background });
+  };
+
+  const getBackground = () => {
+    if (canvas.background) return canvas.background;
+    else return '';
+  };
+
+  const getItems = () => {
+    return canvas.items;
+  };
+
+  const addItem = (item: CanvasItem) => {
+    const newCanvas = { ...canvas, items: [...canvas.items, item] };
+    setCanvas(newCanvas);
+  };
+
+  const updateItem = (item: CanvasItem) => {
+    const newItems = canvas.items.map((canvasItem) => {
+      if (item.id === canvasItem.id) return item;
+      else return canvasItem;
     });
-    setFrameSet({ id: '', size: '', title: '' });
-    setPoster({ id: '', image: '', isPortrait: undefined, sizes: [] });
-  }, []);
+    setCanvas({ ...canvas, items: newItems });
+    if (!isEditingFrame.item?.poster.id) endEditMode();
+  };
 
-  /** Detects if the "item" state is complete and pushes it into the "items" state */
-  const updateItemsState = useCallback(() => {
-    if (item.frame.id && item.poster.id) {
-      if (isEditingFrame.item) {
-        const index = items.findIndex(
-          (i) => i.frame === isEditingFrame.item?.frame
-        );
-        items[index] = item;
-      } else {
-        setItems((prevState) => [...prevState, item]);
-      }
-      clearStates();
-      setIsEditingFrame({ isEditing: false });
-      setFrameSet({ id: '', title: '', size: '' });
-    }
-  }, [clearStates, isEditingFrame.item, item, items, setIsEditingFrame]);
-
-  /** Updates the "item" state for single item */
-  const updateItemState = useCallback(() => {
-    if (isEditingFrame.item) {
-      setItem({
-        frame: {
-          id: frameSet.id ? frameSet.id : isEditingFrame.item.frame.id,
-          title: frameSet.title
-            ? frameSet.title
-            : isEditingFrame.item.frame.title,
-          size: frameSet.size ? frameSet.size : isEditingFrame.item.frame.size,
-        },
-        poster: poster ? poster : isEditingFrame.item.poster,
-        withPassepartout: withPassepartout,
-        position: isEditingFrame.item.position, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
-      });
-    } else if (frameSet.id && frameSet.size && poster.id) {
-      setItem({
-        frame: frameSet,
-        poster: poster,
-        withPassepartout: withPassepartout,
-        position: { x: 0, y: 0 }, // TODO: position should be from somewhere, but now it's not tracked so i leave it 0,0
-      });
-    }
-  }, [frameSet, isEditingFrame.item, poster, withPassepartout]);
-
-  /** Handles click for deleting a frame in the canvas */
-  const deleteFrame = () => {
-    const newList = items.filter((i) => i !== isEditingFrame.item);
-    setItems(newList);
-    if (newList.length > 0) setAnchorSidebar(false);
+  const deleteItem = (item: CanvasItem) => {
+    const newItems = canvas.items.filter((i) => i.id !== item.id);
+    setCanvas({ ...canvas, items: newItems });
+    if (newItems.length > 0) setAnchorSidebar(false);
     endEditMode();
   };
 
-  /** Detects the states needed for Canvas and pushes them into the "canvas" state */
-  /** This function shapes the canvas object for uploading to db - canvas collection */
-  const updateCanvasState = useCallback(() => {
-    // TODO: add all missing properties.
-    // Now there is only backgournd and items, but missing all other things under type "Canvas"
-    if (background) setCanvas((prevState) => ({ ...prevState, background }));
-    if (items.length >= 0) setCanvas((prevState) => ({ ...prevState, items }));
-  }, [background, items]);
+  useEffect(() => {
+    localStorage.setItem('canvas', JSON.stringify(canvas));
+  }, [canvas]);
 
-  useEffect(() => updateItemState(), [updateItemState]);
-  useEffect(() => updateItemsState(), [updateItemsState]);
-  useEffect(() => updateCanvasState(), [updateCanvasState]);
+  useEffect(() => {
+    if (poster.id && frameSet.id) {
+      addItem({
+        frame: frameSet,
+        poster: poster,
+        withPassepartout: withPassepartout,
+        id: uuidv4(),
+        position: { x: 20, y: 50 },
+      });
+      endEditMode();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [poster, frameSet, withPassepartout]);
 
   return (
     <CanvasContext.Provider
       value={{
-        background,
+        // background,
         setBackground,
-        withPassepartout,
-        setWithPassepartout,
-        poster,
-        setPoster,
-        posterOrientation,
-        setPosterOrientation,
-        frameSet,
-        setFrameSet,
+        getBackground,
+        getItems,
+        addItem,
+        updateItem,
+        deleteItem,
         canvas,
         setCanvas,
-        deleteFrame,
-        size,
-        setSize,
+        // withPassepartout,
+        // setWithPassepartout,
+        // poster,
+        // setPoster,
+        // posterOrientation,
+        // setPosterOrientation,
+        // frameSet,
+        // setFrameSet,
+
+        // deleteFrame,
+        // size,
+        // setSize,
       }}
     >
       {children}
