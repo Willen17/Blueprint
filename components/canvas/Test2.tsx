@@ -1,16 +1,21 @@
 import { Container } from '@mui/material';
+import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
 import { Group, Image, Layer, Stage } from 'react-konva';
 import useImage from 'use-image';
 import { useCanvas } from '../../context/CanvasContext';
+import { useSidebar } from '../../context/SidebarContext';
 import CanvasItem from './CanvasItem';
 
 const Test2 = () => {
   const { canvas, getBackground } = useCanvas();
+  const { endEditMode } = useSidebar();
   const stageCanvasRef = useRef<HTMLDivElement>(null);
 
   const [dimensions, setDimensions] = useState({ height: 100, width: 100 });
   const [canvasBackground] = useImage(getBackground());
+
+  const [selectedId, selectShape] = useState<string | null>(null);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -56,9 +61,26 @@ const Test2 = () => {
   // this value will be used to calculate how much 1 pixel is in cm
   const pixelsInCm = 3.5;
 
+  const checkDeselect = (
+    e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>
+  ) => {
+    // deselect when clicked on empty area
+    const clickedOnEmpty =
+      e.target === e.target.getStage() || e.target.attrs.alt === 'background';
+    if (clickedOnEmpty) {
+      selectShape(null);
+      endEditMode();
+    }
+  };
+
   return (
     <Container sx={{ height: '100%' }} ref={stageCanvasRef}>
-      <Stage height={dimensions.height} width={dimensions.width}>
+      <Stage
+        height={dimensions.height}
+        width={dimensions.width}
+        onMouseDown={checkDeselect}
+        onTouchStart={checkDeselect}
+      >
         <Layer>
           {canvasBackground && (
             <Group scaleX={scale} scaleY={scale} x={x} y={y}>
@@ -69,7 +91,7 @@ const Test2 = () => {
                 image={canvasBackground}
               />
               {canvas.items.map(
-                (item, index) =>
+                (item) =>
                   item.frame.id.length > 0 &&
                   item.poster.id.length > 0 && (
                     <CanvasItem
@@ -83,6 +105,8 @@ const Test2 = () => {
                         height: canvasBackground.height * scale,
                         scale,
                       }}
+                      selectShape={selectShape}
+                      isSelected={item.id === selectedId}
                     />
                   )
               )}
