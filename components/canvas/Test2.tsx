@@ -63,8 +63,8 @@ const Test2 = () => {
           {canvasBackground && (
             <Group scaleX={scale} scaleY={scale} x={x} y={y}>
               <Image
-                height={canvasBackground?.height}
-                width={canvasBackground?.width}
+                height={canvasBackground.height}
+                width={canvasBackground.width}
                 alt="background"
                 image={canvasBackground}
               />
@@ -76,6 +76,13 @@ const Test2 = () => {
                       key={item.id}
                       item={item}
                       pixelsInCm={pixelsInCm}
+                      bg={{
+                        x,
+                        y,
+                        width: canvasBackground.width * scale,
+                        height: canvasBackground.height * scale,
+                        scale,
+                      }}
                     />
                   )
               )}
