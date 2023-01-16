@@ -7,7 +7,9 @@ import { Background, Frame, Poster } from '../components/types';
 import { useSidebar } from '../context/SidebarContext';
 import { db } from '../firebase/firebaseConfig';
 
-const Test = dynamic(() => import('../components/canvas/Test'), { ssr: false }); // do not adjust this - M1 mac needs this to run canvas
+const Test2 = dynamic(() => import('../components/canvas/Test2'), {
+  ssr: false,
+}); // do not adjust this - M1 mac needs this to run canvas
 
 export const getStaticProps = async () => {
   const framesCollectionRef = collection(db, 'frames');
@@ -58,7 +60,7 @@ export default function Home({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Test />
+      <Test2 />
     </>
   );
 }
