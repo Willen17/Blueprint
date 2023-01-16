@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Group, Image, Layer, Stage } from 'react-konva';
 import useImage from 'use-image';
 import { useCanvas } from '../../context/CanvasContext';
+import CanvasItem from './CanvasItem';
 
 const Test2 = () => {
   const { canvas, getBackground } = useCanvas();
@@ -10,7 +11,6 @@ const Test2 = () => {
 
   const [dimensions, setDimensions] = useState({ height: 100, width: 100 });
   const [canvasBackground] = useImage(getBackground());
-  const [poster] = useImage(canvas.items[0].poster.image);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -53,10 +53,9 @@ const Test2 = () => {
     y = (dimensions.height - canvasBackground!.height * scale) / 2;
   }
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
   // this value will be used to calculate how much 1 pixel is in cm
-  const pixelsinCm = 3.5;
+  const pixelsInCm = 3.5;
+
   return (
     <Container sx={{ height: '100%' }} ref={stageCanvasRef}>
       <Stage height={dimensions.height} width={dimensions.width}>
@@ -69,19 +68,16 @@ const Test2 = () => {
                 alt="background"
                 image={canvasBackground}
               />
-              {poster && (
-                <Image
-                  alt="poster"
-                  x={position.x}
-                  y={position.y}
-                  draggable
-                  onDragEnd={(e) => {
-                    setPosition({ x: e.target.x(), y: e.target.y() });
-                  }}
-                  height={100 * pixelsinCm}
-                  width={70 * pixelsinCm}
-                  image={poster}
-                />
+              {canvas.items.map(
+                (item, index) =>
+                  item.frame.id.length > 0 &&
+                  item.poster.id.length > 0 && (
+                    <CanvasItem
+                      key={item.id}
+                      item={item}
+                      pixelsInCm={pixelsInCm}
+                    />
+                  )
               )}
             </Group>
           )}
