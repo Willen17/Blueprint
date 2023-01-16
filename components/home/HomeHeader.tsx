@@ -1,17 +1,19 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
 import { useUser } from '../../context/UserContext';
 import bpLogo from '../../public/logo/bp-logo-dark.png';
 import bpLogoText from '../../public/logo/bp-logotext-dark.png';
+import { theme } from '../theme';
 
 const HomeHeader = () => {
   const { handleGoogleSignIn } = useUser();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Box
       sx={{
         height: 100,
-        pr: 10,
+        pr: !mobile ? 10 : 0,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -21,18 +23,18 @@ const HomeHeader = () => {
       <Box>
         <Image
           priority
-          width={49}
-          height={51}
+          width={!mobile ? 49 : 33}
+          height={!mobile ? 51 : 35}
           alt="blueprint logo"
           src={bpLogo}
         />
         <Image
           priority
-          width={147}
-          height={40}
+          width={!mobile ? 147 : 115}
+          height={!mobile ? 40 : 31}
           alt="blueprint logotext"
           src={bpLogoText}
-          style={{ marginLeft: 10 }}
+          style={{ marginLeft: !mobile ? 10 : 5 }}
         />
       </Box>
       <Button

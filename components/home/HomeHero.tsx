@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
 import { frameDimensions } from '../../data/frameData';
 import dashedLineH from '../../public/homeImages/dashed-line-h.png';
@@ -8,21 +8,26 @@ import dog from '../../public/homeImages/hero-image-dog.png';
 import pointer from '../../public/homeImages/hero-pointer.png';
 import PlainFrame from '../shared/PlainFrame';
 import SectionTitle from '../shared/SectionTitle';
+import { theme } from '../theme';
 
 const HomeHero = () => {
+  const tablet = useMediaQuery(theme.breakpoints.down('md'));
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <>
       <Box
         sx={{
           position: 'relative',
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: !tablet ? 'row' : 'column',
           justifyContent: 'space-between',
-          pt: 10,
-          height: 500,
+          pt: !tablet ? 10 : mobile ? 2 : 5,
+          pb: !tablet ? null : 15,
+          height: !tablet ? 500 : 'fit-content',
         }}
       >
-        <Box mt={5} sx={{ position: 'absolute' }}>
+        <Box mt={5} sx={{ position: !tablet ? 'absolute' : 'static' }}>
           <SectionTitle
             title="Lorem Ipsum is simply dummy?"
             summary="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
@@ -32,14 +37,15 @@ const HomeHero = () => {
         </Box>
         <Box
           sx={{
-            position: 'absolute',
-            right: 0,
             display: 'flex',
             flexDirection: 'row',
-            alignContent: 'end',
+            position: !tablet ? 'absolute' : 'static',
+            right: 0,
+            placeSelf: !tablet ? null : 'flex-end',
+            pt: !mobile ? 0 : 2,
             alignItems: 'end',
             gap: 3,
-            pr: 10,
+            pr: !mobile ? 10 : 3,
             zIndex: 999,
           }}
         >
@@ -94,41 +100,45 @@ const HomeHero = () => {
                 alt="Hero Pointer Image"
                 src={pointer}
                 style={{
-                  width: 180,
-                  height: 180,
+                  width: !mobile ? 180 : 120,
+                  height: !mobile ? 180 : 120,
                   position: 'absolute',
-                  bottom: -150,
-                  right: -160,
+                  bottom: !mobile ? -150 : -110,
+                  right: !mobile ? -160 : -90,
                 }}
               />
             </Box>
           </PlainFrame>
         </Box>
-        <Image
-          width={10}
-          height={925}
-          alt="dashed line vertical"
-          src={dashedLineV}
-          style={{ position: 'absolute', right: 30, top: -110 }}
-        />
+        {!mobile ? (
+          <Image
+            width={10}
+            height={925}
+            alt="dashed line vertical"
+            src={dashedLineV}
+            style={{ position: 'absolute', right: 30, top: -110 }}
+          />
+        ) : null}
       </Box>
-      <Box
-        width="100vw"
-        height={10}
-        sx={{
-          position: 'absolute',
-          top: 130,
-          right: 0,
-        }}
-      >
-        <Image
-          width={925}
+      {!mobile ? (
+        <Box
+          width="100vw"
           height={10}
-          alt="dashed line horizontal"
-          src={dashedLineH}
-          style={{ position: 'absolute', top: 0, right: 0 }}
-        />
-      </Box>
+          sx={{
+            position: 'absolute',
+            top: 130,
+            right: 0,
+          }}
+        >
+          <Image
+            width={925}
+            height={10}
+            alt="dashed line horizontal"
+            src={dashedLineH}
+            style={{ position: 'absolute', top: 0, right: 0 }}
+          />
+        </Box>
+      ) : null}
     </>
   );
 };
