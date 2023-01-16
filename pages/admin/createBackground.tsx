@@ -58,7 +58,11 @@ export default function FormTest() {
         );
         setPercent(percent);
       },
-      (err) => console.log(err),
+      (err) =>
+        setNotification({
+          message: `${err.code} - ${err.message}`,
+          type: 'Warning',
+        }),
       () =>
         getDownloadURL(uploadTask.snapshot.ref).then((url) =>
           addBackground(url, data)
