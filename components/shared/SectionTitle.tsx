@@ -1,15 +1,16 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, SxProps, Theme, Typography } from '@mui/material';
 
 interface Props {
   title: string;
   summary?: string;
   isH1?: boolean;
   withButton?: boolean;
+  sx?: SxProps<Theme>;
 }
 
 const SectionTitle = (props: Props) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, ...props.sx }}>
       <Typography
         component={props.isH1 ? 'h1' : 'h2'}
         fontSize={props.isH1 ? 30 : 18}

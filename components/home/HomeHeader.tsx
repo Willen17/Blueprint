@@ -8,6 +8,7 @@ const HomeHeader = () => {
     <Box
       sx={{
         height: 100,
+        pr: 10,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
