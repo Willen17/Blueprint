@@ -64,6 +64,7 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
           type: 'Success',
         });
         setIsLoading({ isLoading: false });
+        router.push('/canvas');
       })
       .catch((error) => {
         setNotification({

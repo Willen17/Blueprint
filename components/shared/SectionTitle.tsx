@@ -1,5 +1,5 @@
 import { Box, Button, SxProps, Theme, Typography } from '@mui/material';
-
+import Link from 'next/link';
 interface Props {
   title: string;
   summary?: string;
@@ -35,23 +35,25 @@ const SectionTitle = (props: Props) => {
         </Typography>
       ) : null}
       {props.withButton ? (
-        <Button
-          sx={{
-            mt: 2,
-            fontSize: props.isH1 ? 13 : 11,
-            fontWeight: 500,
-            width: 'fit-content',
-            background: '#3086B7',
-            padding: '16px 10px',
-            color: '#fff',
-            '&:hover': {
-              background: '#EFEFEF',
-              color: '#3A3335',
-            },
-          }}
-        >
-          Get Started
-        </Button>
+        <Link href="/canvas" style={{ textDecoration: 'none' }}>
+          <Button
+            sx={{
+              mt: 2,
+              fontSize: props.isH1 ? 13 : 11,
+              fontWeight: 500,
+              width: 'fit-content',
+              background: '#3086B7',
+              padding: '16px 10px',
+              color: '#fff',
+              '&:hover': {
+                background: '#EFEFEF',
+                color: '#3A3335',
+              },
+            }}
+          >
+            Get Started
+          </Button>
+        </Link>
       ) : null}
     </Box>
   );

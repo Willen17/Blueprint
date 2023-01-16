@@ -67,8 +67,34 @@ const HomeFooter = () => {
             Contact Us
           </Typography>
           <Box>
-            <IconCircleLetterW color="#3086B7" />
-            <IconCircleLetterM color="#3086B7" style={{ marginLeft: 2 }} />
+            <Box
+              component="a"
+              href="https://github.com/Willen17"
+              target="_blank"
+              rel="noreferrer"
+              sx={{
+                color: '#3086B7',
+                '&:hover': {
+                  color: '#3A3335',
+                },
+              }}
+            >
+              <IconCircleLetterW />
+            </Box>
+            <Box
+              component="a"
+              href="https://github.com/millie-wy"
+              target="_blank"
+              rel="noreferrer"
+              sx={{
+                color: '#3086B7',
+                '&:hover': {
+                  color: '#3A3335',
+                },
+              }}
+            >
+              <IconCircleLetterM style={{ marginLeft: 2 }} />
+            </Box>
           </Box>
         </Box>
 
@@ -83,14 +109,28 @@ const HomeFooter = () => {
           <Typography fontSize={13} my={1.5} mr={0.5}>
             Privacy Policy | Terms & Conditions |  Cookie Settings |
           </Typography>
-          <Typography
-            fontSize={13}
-            my={1.5}
-            sx={{ display: 'flex', placeItems: 'center', gap: 0.2 }}
+          <a
+            href="https://github.com/Willen17/Blueprint"
+            target="_blank"
+            rel="noreferrer"
+            style={{ textDecoration: 'none', color: '#000' }}
           >
-            <IconBrandGithub stroke={1.5} size={18} />
-            Github
-          </Typography>
+            <Typography
+              fontSize={13}
+              my={1.5}
+              sx={{
+                display: 'flex',
+                placeItems: 'center',
+                gap: 0.2,
+                '&:hover': {
+                  color: '#3086B7',
+                },
+              }}
+            >
+              <IconBrandGithub stroke={1.5} size={18} />
+              Github
+            </Typography>
+          </a>
         </Box>
 
         <Box
@@ -107,8 +147,39 @@ const HomeFooter = () => {
           }}
         >
           <Typography fontWeight={200}>
-            Copyright © 2023 blueprint. Designed and built by Wiliam Saar and
-            Millie Cheung. All rights reserved.
+            Copyright © 2023 blueprint. Designed and built by{' '}
+            <Box
+              component="a"
+              href="https://github.com/Willen17"
+              target="_blank"
+              rel="noreferrer"
+              sx={{
+                textDecoration: 'none',
+                color: '#000',
+                '&:hover': {
+                  color: '#3086B7',
+                },
+              }}
+            >
+              Wiliam Saar
+            </Box>{' '}
+            and{' '}
+            <Box
+              component="a"
+              href="https://github.com/millie-wy"
+              target="_blank"
+              rel="noreferrer"
+              sx={{
+                textDecoration: 'none',
+                color: '#000',
+                '&:hover': {
+                  color: '#3086B7',
+                },
+              }}
+            >
+              Millie Cheung
+            </Box>
+            . All rights reserved.
           </Typography>
         </Box>
       </Box>

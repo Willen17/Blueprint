@@ -1,9 +1,12 @@
 import { Box, Button } from '@mui/material';
 import Image from 'next/image';
+import { useUser } from '../../context/UserContext';
 import bpLogo from '../../public/logo/bp-logo-dark.png';
 import bpLogoText from '../../public/logo/bp-logotext-dark.png';
 
 const HomeHeader = () => {
+  const { handleGoogleSignIn } = useUser();
+
   return (
     <Box
       sx={{
@@ -33,6 +36,7 @@ const HomeHeader = () => {
         />
       </Box>
       <Button
+        onClick={handleGoogleSignIn}
         sx={{
           fontWeight: 500,
           background: '#3A3335',
