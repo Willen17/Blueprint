@@ -14,6 +14,7 @@ import {
   useState,
 } from 'react';
 import { auth } from '../firebase/firebaseConfig';
+import { useNotification } from './NotificationContext';
 
 interface UserContextValue {
   currentUser: User | null;
@@ -33,6 +34,7 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenicated] = useState<boolean>(false);
   const router = useRouter();
+  const { setNotification, setIsLoading } = useNotification();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) =>
@@ -50,21 +52,41 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [currentUser]);
 
   const handleGoogleSignIn = async () => {
+    setIsLoading({
+      isLoading: true,
+      message: 'Please sign in via the pop-up window',
+    });
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider)
-      .then(() => {})
+      .then(() => {
+        setNotification({
+          message: 'You are logged in as ' + auth.currentUser?.displayName,
+          type: 'Success',
+        });
+        setIsLoading({ isLoading: false });
+      })
       .catch((error) => {
-        const errorCode = error.code;
-        console.log(errorCode, error);
+        setNotification({
+          message: `${error.code} - ${error}`,
+          type: 'Warning',
+        });
+        setIsLoading({ isLoading: false });
       });
   };
 
-  const handleSignOut = async () =>
+  const handleSignOut = async () => {
+    setIsLoading({ isLoading: true });
     await signOut(auth).then(() => {
       setCurrentUser(null);
       setIsAuthenicated(false);
       router.push('/');
+      setNotification({
+        message: 'You are logged out',
+        type: 'Success',
+      });
     });
+    setTimeout(() => setIsLoading({ isLoading: false }), 1000);
+  };
 
   return (
     <UserContext.Provider
