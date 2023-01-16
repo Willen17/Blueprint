@@ -13,6 +13,7 @@ const FrameSectionDetails = () => {
     allFrames,
     setExpandedAccordion,
     isEditingFrame,
+    setIsEditingFrame,
     frameSet,
     setFrameSet,
     setWithPassepartout,
@@ -71,8 +72,26 @@ const FrameSectionDetails = () => {
         >
           <Typography variant="body2">Passepartout</Typography>
           <Switch
-            checked={withPassepartout}
-            onChange={() => setWithPassepartout(!withPassepartout)}
+            checked={
+              isEditingFrame.item?.poster.id
+                ? isEditingFrame.item.withPassepartout
+                : withPassepartout
+            }
+            onChange={() => {
+              isEditingFrame.item?.poster.id
+                ? (updateItem({
+                    ...isEditingFrame.item,
+                    withPassepartout: !isEditingFrame.item.withPassepartout,
+                  }),
+                  setIsEditingFrame({
+                    ...isEditingFrame,
+                    item: {
+                      ...isEditingFrame.item,
+                      withPassepartout: !isEditingFrame.item.withPassepartout,
+                    },
+                  }))
+                : setWithPassepartout(!withPassepartout);
+            }}
           />
         </Box>
       </SidebarSubtitle>
@@ -89,22 +108,33 @@ const FrameSectionDetails = () => {
         {allFrames.map((fr) => (
           <Box
             key={fr.id}
-            onClick={() =>
+            onClick={() => {
               isEditingFrame.item?.poster.id
-                ? updateItem({
+                ? (updateItem({
                     ...isEditingFrame.item,
                     frame: {
                       ...isEditingFrame.item.frame,
                       id: fr.id!,
                       title: fr.title,
                     },
-                  })
+                  }),
+                  setIsEditingFrame({
+                    ...isEditingFrame,
+                    item: {
+                      ...isEditingFrame.item,
+                      frame: {
+                        ...isEditingFrame.item!.frame,
+                        id: fr.id!,
+                        title: fr.title,
+                      },
+                    },
+                  }))
                 : setFrameSet({
                     id: fr.id!,
                     title: fr.title,
                     size: '',
-                  })
-            }
+                  });
+            }}
             sx={{
               cursor: 'pointer',
               position: 'relative',
@@ -207,18 +237,28 @@ const FrameSectionDetails = () => {
                   sx={{ p: 0 }}
                   onClick={() => {
                     isEditingFrame.item?.poster.id
-                      ? updateItem({
+                      ? (updateItem({
                           ...isEditingFrame.item,
                           frame: {
                             ...isEditingFrame.item.frame,
                             size: dimension.size,
                           },
-                        })
-                      : setFrameSet((prevState) => ({
+                        }),
+                        setIsEditingFrame({
+                          ...isEditingFrame,
+                          item: {
+                            ...isEditingFrame.item,
+                            frame: {
+                              ...isEditingFrame.item.frame,
+                              size: dimension.size,
+                            },
+                          },
+                        }))
+                      : (setFrameSet((prevState) => ({
                           ...prevState,
                           size: dimension.size,
-                        }));
-                    setExpandedAccordion(sidebarSections[2]);
+                        })),
+                        setExpandedAccordion(sidebarSections[2]));
                   }}
                 />
               </FormControl>
