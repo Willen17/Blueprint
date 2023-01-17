@@ -7,7 +7,7 @@ import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import CanvasItem from './CanvasItem';
 
-const Test2 = () => {
+const Canvas = () => {
   const { canvas, getBackground } = useCanvas();
   const { endEditMode } = useSidebar();
   const stageCanvasRef = useRef<HTMLDivElement>(null);
@@ -115,4 +115,4 @@ const Test2 = () => {
   );
 };
 
-export default Test2;
+export default Canvas;

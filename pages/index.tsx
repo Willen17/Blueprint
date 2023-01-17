@@ -7,7 +7,7 @@ import { Background, Frame, Poster } from '../components/types';
 import { useSidebar } from '../context/SidebarContext';
 import { db } from '../firebase/firebaseConfig';
 
-const Test2 = dynamic(() => import('../components/canvas/Test2'), {
+const Canvas = dynamic(() => import('../components/canvas/Canvas'), {
   ssr: false,
 }); // do not adjust this - M1 mac needs this to run canvas
 
@@ -60,7 +60,7 @@ export default function Home({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Test2 />
+      <Canvas />
     </>
   );
 }
