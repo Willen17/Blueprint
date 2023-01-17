@@ -22,7 +22,7 @@ const PosterSectionDetails = () => {
     posterOrientation,
     setPosterOrientation,
     frameSet,
-    withPassepartout,
+    setIsEditingFrame,
   } = useSidebar();
   const { updateItem } = useCanvas();
   const mobile = useMediaQuery(theme.breakpoints.down(800));
@@ -189,7 +189,7 @@ const PosterSectionDetails = () => {
               src={p.image}
               onClick={() => {
                 isEditingFrame.item?.poster.id
-                  ? updateItem({
+                  ? (updateItem({
                       frame: isEqual(frameSet, {
                         id: '',
                         title: '',
@@ -206,14 +206,36 @@ const PosterSectionDetails = () => {
                         sizes: p.sizes,
                       },
                       withPassepartout: isEditingFrame.item.withPassepartout,
-                    })
-                  : setPoster({
+                    }),
+                    setIsEditingFrame({
+                      ...isEditingFrame,
+                      item: {
+                        frame: isEqual(frameSet, {
+                          id: '',
+                          title: '',
+                          size: '',
+                        })
+                          ? isEditingFrame.item.frame
+                          : frameSet,
+                        id: isEditingFrame.item.id,
+                        position: isEditingFrame.item.position,
+                        poster: {
+                          id: p.id!,
+                          image: p.image,
+                          isPortrait:
+                            p.orientation === 'Portrait' ? true : false,
+                          sizes: p.sizes,
+                        },
+                        withPassepartout: isEditingFrame.item.withPassepartout,
+                      },
+                    }))
+                  : (setPoster({
                       id: p.id!,
                       image: p.image,
                       isPortrait: p.orientation === 'Portrait' ? true : false,
                       sizes: p.sizes,
-                    });
-                setAnchorSidebar(false);
+                    }),
+                    setAnchorSidebar(false));
               }}
             />
             {(isEditingFrame.item && isEditingFrame.item.poster.id === p.id) ||

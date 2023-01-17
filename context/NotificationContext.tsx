@@ -35,8 +35,6 @@ const NotificationContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<IsLoading>({ isLoading: false });
   const [notification, setNotification] = useState<Notification | undefined>();
 
-  console.log(isLoading);
-
   return (
     <NotificationContext.Provider
       value={{ isLoading, setIsLoading, notification, setNotification }}
