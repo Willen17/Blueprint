@@ -1,4 +1,5 @@
 import Konva from 'konva';
+import { isEqual } from 'lodash';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Group, Image, Rect, Text, Transformer } from 'react-konva';
 import useImage from 'use-image';
@@ -99,31 +100,70 @@ const CanvasItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [position]);
 
-  const frameBorder = () => {
-    switch (dimension) {
-      case frameDimensions.xs || frameDimensions.sm:
-        return 8;
-      case frameDimensions.md:
-        return 9;
-      default:
-        return 10;
-    }
-  };
+  const [frameBorder, setFrameBorder] = useState(() => {
+    const object = item.poster.isPortrait
+      ? size
+      : { width: size.height, height: size.width };
 
-  const passepartout = () => {
-    switch (dimension) {
-      case frameDimensions.xs:
-        return 12 + frameBorder();
-      case frameDimensions.sm:
-        return 16 + frameBorder();
-      case frameDimensions.md:
-        return 21 + frameBorder();
-      case frameDimensions.lg:
-        return 26 + frameBorder();
-      default:
-        return 33 + frameBorder();
+    if (isEqual(object, frameDimensions.xs)) return 2 * pixelsInCm;
+    if (isEqual(object, frameDimensions.sm)) return 2 * pixelsInCm;
+    if (isEqual(object, frameDimensions.md)) return 2.25 * pixelsInCm;
+    else return 2.5 * pixelsInCm;
+  });
+
+  useEffect(() => {
+    setFrameBorder(() => {
+      const object = item.poster.isPortrait
+        ? size
+        : { width: size.height, height: size.width };
+
+      if (isEqual(object, frameDimensions.xs)) return 2 * pixelsInCm;
+      if (isEqual(object, frameDimensions.sm)) return 2 * pixelsInCm;
+      if (isEqual(object, frameDimensions.md)) return 2.25 * pixelsInCm;
+      else return 2.5 * pixelsInCm;
+    });
+  }, [size, item.poster.isPortrait, pixelsInCm]);
+
+  useEffect(() => {
+    setPassepartout(() => {
+      const object = item.poster.isPortrait
+        ? size
+        : { width: size.height, height: size.width };
+
+      if (isEqual(object, frameDimensions.xs))
+        return 3 * pixelsInCm + frameBorder;
+      if (isEqual(object, frameDimensions.sm))
+        return 4 * pixelsInCm + frameBorder;
+      if (isEqual(object, frameDimensions.md))
+        return 5.25 * pixelsInCm + frameBorder;
+      if (isEqual(object, frameDimensions.lg))
+        return 6.5 * pixelsInCm + frameBorder;
+      else {
+        console.log('default' + JSON.stringify(object));
+        return 8.1 * pixelsInCm + frameBorder;
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frameBorder, size]);
+
+  const [passepartout, setPassepartout] = useState(() => {
+    const object = item.poster.isPortrait
+      ? size
+      : { width: size.height, height: size.width };
+
+    if (isEqual(object, frameDimensions.xs))
+      return 3 * pixelsInCm + frameBorder;
+    if (isEqual(object, frameDimensions.sm))
+      return 4 * pixelsInCm + frameBorder;
+    if (isEqual(object, frameDimensions.md))
+      return 5.25 * pixelsInCm + frameBorder;
+    if (isEqual(object, frameDimensions.lg))
+      return 6.5 * pixelsInCm + frameBorder;
+    else {
+      console.log('default' + JSON.stringify(object));
+      return 8.1 * pixelsInCm + frameBorder;
     }
-  };
+  });
 
   useEffect(() => {
     setScaledSizes({
@@ -200,51 +240,51 @@ const CanvasItem = ({
         <Image
           alt="poster"
           image={poster}
-          x={frameBorder()}
-          y={frameBorder()}
-          height={scaledSizes.height - frameBorder() * 2}
-          width={scaledSizes.width - frameBorder() * 2}
+          x={frameBorder}
+          y={frameBorder}
+          height={scaledSizes.height - frameBorder * 2}
+          width={scaledSizes.width - frameBorder * 2}
         />
         {item.withPassepartout && (
           <>
             {/*  passepartout. Sequence: left, right, top, bottom*/}
             <Group>
               <Rect
-                x={frameBorder()}
-                y={frameBorder()}
-                width={passepartout() - frameBorder()}
-                height={scaledSizes.height - frameBorder() * 2}
+                x={frameBorder}
+                y={frameBorder}
+                width={passepartout - frameBorder}
+                height={scaledSizes.height - frameBorder * 2}
                 fill="#f8f8f8"
               />
               <Rect
-                x={scaledSizes.width - passepartout()}
-                y={frameBorder()}
-                width={passepartout() - frameBorder()}
-                height={scaledSizes.height - frameBorder() * 2}
+                x={scaledSizes.width - passepartout}
+                y={frameBorder}
+                width={passepartout - frameBorder}
+                height={scaledSizes.height - frameBorder * 2}
                 fill="#f8f8f8"
               />
               <Rect
-                x={frameBorder()}
-                y={frameBorder()}
-                width={scaledSizes.width - frameBorder() * 2}
-                height={passepartout() * 1.1 - frameBorder()}
+                x={frameBorder}
+                y={frameBorder}
+                width={scaledSizes.width - frameBorder * 2}
+                height={passepartout * 1.1 - frameBorder}
                 fill="#f8f8f8"
               />
               <Rect
-                x={frameBorder()}
-                y={scaledSizes.height - passepartout() * 1.1}
-                width={scaledSizes.width - frameBorder() * 2}
-                height={passepartout() * 1.1 - frameBorder()}
+                x={frameBorder}
+                y={scaledSizes.height - passepartout * 1.1}
+                width={scaledSizes.width - frameBorder * 2}
+                height={passepartout * 1.1 - frameBorder}
                 fill="#f8f8f8"
               />
             </Group>
             {/* shadow for passepartout. Sequence: left, right, top, bottom*/}
             <Group>
               <Rect
-                x={passepartout()}
-                y={passepartout() * 1.1 + 1}
+                x={passepartout}
+                y={passepartout * 1.1 + 1}
                 width={1}
-                height={scaledSizes.height - passepartout() * 1.1 * 2 - 1}
+                height={scaledSizes.height - passepartout * 1.1 * 2 - 1}
                 fill="#eee"
                 shadowBlur={0.25}
                 shadowColor="#000"
@@ -252,10 +292,10 @@ const CanvasItem = ({
                 shadowOffset={{ x: 0, y: 0 }}
               />
               <Rect
-                x={scaledSizes.width - passepartout()}
-                y={passepartout() * 1.1 + 1}
+                x={scaledSizes.width - passepartout}
+                y={passepartout * 1.1 + 1}
                 width={1}
-                height={scaledSizes.height - passepartout() * 1.1 * 2 - 1}
+                height={scaledSizes.height - passepartout * 1.1 * 2 - 1}
                 fill="#eee"
                 shadowBlur={0.25}
                 shadowColor="#000"
@@ -263,9 +303,9 @@ const CanvasItem = ({
                 shadowOffset={{ x: 0, y: 0 }}
               />
               <Rect
-                x={passepartout()}
-                y={passepartout() * 1.1}
-                width={scaledSizes.width - passepartout() * 2 + 1}
+                x={passepartout}
+                y={passepartout * 1.1}
+                width={scaledSizes.width - passepartout * 2 + 1}
                 height={1}
                 fill="#ddd"
                 shadowBlur={0.5}
@@ -274,9 +314,9 @@ const CanvasItem = ({
                 shadowOffset={{ x: 0, y: 0 }}
               />
               <Rect
-                x={passepartout()}
-                y={scaledSizes.height - passepartout() * 1.1}
-                width={scaledSizes.width - passepartout() * 2 + 1}
+                x={passepartout}
+                y={scaledSizes.height - passepartout * 1.1}
+                width={scaledSizes.width - passepartout * 2 + 1}
                 height={1}
                 fill="#fff"
               />
@@ -286,10 +326,10 @@ const CanvasItem = ({
         {/* shadow for frame. Sequence: left, right, top, bottom*/}
         <Group>
           <Rect
-            x={frameBorder()}
-            y={frameBorder() + 1}
+            x={frameBorder}
+            y={frameBorder + 1}
             width={1}
-            height={scaledSizes.height - frameBorder() * 2 - 1}
+            height={scaledSizes.height - frameBorder * 2 - 1}
             fill="#eee"
             shadowBlur={3}
             shadowColor="#ddd"
@@ -297,10 +337,10 @@ const CanvasItem = ({
             shadowOffset={{ x: 2, y: 0 }}
           />
           <Rect
-            x={scaledSizes.width - frameBorder()}
-            y={frameBorder() + 1}
+            x={scaledSizes.width - frameBorder}
+            y={frameBorder + 1}
             width={1}
-            height={scaledSizes.height - frameBorder() * 2 - 1}
+            height={scaledSizes.height - frameBorder * 2 - 1}
             fill="#eee"
             shadowBlur={3}
             shadowColor="#ddd"
@@ -308,9 +348,9 @@ const CanvasItem = ({
             shadowOffset={{ x: -2, y: 0 }}
           />
           <Rect
-            x={frameBorder()}
-            y={frameBorder()}
-            width={scaledSizes.width - frameBorder() * 2 + 1}
+            x={frameBorder}
+            y={frameBorder}
+            width={scaledSizes.width - frameBorder * 2 + 1}
             height={1}
             fill="#ddd"
             shadowBlur={13}
@@ -319,9 +359,9 @@ const CanvasItem = ({
             shadowOffset={{ x: 0, y: 6 }}
           />
           <Rect
-            x={frameBorder()}
-            y={scaledSizes.height - frameBorder()}
-            width={scaledSizes.width - frameBorder() * 2 + 1}
+            x={frameBorder}
+            y={scaledSizes.height - frameBorder}
+            width={scaledSizes.width - frameBorder * 2 + 1}
             height={1}
             fill="#fff"
             opacity={0.5}
