@@ -14,8 +14,13 @@ import { useSidebar } from './SidebarContext';
 
 interface CanvasContextValue {
   canvas: Canvas;
-  setBackground: (background: string) => void;
-  getBackground: () => string;
+  setBackground: (background: { image: string; cmInPixels?: number }) => void;
+  getBackground: () =>
+    | {
+        image: string;
+        cmInPixels?: number | undefined;
+      }
+    | undefined;
   getItems: () => CanvasItem[];
   addItem: (item: CanvasItem) => void;
   updateItem: (item: CanvasItem) => void;
@@ -25,8 +30,8 @@ interface CanvasContextValue {
 
 export const CanvasContext = createContext<CanvasContextValue>({
   canvas: { user: undefined, items: [] },
-  setBackground: () => '',
-  getBackground: () => '',
+  setBackground: () => {},
+  getBackground: () => undefined,
   getItems: () => [],
   addItem: () => {},
   updateItem: () => {},
@@ -60,14 +65,17 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   });
 
-  const setBackground = (background: string) => {
+  const setBackground = (background: {
+    image: string;
+    cmInPixels?: number;
+  }) => {
     const newCanvas = { ...canvas, background: background };
     setCanvas({ ...canvas, background });
   };
 
   const getBackground = () => {
     if (canvas.background) return canvas.background;
-    else return '';
+    else return undefined;
   };
 
   const getItems = () => {

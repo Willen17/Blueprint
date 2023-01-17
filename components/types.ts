@@ -22,6 +22,7 @@ export type Background = {
   categories: typeof backgroundCategories;
   id?: string;
   createdAt?: Timestamp;
+  cmInPixels?: number;
 };
 
 export interface CanvasFrameSet {
@@ -61,7 +62,7 @@ export interface Canvas {
   user: FirebaseUser | undefined;
   createdAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
   updatedAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
-  background?: string; // TODO: put the correct type. Wille is working on this so i dont bother the type here
+  background?: { image: string; cmInPixels?: number }; // TODO: put the correct type. Wille is working on this so i dont bother the type here
   items: CanvasItem[];
 }
 
