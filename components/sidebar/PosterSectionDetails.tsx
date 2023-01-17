@@ -6,8 +6,8 @@ import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
+import UploadButton from '../imageUpload/UploadButton';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
-import UploadButton from '../shared/UploadButton';
 import { theme } from '../theme';
 import { Dimension } from '../types';
 
