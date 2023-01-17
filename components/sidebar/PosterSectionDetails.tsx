@@ -7,6 +7,7 @@ import { useSidebar } from '../../context/SidebarContext';
 import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
+import UploadButton from '../shared/UploadButton';
 import { theme } from '../theme';
 import { Dimension } from '../types';
 
@@ -261,9 +262,12 @@ const PosterSectionDetails = () => {
       </Box>
     </>
   ) : (
-    <Typography mt={3} width={180} mx="auto" textAlign="center">
-      The posters will appear here after selecting a frame.
-    </Typography>
+    <>
+      <Typography mt={3} width={180} mx="auto" textAlign="center">
+        The posters will appear here after selecting a frame.
+      </Typography>
+      <UploadButton for="Poster" />
+    </>
   );
 };
 
