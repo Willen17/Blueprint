@@ -2,7 +2,7 @@ import { collection, getDocs } from '@firebase/firestore';
 import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Background, Frame, Poster } from '../components/types';
 import { useCanvas } from '../context/CanvasContext';
 import { useSidebar } from '../context/SidebarContext';
@@ -53,6 +53,31 @@ const Canvas = ({
   );
   useEffect(() => setAllFrames(frames), [frames, setAllFrames]);
   useEffect(() => setAllPosters(posters), [posters, setAllPosters]);
+
+  const [isPortrait, setIsPortrait] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(orientation: portrait)').matches;
+    }
+  });
+
+  useEffect(() => {
+    window
+      .matchMedia('(orientation: portrait)')
+      .addEventListener('change', (e) => {
+        setIsPortrait(e.matches);
+      });
+    return () => {
+      window
+        .matchMedia('(orientation: portrait)')
+        .removeEventListener('change', (e) => {
+          setIsPortrait(e.matches);
+        });
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(isPortrait);
+  }, [isPortrait]);
 
   return (
     <>
