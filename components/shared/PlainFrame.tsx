@@ -10,6 +10,7 @@ interface Props {
   bgImg?: { src: StaticImageData; alt: string };
   size: Dimension;
   children: ReactNode;
+  isLandscape?: boolean;
 }
 
 const PlainFrame = (props: Props) => {
@@ -18,8 +19,16 @@ const PlainFrame = (props: Props) => {
       sx={{
         position: 'relative',
         display: 'flex',
-        width: props.size ? props.size!.width * 3.5 : null,
-        height: props.size ? props.size!.height * 3.5 : null,
+        width: props.size
+          ? props.isLandscape
+            ? props.size!.height * 3.5
+            : props.size!.width * 3.5
+          : null,
+        height: props.size
+          ? props.isLandscape
+            ? props.size!.width * 3.5
+            : props.size!.height * 3.5
+          : null,
         zIndex: '-2',
         boxSizing: 'border-box',
         background: props.isWhiteFrame
@@ -42,28 +51,46 @@ const PlainFrame = (props: Props) => {
       {/* Inner */}
       <Box
         sx={{
-          width:
-            props.size === frameDimensions.xs
+          width: props.isLandscape
+            ? props.size === frameDimensions.xs
+              ? '84%'
+              : props.size === frameDimensions.sm
+              ? '86%'
+              : props.size === frameDimensions.md
+              ? '88%'
+              : props.size === frameDimensions.lg
+              ? '92%'
+              : '93%'
+            : props.size === frameDimensions.xs
+            ? '82%'
+            : props.size === frameDimensions.sm
+            ? '84%'
+            : props.size === frameDimensions.md
+            ? '86%'
+            : props.size === frameDimensions.lg
+            ? '87%'
+            : '91%',
+          height: props.isLandscape
+            ? props.size === frameDimensions.xs
               ? '82%'
               : props.size === frameDimensions.sm
               ? '84%'
               : props.size === frameDimensions.md
               ? '86%'
               : props.size === frameDimensions.lg
-              ? '88%'
-              : '90%',
-          height:
-            props.size === frameDimensions.xs
-              ? '84%'
-              : props.size === frameDimensions.sm
-              ? '86%'
-              : props.size === frameDimensions.md
-              ? '88%'
-              : props.size === frameDimensions.lg
-              ? '90%'
-              : '92%',
+              ? '89%'
+              : '90%'
+            : props.size === frameDimensions.xs
+            ? '84%'
+            : props.size === frameDimensions.sm
+            ? '86%'
+            : props.size === frameDimensions.md
+            ? '88%'
+            : props.size === frameDimensions.lg
+            ? '90%'
+            : '93%',
           m: 'auto auto',
-          bgcolor: '#f8f8f8',
+          bgcolor: '#fff',
           zIndex: '-1',
           display: 'flex',
           boxShadow:

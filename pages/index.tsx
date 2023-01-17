@@ -1,57 +1,11 @@
-import { collection, getDocs } from '@firebase/firestore';
-import { InferGetStaticPropsType } from 'next';
-import dynamic from 'next/dynamic';
+import { Container } from '@mui/material';
 import Head from 'next/head';
-import { useEffect } from 'react';
-import { Background, Frame, Poster } from '../components/types';
-import { useSidebar } from '../context/SidebarContext';
-import { db } from '../firebase/firebaseConfig';
+import HomeFeatures from '../components/home/HomeFeatures';
+import HomeFooter from '../components/home/HomeFooter';
+import HomeHeader from '../components/home/HomeHeader';
+import HomeHero from '../components/home/HomeHero';
 
-const Test2 = dynamic(() => import('../components/canvas/Test2'), {
-  ssr: false,
-}); // do not adjust this - M1 mac needs this to run canvas
-
-export const getStaticProps = async () => {
-  const framesCollectionRef = collection(db, 'frames');
-  const frameData = await getDocs(framesCollectionRef);
-  const backgroundsCollectionRef = collection(db, 'backgrounds');
-  const backgroundData = await getDocs(backgroundsCollectionRef);
-  const postersCollectionRef = collection(db, 'posters');
-  const posterData = await getDocs(postersCollectionRef);
-
-  return {
-    props: {
-      frames: frameData.docs.map((doc) => ({
-        ...(doc.data() as Frame),
-        id: doc.id,
-      })),
-      backgrounds: backgroundData.docs.map((doc) => ({
-        ...(doc.data() as Background),
-        id: doc.id,
-        createdAt: doc.data().createdAt.toDate().toDateString(),
-      })),
-      posters: posterData.docs.map((doc) => ({
-        ...(doc.data() as Poster),
-        id: doc.id,
-        createdAt: doc.data().createdAt.toDate().toDateString(),
-      })),
-    },
-  };
-};
-
-export default function Home({
-  frames,
-  backgrounds,
-  posters,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
-  const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
-  useEffect(
-    () => setAllBackgrounds(backgrounds),
-    [backgrounds, setAllBackgrounds]
-  );
-  useEffect(() => setAllFrames(frames), [frames, setAllFrames]);
-  useEffect(() => setAllPosters(posters), [posters, setAllPosters]);
-
+export default function Home() {
   return (
     <>
       <Head>
@@ -60,7 +14,16 @@ export default function Home({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Test2 />
+
+      <HomeHeader />
+      <Container
+        component="main"
+        sx={{ display: 'flex', flexDirection: 'column', overflowX: 'clip' }}
+      >
+        <HomeHero />
+        <HomeFeatures />
+      </Container>
+      <HomeFooter />
     </>
   );
 }

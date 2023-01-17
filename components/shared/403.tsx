@@ -15,7 +15,13 @@ const UnauthorisedAccess = () => {
         flexWrap: 'wrap',
       }}
     >
-      <Typography fontSize={100} component="h1" color="#3A3335">
+      <Typography
+        fontSize={100}
+        component="h1"
+        fontFamily="Comfortaa"
+        fontWeight={600}
+        color="#3A3335"
+      >
         403
       </Typography>
       <Box

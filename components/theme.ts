@@ -12,7 +12,7 @@ export const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: ['Inter'].join(','),
+    fontFamily: ['Inter', 'Comfortaa'].join(','),
     h1: {
       fontSize: 13,
       fontWeight: 600,
