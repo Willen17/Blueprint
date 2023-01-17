@@ -59,8 +59,8 @@ const PlainFrame = (props: Props) => {
               : props.size === frameDimensions.md
               ? '88%'
               : props.size === frameDimensions.lg
-              ? '90%'
-              : '92%'
+              ? '92%'
+              : '93%'
             : props.size === frameDimensions.xs
             ? '82%'
             : props.size === frameDimensions.sm
@@ -69,7 +69,7 @@ const PlainFrame = (props: Props) => {
             ? '86%'
             : props.size === frameDimensions.lg
             ? '87%'
-            : '90%',
+            : '91%',
           height: props.isLandscape
             ? props.size === frameDimensions.xs
               ? '82%'
@@ -78,7 +78,7 @@ const PlainFrame = (props: Props) => {
               : props.size === frameDimensions.md
               ? '86%'
               : props.size === frameDimensions.lg
-              ? '87%'
+              ? '89%'
               : '90%'
             : props.size === frameDimensions.xs
             ? '84%'
@@ -88,7 +88,7 @@ const PlainFrame = (props: Props) => {
             ? '88%'
             : props.size === frameDimensions.lg
             ? '90%'
-            : '92%',
+            : '93%',
           m: 'auto auto',
           bgcolor: '#fff',
           zIndex: '-1',

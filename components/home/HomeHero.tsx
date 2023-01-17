@@ -22,8 +22,8 @@ const HomeHero = () => {
           display: 'flex',
           flexDirection: !tablet ? 'row' : 'column',
           justifyContent: 'space-between',
-          pt: !tablet ? 10 : mobile ? 2 : 5,
-          pb: !tablet ? null : 15,
+          pt: !tablet ? 10 : mobile ? 0 : 5,
+          pb: !tablet ? 0 : 15,
           height: !tablet ? 500 : 'fit-content',
         }}
       >
@@ -41,8 +41,8 @@ const HomeHero = () => {
             flexDirection: 'row',
             position: !tablet ? 'absolute' : 'static',
             right: 0,
-            placeSelf: !tablet ? null : 'flex-end',
-            pt: !mobile ? 0 : 2,
+            placeSelf: !tablet ? 'unset' : 'flex-end',
+            pt: !mobile ? 0 : 3,
             alignItems: 'end',
             gap: 3,
             pr: !mobile ? 10 : 3,

@@ -11,6 +11,7 @@ import SectionTitle from '../shared/SectionTitle';
 import { theme } from '../theme';
 
 const HomeFeatures = () => {
+  const largeScreen = useMediaQuery(theme.breakpoints.up('lg'));
   const tablet = useMediaQuery(theme.breakpoints.down('md'));
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -86,7 +87,7 @@ const HomeFeatures = () => {
           alt="images for background features"
           src={postersImage}
           style={{
-            width: !mobile ? 480 : '100%',
+            width: !mobile ? 460 : '100%',
             maxWidth: !mobile ? 'unset' : 400,
             height: '100%',
             paddingLeft: !mobile ? 30 : 0,
@@ -102,14 +103,14 @@ const HomeFeatures = () => {
           flexDirection: 'column',
           rowGap: 2,
           placeItems: !mobile ? 'end' : null,
-          pt: !tablet ? 0 : mobile ? 12 : 11,
+          pt: largeScreen ? 0 : tablet ? 11 : mobile ? 12 : 3,
         }}
       >
         <Image
           alt="background image for upload feature"
           src={uploadBg}
           style={{
-            width: !tablet ? '50vw' : mobile ? '100%' : '70%',
+            width: !tablet ? '50vw' : mobile ? '100%' : '80%',
             height: !tablet ? 500 : mobile ? 330 : 380,
             position: 'absolute',
             marginTop: !tablet ? -120 : mobile ? -50 : -60,

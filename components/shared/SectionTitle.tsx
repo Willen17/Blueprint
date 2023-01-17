@@ -36,14 +36,13 @@ const SectionTitle = (props: Props) => {
         fontWeight={600}
         width={props.isH1 ? 250 : 'fit-content'}
         lineHeight={1.15}
-        sx={{ letterSpacing: -1.5 }}
+        sx={{ letterSpacing: props.isH1 ? -1.5 : -0.5 }}
       >
         {props.title}
       </Typography>
       {props.summary ? (
         <Typography
-          component="h3"
-          fontSize={!mobile ? 13 : 12}
+          fontSize={props.isH1 ? 14 : 12}
           fontFamily="Comfortaa"
           color="#888686"
           fontWeight={300}

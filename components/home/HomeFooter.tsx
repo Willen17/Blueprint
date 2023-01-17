@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, useMediaQuery } from '@mui/material';
 import {
   IconBrandGithub,
   IconCircleLetterM,
@@ -7,8 +7,11 @@ import {
 import Image from 'next/image';
 import bpLogo from '../../public/logo/bp-logo-dark.png';
 import bpLogoText from '../../public/logo/bp-logotext-dark.png';
+import { theme } from '../theme';
 
 const HomeFooter = () => {
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Container
       component="footer"
@@ -48,11 +51,13 @@ const HomeFooter = () => {
             my: 1.5,
           }}
         >
-          <Typography fontSize={13}>c/o Medieinstitutet</Typography>
-          <Typography fontSize={13}>
+          <Typography fontSize={!mobile ? 13 : 12}>
+            c/o Medieinstitutet
+          </Typography>
+          <Typography fontSize={!mobile ? 13 : 12}>
             Anders Personsgatan 18, 416 64 Gothenburg
           </Typography>
-          <Typography fontSize={13}>Sweden</Typography>
+          <Typography fontSize={!mobile ? 13 : 12}>Sweden</Typography>
         </Box>
 
         <Box
@@ -63,7 +68,11 @@ const HomeFooter = () => {
             gap: 0.5,
           }}
         >
-          <Typography fontSize={13} component="h4" fontWeight={600}>
+          <Typography
+            fontSize={!mobile ? 13 : 12}
+            component="h4"
+            fontWeight={600}
+          >
             Contact Us
           </Typography>
           <Box>
@@ -101,24 +110,30 @@ const HomeFooter = () => {
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'row',
+            placeItems: 'center',
+            flexDirection: !mobile ? 'row' : 'column',
             textAlign: 'center',
-            pb: 9,
+            pt: 1.5,
+            gap: 0.5,
+            pb: !mobile ? 11 : 9,
           }}
         >
-          <Typography fontSize={13} my={1.5} mr={0.5}>
-            Privacy Policy | Terms & Conditions |  Cookie Settings |
+          <Typography fontSize={!mobile ? 13 : 11} mr={0.5}>
+            Privacy Policy | Terms & Conditions {!mobile ? '| ' : ' '}
           </Typography>
-          <a
-            href="https://github.com/Willen17/Blueprint"
-            target="_blank"
-            rel="noreferrer"
-            style={{ textDecoration: 'none', color: '#000' }}
+          <Typography
+            fontSize={!mobile ? 13 : 11}
+            sx={{ display: 'flex', gap: 0.5 }}
           >
-            <Typography
-              fontSize={13}
-              my={1.5}
+            Cookie Settings |
+            <Box
+              component="a"
+              href="https://github.com/Willen17/Blueprint"
+              target="_blank"
+              rel="noreferrer"
               sx={{
+                textDecoration: 'none',
+                color: '#000',
                 display: 'flex',
                 placeItems: 'center',
                 gap: 0.2,
@@ -129,24 +144,29 @@ const HomeFooter = () => {
             >
               <IconBrandGithub stroke={1.5} size={18} />
               Github
-            </Typography>
-          </a>
+            </Box>
+          </Typography>
         </Box>
 
         <Box
           bgcolor="#FCFCFC"
-          width="100vw"
+          width={!mobile ? '100vw' : '100%'}
           height={60}
           sx={{
             position: 'absolute',
             bottom: 0,
-            left: -24,
+            left: !mobile ? -24 : 0,
             display: 'flex',
             placeContent: 'center',
             placeItems: 'center',
+            flexWrap: 'wrap',
           }}
         >
-          <Typography fontWeight={200}>
+          <Typography
+            fontWeight={200}
+            fontSize={!mobile ? 11 : 9}
+            sx={{ m: 'auto', textAlign: 'center' }}
+          >
             Copyright © 2023 blueprint. Designed and built by{' '}
             <Box
               component="a"
