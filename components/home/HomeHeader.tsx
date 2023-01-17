@@ -1,26 +1,31 @@
-import { Box, Button, useMediaQuery } from '@mui/material';
+import { Button, Container, useMediaQuery } from '@mui/material';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useUser } from '../../context/UserContext';
 import bpLogo from '../../public/logo/bp-logo-dark.png';
 import bpLogoText from '../../public/logo/bp-logotext-dark.png';
 import { theme } from '../theme';
 
-const HomeHeader = () => {
+interface Props {
+  noLoginButton?: boolean;
+}
+
+const HomeHeader = (props: Props) => {
   const { handleGoogleSignIn } = useUser();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Box
+    <Container
+      component="header"
       sx={{
         height: 100,
-        pr: !mobile ? 10 : 0,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         placeItems: ' center',
       }}
     >
-      <Box>
+      <Link href="/">
         <Image
           priority
           width={!mobile ? 49 : 33}
@@ -36,23 +41,26 @@ const HomeHeader = () => {
           src={bpLogoText}
           style={{ marginLeft: !mobile ? 10 : 5 }}
         />
-      </Box>
-      <Button
-        onClick={handleGoogleSignIn}
-        sx={{
-          fontWeight: 500,
-          background: '#3A3335',
-          padding: '16px 10px',
-          color: '#fff',
-          '&:hover': {
-            background: '#EFEFEF',
-            color: '#3A3335',
-          },
-        }}
-      >
-        Google Login
-      </Button>
-    </Box>
+      </Link>
+      {!props.noLoginButton ? (
+        <Button
+          onClick={handleGoogleSignIn}
+          sx={{
+            fontWeight: 500,
+            mr: !mobile ? 10 : 0,
+            background: '#3A3335',
+            padding: '16px 10px',
+            color: '#fff',
+            '&:hover': {
+              background: '#EFEFEF',
+              color: '#3A3335',
+            },
+          }}
+        >
+          Google Login
+        </Button>
+      ) : null}
+    </Container>
   );
 };
 

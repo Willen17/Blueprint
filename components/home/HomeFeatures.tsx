@@ -31,7 +31,7 @@ const HomeFeatures = () => {
           summary="We know everyone has their own decor home style so we provide a wide variety of backgrounds for our users to choose from."
         />
         <Image
-          alt="images for background features"
+          alt="image for background features"
           src={bgImage}
           style={{
             width: '100%',
@@ -58,7 +58,7 @@ const HomeFeatures = () => {
           summary="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
         />
         <Image
-          alt="images for background features"
+          alt="image for frame features"
           src={framesImage}
           style={{
             width: !mobile ? 400 : '90%',
@@ -84,7 +84,7 @@ const HomeFeatures = () => {
           summary="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
         />
         <Image
-          alt="images for background features"
+          alt="image for poster features"
           src={postersImage}
           style={{
             width: !mobile ? 460 : '100%',
@@ -123,7 +123,7 @@ const HomeFeatures = () => {
           summary="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
         />
         <Image
-          alt="images for background features"
+          alt="image for upload features"
           src={uploadImage}
           style={{
             width: 180,

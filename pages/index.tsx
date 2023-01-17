@@ -15,11 +15,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <HomeHeader />
       <Container
         component="main"
         sx={{ display: 'flex', flexDirection: 'column', overflowX: 'clip' }}
       >
-        <HomeHeader />
         <HomeHero />
         <HomeFeatures />
       </Container>
