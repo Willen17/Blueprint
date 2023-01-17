@@ -2,7 +2,9 @@ import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import { useNotification } from '../context/NotificationContext';
+import Home from '../pages';
 import Header from './Header';
+import HomeHeader from './home/HomeHeader';
 import CustomSnackbar from './shared/CustomSnackbar';
 import Loader from './shared/Loader';
 import Sidebar from './Sidebar';
@@ -14,37 +16,31 @@ interface Props {
 const Layout = (props: Props) => {
   const router = useRouter();
   const { isLoading } = useNotification();
-  return (
+
+  return isLoading.isLoading ? (
+    <Loader />
+  ) : router.pathname === '/' ? (
+    <Home />
+  ) : (
     <>
-      <Header />
+      {router.pathname === '/404' ? <HomeHeader noLoginButton /> : <Header />}
       <Box
+        component="main"
         display="flex"
-        height="calc(100vh - 50px)"
-        width="100%"
         p={0}
-        sx={{ flexDirection: 'row' }}
+        sx={{
+          width: '100%',
+          height: 'calc(100vh - 50px)',
+          maxHeight: 'calc(100vh - 50px)',
+        }}
       >
-        {isLoading.isLoading ? (
-          <Loader />
-        ) : (
-          <>
-            <main
-              style={{
-                width: '100%',
-                height: 'calc(100vh - 50px)',
-                maxHeight: 'calc(100vh - 50px)',
-              }}
-            >
-              {props.children}
-            </main>
-            {router.pathname.includes('admin') ||
-            router.pathname === '/404' ? null : (
-              <Sidebar />
-            )}
-          </>
+        {props.children}
+        {router.pathname.includes('admin') ||
+        router.pathname === '/404' ? null : (
+          <Sidebar />
         )}
+        <CustomSnackbar />
       </Box>
-      <CustomSnackbar />
     </>
   );
 };

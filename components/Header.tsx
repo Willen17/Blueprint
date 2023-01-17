@@ -12,7 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useUser } from '../context/UserContext';
-import bpLogo from '../public/logo/bp-logo.png';
+import bpLogo from '../public/logo/bp-logo-light.png';
 import IconWithText from './shared/IconWithText';
 import { theme } from './theme';
 

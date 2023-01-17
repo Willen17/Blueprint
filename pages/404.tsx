@@ -13,9 +13,10 @@ const Custom404 = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <Container
         sx={{
-          height: 'calc(100vh - 50px)',
+          height: 'calc(100vh - 100px)',
           display: 'flex',
           placeContent: 'center',
           placeItems: 'center',
@@ -23,7 +24,13 @@ const Custom404 = () => {
           flexWrap: 'wrap',
         }}
       >
-        <Typography fontSize={100} component="h1" color="#3A3335">
+        <Typography
+          fontSize={100}
+          component="h1"
+          fontFamily="Comfortaa"
+          fontWeight={600}
+          color="#3A3335"
+        >
           404
         </Typography>
         <Box
