@@ -8,7 +8,9 @@ import { useCanvas } from '../context/CanvasContext';
 import { useSidebar } from '../context/SidebarContext';
 import { db } from '../firebase/firebaseConfig';
 
-const Test = dynamic(() => import('../components/canvas/Test'), { ssr: false }); // do not adjust this - M1 mac needs this to run canvas
+const Test2 = dynamic(() => import('../components/canvas/Test2'), {
+  ssr: false,
+}); // do not adjust this - M1 mac needs this to run canvas
 
 export const getStaticProps = async () => {
   const framesCollectionRef = collection(db, 'frames');
@@ -56,6 +58,7 @@ const Canvas = ({
     <>
       <Head>
         <title>
+          {/* TODO: if the canvas has default title as "untitled", the below if statment can be deleted */}
           {canvas?.title ? canvas.title : 'Untitled'} | Blue print | Visualize
           your frames
         </title>
@@ -66,7 +69,7 @@ const Canvas = ({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Test />
+      <Test2 />
     </>
   );
 };
