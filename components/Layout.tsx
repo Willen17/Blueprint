@@ -49,10 +49,6 @@ const Layout = (props: Props) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log(isPortrait);
-  }, [isPortrait]);
-
   return isLoading.isLoading ? (
     <Loader />
   ) : router.pathname === '/' ? (
