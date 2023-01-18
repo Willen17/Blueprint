@@ -12,7 +12,7 @@ const ImageUploadForm = (props: Props) => {
   const { preview, setPreview, handleImageChange, file, imageError, submit } =
     useUpload();
 
-  // create a preview whenever file is changed
+  /* create a preview whenever file is changed */
   useEffect(() => {
     if (!file) return setPreview(undefined);
 

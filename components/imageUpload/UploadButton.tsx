@@ -14,8 +14,9 @@ const UploadButton = (props: Props) => {
   const { allPosters, allBackgrounds } = useSidebar();
   const { currentUser } = useUser();
 
-  const handleClick = () => setOpenUploadModal(true); // TODO: idk but the modal opened maybe the same for both poster and background for now
+  const handleClick = () => setOpenUploadModal(true);
 
+  /* Check how many backgrounds and posters the user has uploaded based on props */
   const checkNoOfUpload = () => {
     if (props.for === 'Poster') {
       return allPosters.filter((p) => p.user === currentUser?.uid).length >= 3;
