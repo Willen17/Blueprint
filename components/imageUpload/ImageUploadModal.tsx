@@ -25,7 +25,7 @@ const ImageUploadModal = (props: Props) => {
     setImageError,
   } = useUpload();
 
-  /** Closes modal  */
+  /* Closes modal  */
   const handleClose = () => {
     setOpenUploadModal(false);
     setFile(undefined);
@@ -42,6 +42,7 @@ const ImageUploadModal = (props: Props) => {
     { type: 'size', requirement: 'File size must not exceed 3 MB' },
   ];
 
+  /* Check props and display the correct instuctions */
   const getInstructions = () => {
     if (props.for === 'Background') return backgroundInstructions;
     if (props.for === 'Poster') return posterInstructions;

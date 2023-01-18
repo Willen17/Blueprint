@@ -1,5 +1,5 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import {
   ChangeEvent,
   createContext,
@@ -9,10 +9,10 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
-
-import { ref } from 'firebase/storage';
+import useImage from 'use-image';
 import { db, storage } from '../firebase/firebaseConfig';
 import { useNotification } from './NotificationContext';
 import { useUser } from './UserContext';
@@ -22,9 +22,7 @@ interface UploadContextValue {
   setOpenUploadModal: Dispatch<SetStateAction<boolean>>;
   file: File | undefined;
   setFile: Dispatch<SetStateAction<File | undefined>>;
-  handleUpload: (file: File, imageFor: string) => void;
   submit: (imageFor: string) => void;
-  addImage: (url: string, imageFor: string) => void;
   preview: string | undefined;
   setPreview: Dispatch<SetStateAction<string | undefined>>;
   handleImageChange: (event: ChangeEvent) => void;
@@ -37,9 +35,7 @@ export const UploadContext = createContext<UploadContextValue>({
   setFile: () => undefined,
   openUploadModal: false,
   setOpenUploadModal: () => false,
-  handleUpload: () => {},
   submit: () => {},
-  addImage: () => {},
   preview: '',
   setPreview: () => '',
   handleImageChange: () => {},
@@ -54,7 +50,17 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [preview, setPreview] = useState<string>();
   const [file, setFile] = useState<File | undefined>(undefined);
   const [imageError, setImageError] = useState<string[] | undefined>(undefined);
+  const [image] = useImage(preview || '');
+  const [imgDimension, setImgDimension] = useState<
+    { width: number; height: number } | undefined
+  >();
 
+  useEffect(() => {
+    if (preview && image)
+      setImgDimension({ width: image.width, height: image.height });
+  }, [image, preview]);
+
+  /* Handle form submission */
   const submit = (imageFor: string) => {
     if (!file) return; // this is being covered in the client since the upload button only displays when there is a file
     if (imageError)
@@ -62,10 +68,11 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         message: 'Please select a image that meets the requirement.',
         type: 'Warning',
       });
-    if (file && imageFor && !imageError) handleUpload(file, imageFor);
+    if (file && imageFor && !imageError) uploadImage(file, imageFor);
   };
 
-  const handleUpload = (file: File, imageFor: string) => {
+  /* Handle image upload */
+  const uploadImage = (file: File, imageFor: string) => {
     const storageRef =
       imageFor === 'Poster'
         ? ref(storage, `/posters/${currentUser?.uid}_${file.name}`)
@@ -86,12 +93,13 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         }),
       () =>
         getDownloadURL(uploadTask.snapshot.ref).then((url) =>
-          addImage(url, imageFor)
+          addImageObjToDb(url, imageFor)
         )
     );
   };
 
-  const addImage = useCallback(
+  /* Add a new document to db poster or background collection */
+  const addImageObjToDb = useCallback(
     async (url: string, imageFor: string) => {
       const dbCollectionRef = collection(
         db,
@@ -111,7 +119,10 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
                 { width: 50, height: 70 },
                 { width: 70, height: 100 },
               ],
-              orientation: 'Portrait', // TODO: correct this
+              orientation:
+                imgDimension && imgDimension.height > imgDimension.width
+                  ? 'Portrait'
+                  : 'Landscape',
               image: url,
               user: currentUser!.uid,
             }
@@ -142,9 +153,10 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
           });
         });
     },
-    [currentUser, file, setNotification]
+    [currentUser, file, imgDimension, setNotification]
   );
 
+  /* Check if image meets the requirements */
   const handleImageChange = (event: ChangeEvent) => {
     const target = event.target as HTMLInputElement;
 
@@ -165,6 +177,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  /* Check image format */
   const isImageFile = (file: File) => {
     const acceptedImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
     return file && acceptedImageTypes.includes(file['type']);
@@ -177,9 +190,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setOpenUploadModal,
         file,
         setFile,
-        handleUpload,
         submit,
-        addImage,
         preview,
         setPreview,
         handleImageChange,
