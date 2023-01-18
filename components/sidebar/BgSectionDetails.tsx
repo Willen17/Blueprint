@@ -105,7 +105,7 @@ const BgSectionDetails = () => {
                   position: 'relative',
                   height: 55,
                   boxShadow:
-                    getBackground() === bg.image
+                    getBackground()?.image === bg.image
                       ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
                       : null,
                 }}
@@ -115,9 +115,9 @@ const BgSectionDetails = () => {
                   height={55}
                   alt={bg.title}
                   src={bg.image}
-                  onClick={() => setBackground(bg.image)}
+                  onClick={() => setBackground(bg)}
                 />
-                {getBackground() === bg.image ? (
+                {getBackground()?.image === bg.image ? (
                   <IconCheck
                     stroke={1}
                     color={theme.palette.primary.contrastText}
@@ -144,7 +144,7 @@ const BgSectionDetails = () => {
                   position: 'relative',
                   height: 55,
                   boxShadow:
-                    getBackground() === bg.image
+                    getBackground()?.image === bg.image
                       ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
                       : null,
                 }}
@@ -154,9 +154,9 @@ const BgSectionDetails = () => {
                   height={55}
                   alt={bg.title}
                   src={bg.image}
-                  onClick={() => setBackground(bg.image)}
+                  onClick={() => setBackground(bg)}
                 />
-                {getBackground() === bg.image ? (
+                {getBackground()?.image === bg.image ? (
                   <IconCheck
                     stroke={1}
                     color={theme.palette.primary.contrastText}

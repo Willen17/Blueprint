@@ -7,13 +7,13 @@ import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import CanvasItem from './CanvasItem';
 
-const Test2 = () => {
+const Canvas = () => {
   const { canvas, getBackground } = useCanvas();
   const { endEditMode } = useSidebar();
   const stageCanvasRef = useRef<HTMLDivElement>(null);
 
   const [dimensions, setDimensions] = useState({ height: 100, width: 100 });
-  const [canvasBackground] = useImage(getBackground());
+  const [canvasBackground] = useImage(getBackground()?.image || '');
 
   const [selectedId, selectShape] = useState<string | null>(null);
 
@@ -58,9 +58,6 @@ const Test2 = () => {
     y = (dimensions.height - canvasBackground!.height * scale) / 2;
   }
 
-  // this value will be used to calculate how much 1 pixel is in cm
-  const pixelsInCm = 3.5;
-
   const checkDeselect = (
     e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>
   ) => {
@@ -97,7 +94,7 @@ const Test2 = () => {
                     <CanvasItem
                       key={item.id}
                       item={item}
-                      pixelsInCm={pixelsInCm}
+                      pixelsInCm={canvas.background!.cmInPixels || 3.5}
                       bg={{
                         x,
                         y,
@@ -118,4 +115,4 @@ const Test2 = () => {
   );
 };
 
-export default Test2;
+export default Canvas;
