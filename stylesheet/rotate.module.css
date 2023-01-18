@@ -1,0 +1,30 @@
+.rotateDevice {
+  animation: rotation infinite 5s ease-in-out;
+}
+
+@keyframes rotation {
+  0% {
+    scale: 0;
+    transform: rotate(0deg);
+  }
+  20% {
+    scale: 1;
+    transform: rotate(0deg);
+  }
+  50% {
+    scale: 1;
+    transform: rotate(-90deg);
+  }
+  85% {
+    scale: 1;
+    transform: rotate(-90deg);
+  }
+  95% {
+    scale: 0;
+    transform: rotate(-90deg);
+  }
+  100% {
+    scale: 0;
+    transform: rotate(0deg);
+  }
+}
