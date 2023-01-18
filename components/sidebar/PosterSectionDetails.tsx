@@ -270,14 +270,17 @@ const PosterSectionDetails = () => {
                 ) : null}
               </Box>
             ))}
+            <UploadButton for="Poster" />
           </Box>
         </>
       ) : (
-        <Typography mt={3} width={180} mx="auto" textAlign="center">
-          The posters will appear here after selecting a frame.
-        </Typography>
+        <>
+          <Typography mt={3} width={180} mx="auto" textAlign="center">
+            The posters will appear here after selecting a frame.
+          </Typography>
+          <UploadButton for="Poster" />
+        </>
       )}
-      <UploadButton for="Poster" />
     </>
   );
 };

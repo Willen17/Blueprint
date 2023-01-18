@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useSidebar } from '../../context/SidebarContext';
 import { useUpload } from '../../context/UploadContext';
 import { useUser } from '../../context/UserContext';
@@ -28,9 +28,9 @@ const UploadButton = (props: Props) => {
   };
 
   return (
-    <>
+    <Box width="100%" mt={2} sx={{ display: 'flex', flexDirection: 'column' }}>
       <Button
-        sx={{ width: 'fit-content', mx: 'auto', mt: 2 }}
+        sx={{ width: 'fit-content', mx: 'auto' }}
         onClick={handleClick}
         disabled={checkNoOfUpload()}
       >
@@ -49,7 +49,7 @@ const UploadButton = (props: Props) => {
       )}
 
       <ImageUploadModal for={props.for} />
-    </>
+    </Box>
   );
 };
 
