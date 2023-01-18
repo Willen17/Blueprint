@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
 import { isEqual } from 'lodash';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 import { Dimension } from '../types';
 
-const PosterSectionDetails = () => {
+const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
   const {
     allPosters,
     posterCategories,
@@ -25,7 +25,6 @@ const PosterSectionDetails = () => {
     setIsEditingFrame,
   } = useSidebar();
   const { updateItem } = useCanvas();
-  const mobile = useMediaQuery(theme.breakpoints.down(800));
 
   /** Handles change of orientation state */
   const handleOrientationChange = (value: string) => {
