@@ -1,4 +1,3 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
   List,
@@ -9,10 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { IconCheck, IconChevronRight, IconX } from '@tabler/icons';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useUpload } from '../../context/UploadContext';
-import schemaPoster from '../../lib/valSchemas';
 import ImageUploadForm from './ImageUploadForm';
 
 interface Props {
@@ -20,17 +16,21 @@ interface Props {
 }
 
 const ImageUploadModal = (props: Props) => {
-  const { submit, setOpenUploadModal, openUploadModal, file, setFile } =
-    useUpload();
-  const [imageError, setImageError] = useState<{ message: string }>();
+  const {
+    setOpenUploadModal,
+    openUploadModal,
+    file,
+    setFile,
+    imageError,
+    setImageError,
+  } = useUpload();
 
   /** Closes modal  */
   const handleClose = () => {
     setOpenUploadModal(false);
     setFile(undefined);
+    setImageError(undefined);
   };
-
-  console.log(file);
 
   const backgroundInstructions = [
     { type: 'format', requirement: 'Acceptable file formats: JPG, JPEG, PNG' },
@@ -39,28 +39,13 @@ const ImageUploadModal = (props: Props) => {
 
   const posterInstructions = [
     { type: 'format', requirement: 'Acceptable file formats: JPG, JPEG, PNG' },
-    { type: 'size', requirement: 'File size must not exceed 2 MB' },
+    { type: 'size', requirement: 'File size must not exceed 3 MB' },
   ];
 
   const getInstructions = () => {
     if (props.for === 'Background') return backgroundInstructions;
     if (props.for === 'Poster') return posterInstructions;
   };
-
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting, isValid },
-  } = useForm<any>({
-    mode: 'onChange',
-    resolver: yupResolver(schemaPoster),
-    defaultValues: {
-      title: '',
-      categories: [],
-      sizes: [],
-    },
-  });
 
   return (
     <Modal open={openUploadModal}>
@@ -104,12 +89,13 @@ const ImageUploadModal = (props: Props) => {
             >
               Image requirements:
             </Typography>
-            {getInstructions()?.map((instuction, index) => (
+            {getInstructions()?.map((instruction, index) => (
               <ListItem key={index} sx={{ m: 'auto', p: 0, height: 18 }}>
                 <ListItemIcon sx={{ minWidth: 20 }}>
-                  {file && imageError ? ( // TODO: not correct now
+                  {file && imageError === instruction.type ? (
                     <IconX size={12} color="#E23A22" />
-                  ) : file && !imageError ? (
+                  ) : (file && !imageError) ||
+                    (file && imageError !== instruction.type) ? (
                     <IconCheck size={12} color="#3086B7" />
                   ) : (
                     <IconChevronRight size={12} />
@@ -119,29 +105,20 @@ const ImageUploadModal = (props: Props) => {
                   sx={{
                     maxWidth: 220,
                     color:
-                      file && imageError // TODO: not correct now
+                      file && imageError === instruction.type // TODO: not correct now
                         ? '#E23A22'
-                        : file && !imageError
+                        : (file && !imageError) ||
+                          (file && imageError !== instruction.type)
                         ? '#3086B7'
                         : 'inherit',
                   }}
                 >
-                  {instuction.requirement}
+                  {instruction.requirement}
                 </ListItemText>
               </ListItem>
             ))}
           </List>
-          <ImageUploadForm
-            onSubmit={() => submit(props.for)}
-            register={register}
-            formHandleSubmit={handleSubmit}
-            errors={errors}
-            control={control}
-            setFile={setFile}
-            file={file}
-            setImageError={setImageError}
-            imageError={imageError}
-          />
+          <ImageUploadForm for={props.for} />
         </Box>
       </Box>
     </Modal>

@@ -1,16 +1,16 @@
 import { Box, Button, FormControl, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useEffect } from 'react';
-import { CreateImageData, useUpload } from '../../context/UploadContext';
+import { useUpload } from '../../context/UploadContext';
 import { theme } from '../theme';
 
-const ImageUploadForm = ({
-  onSubmit,
-  formHandleSubmit,
-  file,
-  imageError,
-}: CreateImageData) => {
-  const { preview, setPreview, handleImageChange } = useUpload();
+interface Props {
+  for: 'Poster' | 'Background';
+}
+
+const ImageUploadForm = (props: Props) => {
+  const { preview, setPreview, handleImageChange, file, imageError, submit } =
+    useUpload();
 
   // create a preview whenever file is changed
   useEffect(() => {
@@ -25,11 +25,11 @@ const ImageUploadForm = ({
   return (
     <Box
       component="form"
-      onSubmit={formHandleSubmit(onSubmit)}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
+      onSubmit={(e) => {
+        e.preventDefault();
+        submit(props.for);
       }}
+      sx={{ display: 'flex', flexDirection: 'column' }}
     >
       <FormControl
         sx={{ py: 1 }}
@@ -66,7 +66,7 @@ const ImageUploadForm = ({
               onChange={(event) => handleImageChange(event)}
             />
           </Button>
-          {file && preview && (
+          {file && !imageError && preview && (
             <Button
               type="submit"
               sx={{

@@ -11,17 +11,9 @@ import {
   useContext,
   useState,
 } from 'react';
-import {
-  Control,
-  FieldErrorsImpl,
-  UseFormHandleSubmit,
-  UseFormRegister,
-} from 'react-hook-form';
 
 import { ref } from 'firebase/storage';
-import { title } from 'process';
 import { db, storage } from '../firebase/firebaseConfig';
-import { BackgroundData, PosterData } from '../lib/valSchemas';
 import { useNotification } from './NotificationContext';
 import { useUser } from './UserContext';
 
@@ -36,6 +28,8 @@ interface UploadContextValue {
   preview: string | undefined;
   setPreview: Dispatch<SetStateAction<string | undefined>>;
   handleImageChange: (event: ChangeEvent) => void;
+  imageError: string | undefined;
+  setImageError: Dispatch<SetStateAction<string | undefined>>;
 }
 
 export const UploadContext = createContext<UploadContextValue>({
@@ -49,40 +43,29 @@ export const UploadContext = createContext<UploadContextValue>({
   preview: '',
   setPreview: () => '',
   handleImageChange: () => {},
+  imageError: '',
+  setImageError: () => undefined,
 });
-
-export interface CreateImageData {
-  onSubmit: () => void;
-  register: UseFormRegister<PosterData | BackgroundData>;
-  formHandleSubmit: UseFormHandleSubmit<PosterData | BackgroundData>;
-  errors: Partial<FieldErrorsImpl<PosterData | BackgroundData>>;
-  control: Control<PosterData | BackgroundData>;
-  setFile: Dispatch<SetStateAction<File | undefined>>;
-  file: File | undefined;
-  setImageError: Dispatch<SetStateAction<{ message: string } | undefined>>;
-  imageError: { message: string } | undefined;
-}
 
 const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
+  const { setNotification } = useNotification();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
-  const [file, setFile] = useState<File | undefined>(undefined);
-  const [imageError, setImageError] = useState<{ type: string }>();
-
-  const { setNotification, setIsLoading } = useNotification();
   const [preview, setPreview] = useState<string>();
+  const [file, setFile] = useState<File | undefined>(undefined);
+  const [imageError, setImageError] = useState<string | undefined>(undefined);
 
   const submit = (imageFor: string) => {
     if (!file) return; // this is being covered in the client since the upload button only displays when there is a file
-    if (!imageError) handleUpload(file, imageFor);
+    if (imageError)
+      return setNotification({
+        message: 'Please select a image that meets the requirement.',
+        type: 'Warning',
+      });
+    if (file && imageFor && !imageError) handleUpload(file, imageFor);
   };
 
   const handleUpload = (file: File, imageFor: string) => {
-    if (!file)
-      return setNotification({
-        message: 'Please choose a file first!',
-        type: 'Warning',
-      });
     const storageRef =
       imageFor === 'Poster'
         ? ref(storage, `/posters/${file.name}`)
@@ -110,8 +93,6 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const addImage = useCallback(
     async (url: string, imageFor: string) => {
-      const postersCollectionRef = collection(db, 'posters');
-      const backgroundCollectionRef = collection(db, 'backgrounds');
       const dbCollectionRef = collection(
         db,
         imageFor === 'Poster' ? 'posters' : 'backgrounds'
@@ -120,7 +101,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         imageFor === 'Poster'
           ? {
               // poster object
-              title: File.name,
+              title: file!.name,
               categories: 'Other',
               createdAt: serverTimestamp(),
               sizes: [
@@ -138,7 +119,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
               // background object
               categories: 'Other',
               createdAt: serverTimestamp(),
-              title: File.name,
+              title: file!.name,
               image: url,
               cmInPixels: 3.5, // TODO: correct this
               user: currentUser!.uid,
@@ -147,32 +128,36 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
       await addDoc(dbCollectionRef, newImage)
         .then(() => {
           setOpenUploadModal(false);
-          setIsLoading({ isLoading: false });
           setNotification({
-            message: `${imageFor} ${title} is added`,
+            message: `${imageFor} ${file!.name} is added`,
             type: 'Success',
           });
+          setFile(undefined);
+          setImageError(undefined);
         })
         .catch((error) => {
-          setIsLoading({ isLoading: false });
           setNotification({
             message: `${error.Code} - ${error}`,
             type: 'Warning',
           });
         });
     },
-    [currentUser, setIsLoading, setNotification]
+    [currentUser, file, setNotification]
   );
 
   const handleImageChange = (event: ChangeEvent) => {
     const target = event.target as HTMLInputElement;
     if (target.files) {
       const currentFile = target.files[0];
-      // validate file size
-      if (currentFile.size > 3000000) return setImageError({ type: 'format' });
-      // validate if file is image file
-      if (!isImageFile(currentFile)) return setImageError({ type: 'size' });
-      setImageError(undefined);
+      if (currentFile.size > 3000000) {
+        // validate file size
+        setImageError('size');
+      } else if (!isImageFile(currentFile)) {
+        // validate if file is image file
+        setImageError('format');
+      } else {
+        setImageError(undefined);
+      }
       return setFile(currentFile);
     }
   };
@@ -195,6 +180,8 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         preview,
         setPreview,
         handleImageChange,
+        imageError,
+        setImageError,
       }}
     >
       {children}
