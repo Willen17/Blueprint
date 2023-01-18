@@ -8,7 +8,7 @@ import {
   Modal,
   Typography,
 } from '@mui/material';
-import { IconChevronRight, IconX } from '@tabler/icons';
+import { IconCheck, IconChevronRight, IconX } from '@tabler/icons';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useUpload } from '../../context/UploadContext';
@@ -30,20 +30,16 @@ const ImageUploadModal = (props: Props) => {
     setFile(undefined);
   };
 
+  console.log(file);
+
   const backgroundInstructions = [
-    'Background blah blah blah',
-    'File should be in XX format 1',
-    'File should be in XX format 2',
-    'File should be in XX format 3',
-    'File should be in XX format 4',
+    { type: 'format', requirement: 'Acceptable file formats: JPG, JPEG, PNG' },
+    { type: 'size', requirement: 'File size must not exceed 3 MB' },
   ];
 
   const posterInstructions = [
-    'Poster blah blah blah',
-    'File should be in XX format 1',
-    'File should be in XX format 2',
-    'File should be in XX format 3',
-    'File should be in XX format 4',
+    { type: 'format', requirement: 'Acceptable file formats: JPG, JPEG, PNG' },
+    { type: 'size', requirement: 'File size must not exceed 2 MB' },
   ];
 
   const getInstructions = () => {
@@ -111,14 +107,32 @@ const ImageUploadModal = (props: Props) => {
             {getInstructions()?.map((instuction, index) => (
               <ListItem key={index} sx={{ m: 'auto', p: 0, height: 18 }}>
                 <ListItemIcon sx={{ minWidth: 20 }}>
-                  <IconChevronRight size={12} />
+                  {file && imageError ? ( // TODO: not correct now
+                    <IconX size={12} color="#E23A22" />
+                  ) : file && !imageError ? (
+                    <IconCheck size={12} color="#3086B7" />
+                  ) : (
+                    <IconChevronRight size={12} />
+                  )}
                 </ListItemIcon>
-                <ListItemText sx={{ maxWidth: 220 }}>{instuction}</ListItemText>
+                <ListItemText
+                  sx={{
+                    maxWidth: 220,
+                    color:
+                      file && imageError // TODO: not correct now
+                        ? '#E23A22'
+                        : file && !imageError
+                        ? '#3086B7'
+                        : 'inherit',
+                  }}
+                >
+                  {instuction.requirement}
+                </ListItemText>
               </ListItem>
             ))}
           </List>
           <ImageUploadForm
-            onSubmit={submit}
+            onSubmit={() => submit(props.for)}
             register={register}
             formHandleSubmit={handleSubmit}
             errors={errors}

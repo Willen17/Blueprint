@@ -15,8 +15,10 @@ const ImageUploadForm = ({
   // create a preview whenever file is changed
   useEffect(() => {
     if (!file) return setPreview(undefined);
+
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
+
     return () => URL.revokeObjectURL(objectUrl);
   }, [file, setPreview]);
 
@@ -36,8 +38,21 @@ const ImageUploadForm = ({
       >
         {file && preview && (
           <Box sx={{ my: 2 }}>
-            <Image width={80} height={80} alt={file.name} src={preview} />
-            <Typography variant="body2">{file.name}</Typography>
+            <Box
+              width={80}
+              height={80}
+              sx={{ position: 'relative', m: 'auto' }}
+            >
+              <Image
+                fill
+                alt={file.name}
+                src={preview}
+                style={{ objectFit: 'cover' }}
+              />
+            </Box>
+            <Typography variant="body2" mt={0.5}>
+              {file.name}
+            </Typography>
           </Box>
         )}
 
