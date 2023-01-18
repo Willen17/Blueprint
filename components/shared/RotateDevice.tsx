@@ -11,7 +11,7 @@ const RotateDevice = () => {
   return (
     <Container
       sx={{
-        height: '100%',
+        height: 'calc(100vh-100px)',
         display: 'flex',
         placeContent: 'center',
         placeItems: 'center',
