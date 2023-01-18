@@ -92,10 +92,10 @@ const ImageUploadModal = (props: Props) => {
             {getInstructions()?.map((instruction, index) => (
               <ListItem key={index} sx={{ m: 'auto', p: 0, height: 18 }}>
                 <ListItemIcon sx={{ minWidth: 20 }}>
-                  {file && imageError === instruction.type ? (
+                  {file && imageError?.includes(instruction.type) ? (
                     <IconX size={12} color="#E23A22" />
                   ) : (file && !imageError) ||
-                    (file && imageError !== instruction.type) ? (
+                    (file && imageError?.indexOf(instruction.type) === -1) ? (
                     <IconCheck size={12} color="#3086B7" />
                   ) : (
                     <IconChevronRight size={12} />
@@ -105,10 +105,9 @@ const ImageUploadModal = (props: Props) => {
                   sx={{
                     maxWidth: 220,
                     color:
-                      file && imageError === instruction.type // TODO: not correct now
+                      file && imageError?.includes(instruction.type)
                         ? '#E23A22'
-                        : (file && !imageError) ||
-                          (file && imageError !== instruction.type)
+                        : file && imageError?.indexOf(instruction.type) === -1
                         ? '#3086B7'
                         : 'inherit',
                   }}

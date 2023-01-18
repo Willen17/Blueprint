@@ -28,8 +28,8 @@ interface UploadContextValue {
   preview: string | undefined;
   setPreview: Dispatch<SetStateAction<string | undefined>>;
   handleImageChange: (event: ChangeEvent) => void;
-  imageError: string | undefined;
-  setImageError: Dispatch<SetStateAction<string | undefined>>;
+  imageError: string[] | undefined;
+  setImageError: Dispatch<SetStateAction<string[] | undefined>>;
 }
 
 export const UploadContext = createContext<UploadContextValue>({
@@ -43,7 +43,7 @@ export const UploadContext = createContext<UploadContextValue>({
   preview: '',
   setPreview: () => '',
   handleImageChange: () => {},
-  imageError: '',
+  imageError: undefined,
   setImageError: () => undefined,
 });
 
@@ -53,7 +53,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [preview, setPreview] = useState<string>();
   const [file, setFile] = useState<File | undefined>(undefined);
-  const [imageError, setImageError] = useState<string | undefined>(undefined);
+  const [imageError, setImageError] = useState<string[] | undefined>(undefined);
 
   const submit = (imageFor: string) => {
     if (!file) return; // this is being covered in the client since the upload button only displays when there is a file
@@ -68,8 +68,8 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const handleUpload = (file: File, imageFor: string) => {
     const storageRef =
       imageFor === 'Poster'
-        ? ref(storage, `/posters/${file.name}`)
-        : ref(storage, `/backgrounds/${file.name}`);
+        ? ref(storage, `/posters/${currentUser?.uid}_${file.name}`)
+        : ref(storage, `/backgrounds/${currentUser?.uid}_${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
@@ -101,8 +101,8 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         imageFor === 'Poster'
           ? {
               // poster object
-              title: file!.name,
-              categories: 'Other',
+              title: file!.name + '_' + currentUser?.uid,
+              categories: ['Other'],
               createdAt: serverTimestamp(),
               sizes: [
                 { width: 21, height: 30 },
@@ -117,9 +117,9 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
             }
           : {
               // background object
-              categories: 'Other',
+              categories: ['Other'],
               createdAt: serverTimestamp(),
-              title: file!.name,
+              title: file!.name + '_' + currentUser?.uid,
               image: url,
               cmInPixels: 3.5, // TODO: correct this
               user: currentUser!.uid,
@@ -147,14 +147,17 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const handleImageChange = (event: ChangeEvent) => {
     const target = event.target as HTMLInputElement;
+
     if (target.files) {
       const currentFile = target.files[0];
-      if (currentFile.size > 3000000) {
-        // validate file size
-        setImageError('size');
-      } else if (!isImageFile(currentFile)) {
-        // validate if file is image file
-        setImageError('format');
+      const oversized = currentFile.size > 3000000;
+      const notImage = !isImageFile(currentFile);
+      if (oversized && notImage) {
+        setImageError(['format', 'size']);
+      } else if (oversized) {
+        setImageError(['size']);
+      } else if (notImage) {
+        setImageError(['format']);
       } else {
         setImageError(undefined);
       }

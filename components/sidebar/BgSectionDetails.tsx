@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { backgroundCategories as bgCategories } from '../../lib/valSchemas';
+import UploadButton from '../imageUpload/UploadButton';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
@@ -174,6 +175,7 @@ const BgSectionDetails = () => {
                 ) : null}
               </Box>
             ))}
+        <UploadButton for="Background" />
       </Box>
     </>
   );
