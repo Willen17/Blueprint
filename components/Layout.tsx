@@ -21,20 +21,37 @@ const Layout = (props: Props) => {
   const [isPortrait, setIsPortrait] = useState(false);
 
   useEffect(() => {
-    setIsPortrait(window.matchMedia('(orientation: portrait').matches);
-    window
-      .matchMedia('(orientation: portrait)')
-      .addEventListener('change', (e) => {
-        setIsPortrait(e.matches);
-      });
-    return () => {
+    if (window.screen.orientation) {
+      setIsPortrait(window.matchMedia('(orientation: portrait').matches);
       window
         .matchMedia('(orientation: portrait)')
-        .removeEventListener('change', (e) => {
+        .addEventListener('change', (e) => {
           setIsPortrait(e.matches);
         });
+    } else {
+      setIsPortrait(Math.abs(window.orientation) !== 90);
+      window.addEventListener('orientationchange', () => {
+        setIsPortrait(Math.abs(window.orientation) !== 90);
+      });
+    }
+    return () => {
+      if (window.screen.orientation) {
+        window
+          .matchMedia('(orientation: portrait)')
+          .removeEventListener('change', (e) => {
+            setIsPortrait(e.matches);
+          });
+      } else {
+        window.removeEventListener('orientationchange', () => {
+          setIsPortrait(Math.abs(window.orientation) === 90);
+        });
+      }
     };
   }, []);
+
+  useEffect(() => {
+    console.log(isPortrait);
+  }, [isPortrait]);
 
   return isLoading.isLoading ? (
     <Loader />
