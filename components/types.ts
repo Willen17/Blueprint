@@ -22,6 +22,7 @@ export type Background = {
   categories: typeof backgroundCategories;
   id?: string;
   createdAt?: Timestamp;
+  user?: string;
 };
 
 export interface CanvasFrameSet {
@@ -45,6 +46,7 @@ export interface Poster {
   title: string;
   orientation: string;
   sizes: Dimension[];
+  user?: string;
 }
 
 export interface CanvasItem {
