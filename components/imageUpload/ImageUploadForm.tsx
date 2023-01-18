@@ -47,6 +47,7 @@ const ImageUploadForm = (props: Props) => {
                 fill
                 alt={file.name}
                 src={preview}
+                onError={() => setPreview('/otherImages/broken-img.jpg')}
                 style={{ objectFit: 'cover' }}
               />
             </Box>
