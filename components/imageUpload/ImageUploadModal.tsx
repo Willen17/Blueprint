@@ -29,17 +29,25 @@ const ImageUploadModal = (props: Props) => {
   const handleClose = () => {
     setOpenUploadModal(false);
     setFile(undefined);
-    setImageError(undefined);
+    setImageError([]);
   };
 
   const backgroundInstructions = [
     { type: 'format', requirement: 'Acceptable file formats: JPG, JPEG, PNG' },
     { type: 'size', requirement: 'File size must not exceed 3 MB' },
+    {
+      type: 'dimension',
+      requirement: 'Image must be at most 3000 x 3000 pixels',
+    },
   ];
 
   const posterInstructions = [
     { type: 'format', requirement: 'Acceptable file formats: JPG, JPEG, PNG' },
     { type: 'size', requirement: 'File size must not exceed 3 MB' },
+    {
+      type: 'dimension',
+      requirement: 'Image must be at most 3000 x 3000 pixels',
+    },
   ];
 
   /* Check props and display the correct instuctions */
@@ -104,7 +112,7 @@ const ImageUploadModal = (props: Props) => {
                 </ListItemIcon>
                 <ListItemText
                   sx={{
-                    maxWidth: 220,
+                    maxWidth: 250,
                     color:
                       file && imageError?.includes(instruction.type)
                         ? '#E23A22'

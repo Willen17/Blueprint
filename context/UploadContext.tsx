@@ -26,8 +26,8 @@ interface UploadContextValue {
   preview: string | undefined;
   setPreview: Dispatch<SetStateAction<string | undefined>>;
   handleImageChange: (event: ChangeEvent) => void;
-  imageError: string[] | undefined;
-  setImageError: Dispatch<SetStateAction<string[] | undefined>>;
+  imageError: string[];
+  setImageError: Dispatch<SetStateAction<string[]>>;
 }
 
 export const UploadContext = createContext<UploadContextValue>({
@@ -39,8 +39,8 @@ export const UploadContext = createContext<UploadContextValue>({
   preview: '',
   setPreview: () => '',
   handleImageChange: () => {},
-  imageError: undefined,
-  setImageError: () => undefined,
+  imageError: [],
+  setImageError: () => [],
 });
 
 const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -49,7 +49,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [preview, setPreview] = useState<string>();
   const [file, setFile] = useState<File | undefined>(undefined);
-  const [imageError, setImageError] = useState<string[] | undefined>(undefined);
+  const [imageError, setImageError] = useState<string[]>([]);
   const [image] = useImage(preview || '');
   const [imgDimension, setImgDimension] = useState<
     { width: number; height: number } | undefined
@@ -144,7 +144,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
             type: 'Success',
           });
           setFile(undefined);
-          setImageError(undefined);
+          setImageError([]);
         })
         .catch((error) => {
           setNotification({
@@ -164,15 +164,13 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
       const currentFile = target.files[0];
       const oversized = currentFile.size > 3000000;
       const notImage = !isImageFile(currentFile);
-      if (oversized && notImage) {
-        setImageError(['format', 'size']);
-      } else if (oversized) {
-        setImageError(['size']);
-      } else if (notImage) {
-        setImageError(['format']);
-      } else {
-        setImageError(undefined);
-      }
+      const exceedDimension =
+        (imgDimension && imgDimension.width > 3000) ||
+        (imgDimension && imgDimension.height > 3000);
+
+      oversized && setImageError([...imageError, 'size']);
+      notImage && setImageError([...imageError, 'format']);
+      exceedDimension && setImageError([...imageError, 'dimension']);
       return setFile(currentFile);
     }
   };
