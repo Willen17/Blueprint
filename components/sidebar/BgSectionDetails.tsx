@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { IconCheck } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
@@ -10,11 +10,11 @@ import UploadButton from '../imageUpload/UploadButton';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 
-const BgSectionDetails = () => {
+const BgSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
   const { getBackground, setBackground } = useCanvas();
   const { setBackgroundCategories, backgroundCategories, allBackgrounds } =
     useSidebar();
-  const mobile = useMediaQuery(theme.breakpoints.down(800));
+
   const { currentUser } = useUser();
 
   function setCategory(category: string) {
