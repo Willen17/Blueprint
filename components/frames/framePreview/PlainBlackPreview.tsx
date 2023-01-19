@@ -4,7 +4,7 @@ import PlainFrame from '../../shared/PlainFrame';
 
 const PlainBlackPreview = () => {
   return (
-    <Box width={43} height={43} overflow="clip">
+    <Box width={43} height={43} overflow="hidden">
       <PlainFrame size={frameDimensions.xl} bgColor="#000">
         <></>
       </PlainFrame>

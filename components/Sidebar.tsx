@@ -1,4 +1,5 @@
-import { Box, Drawer, useMediaQuery } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useSidebar } from '../context/SidebarContext';
 import SidebarToggleButton from './shared/SidebarToggleButton';
 import AddFrameButton from './sidebar/AddFrameButton';
@@ -7,17 +8,26 @@ import FrameSection from './sidebar/FrameSection';
 import MobileSidebar from './sidebar/MobileSidebar';
 import PosterSection from './sidebar/PosterSection';
 import RemoveFrameButton from './sidebar/RemoveFrameButton';
-import { theme } from './theme';
 
 const Sidebar = () => {
   const { anchorSidebar, setAnchorSidebar, isEditingFrame, endEditMode } =
     useSidebar();
 
-  const mobile = useMediaQuery(theme.breakpoints.down(800));
+  const [mobile, setIsMobile] = useState<boolean>();
   const toggleClose = () => {
     setAnchorSidebar(false);
     endEditMode();
   };
+
+  useEffect(() => {
+    if (navigator) {
+      setIsMobile(() =>
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+      );
+    }
+  }, []);
 
   return (
     <>
@@ -85,9 +95,9 @@ const Sidebar = () => {
             {isEditingFrame.isEditing ? (
               <>
                 {mobile ? <MobileSidebar /> : null}
-                <BgSection />
-                <FrameSection />
-                <PosterSection />
+                <BgSection mobile={mobile} />
+                <FrameSection mobile={mobile} />
+                <PosterSection mobile={mobile} />
                 {isEditingFrame.item ? <RemoveFrameButton /> : null}
               </>
             ) : (

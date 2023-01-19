@@ -1,23 +1,20 @@
-import { useMediaQuery } from '@mui/material';
 import { useSidebar } from '../../context/SidebarContext';
 import { sidebarSections } from '../../lib/valSchemas';
 import MobileSidebarContainer from '../shared/MobileSidebarContainer';
 import SidebarAccordion from '../shared/SidebarAccordion';
-import { theme } from '../theme';
 import BgSectionDetails from './BgSectionDetails';
 
-const BgSection = () => {
-  const mobile = useMediaQuery(theme.breakpoints.down(800));
+const BgSection = ({ mobile }: { mobile: boolean | undefined }) => {
   const { openMobileSection } = useSidebar();
 
   return mobile && openMobileSection !== sidebarSections[0] ? null : mobile &&
     openMobileSection === sidebarSections[0] ? (
     <MobileSidebarContainer>
-      <BgSectionDetails />
+      <BgSectionDetails mobile={mobile} />
     </MobileSidebarContainer>
   ) : (
     <SidebarAccordion panel={sidebarSections[0]}>
-      <BgSectionDetails />
+      <BgSectionDetails mobile={mobile} />
     </SidebarAccordion>
   );
 };
