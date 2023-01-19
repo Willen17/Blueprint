@@ -12,35 +12,30 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from '../firebase/firebaseConfig';
 import { useCanvas } from './CanvasContext';
 import { useNotification } from './NotificationContext';
-import { useSidebar } from './SidebarContext';
 import { useUser } from './UserContext';
 
 interface SaveContextValue {
-  openUploadModal: boolean;
-  setOpenUploadModal: Dispatch<SetStateAction<boolean>>;
+  openLogoModal: boolean;
+  setOpenLogoModal: Dispatch<SetStateAction<boolean>>;
+  openSaveModal: boolean;
+  setOpenSaveModal: Dispatch<SetStateAction<boolean>>;
   saveCanvasToDataBase: (title: string) => void;
 }
 
 export const SaveContext = createContext<SaveContextValue>({
-  openUploadModal: false,
-  setOpenUploadModal: () => false,
+  openLogoModal: false,
+  setOpenLogoModal: () => false,
+  openSaveModal: false,
+  setOpenSaveModal: () => false,
   saveCanvasToDataBase: (title) => {},
 });
 
 const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const {
-    setIsEditingFrame,
-    isEditingFrame,
-    setAnchorSidebar,
-    endEditMode,
-    poster,
-    frameSet,
-    withPassepartout,
-  } = useSidebar();
   const { currentUser } = useUser();
   const { setNotification } = useNotification();
   const { setCanvas, canvas } = useCanvas();
-  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  const [openLogoModal, setOpenLogoModal] = useState<boolean>(false);
+  const [openSaveModal, setOpenSaveModal] = useState<boolean>(false);
 
   const saveToDataBase = async (title: string) => {
     if (currentUser) {
@@ -86,8 +81,10 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <SaveContext.Provider
       value={{
-        openUploadModal,
-        setOpenUploadModal,
+        openLogoModal,
+        setOpenLogoModal,
+        openSaveModal,
+        setOpenSaveModal,
         saveCanvasToDataBase,
       }}
     >
