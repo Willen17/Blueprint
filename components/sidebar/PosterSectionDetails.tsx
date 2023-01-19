@@ -4,8 +4,10 @@ import { isEqual } from 'lodash';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { useUser } from '../../context/UserContext';
 import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
+import { compareUserAndCreatedAt } from '../helper';
 import UploadButton from '../imageUpload/UploadButton';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
@@ -27,6 +29,7 @@ const PosterSectionDetails = () => {
   } = useSidebar();
   const { updateItem } = useCanvas();
   const mobile = useMediaQuery(theme.breakpoints.down(800));
+  const { currentUser } = useUser();
 
   /** Handles change of orientation state */
   const handleOrientationChange = (value: string) => {
@@ -57,7 +60,12 @@ const PosterSectionDetails = () => {
     const noCategory = Object.values(posterCategories).every(
       (v) => v === false
     );
-    const filteredBySize = allPosters.flatMap((poster) =>
+
+    const posterFromSystemAndUser = allPosters
+      .filter((poster) => !poster.user || poster.user === currentUser?.uid)
+      .sort(compareUserAndCreatedAt);
+
+    const filteredBySize = posterFromSystemAndUser.flatMap((poster) =>
       poster.sizes
         .filter(
           (size: Dimension) =>
