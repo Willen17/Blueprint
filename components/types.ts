@@ -22,6 +22,7 @@ export type Background = {
   categories: typeof backgroundCategories;
   id?: string;
   createdAt?: Timestamp;
+  user?: string;
   cmInPixels?: number;
 };
 
@@ -46,6 +47,7 @@ export interface Poster {
   title: string;
   orientation: string;
   sizes: Dimension[];
+  user?: string;
 }
 
 export interface CanvasItem {
