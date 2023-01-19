@@ -159,7 +159,7 @@ const BackgroundForm = ({
                       marginRight: 10,
                     }}
                   />
-                  <Typography variant="subtitle2">{file.name}</Typography>
+                  <Typography variant="body2">{file.name}</Typography>
                 </Box>
               )}
               <FormControl
@@ -229,7 +229,9 @@ const BackgroundForm = ({
                 row
               >
                 <BgCheckBox
-                  categories={backgroundCategories}
+                  categories={backgroundCategories.filter(
+                    (c) => c !== 'User upload'
+                  )}
                   name="categories"
                   control={control}
                 />

@@ -1,5 +1,5 @@
 import { frameDimensions } from '../data/frameData';
-import { Dimension } from './types';
+import { Background, Dimension, Poster } from './types';
 
 export const getSizeString = (size: Dimension) => {
   if (
@@ -43,4 +43,16 @@ export const hasMatchingObjects = (arr1: any[], arr2: any[]): boolean => {
       );
     });
   });
+};
+
+/* Compare the user and createdAt properties in a poster or bg object (used in sort function) */
+export const compareUserAndCreatedAt = (
+  a: Poster | Background,
+  b: Poster | Background
+) => {
+  if (a.user || b.user) {
+    if (a.createdAt! > b.createdAt!) return -1;
+    return 1;
+  }
+  return 0;
 };

@@ -132,7 +132,7 @@ const Header = () => {
           <Box sx={{ pl: 1, py: 0.5, textAlign: 'center' }}>
             {isAuthenticated ? (
               <>
-                <Link href="/" style={{ textDecoration: 'none' }}>
+                <Link href="/canvas" style={{ textDecoration: 'none' }}>
                   <IconWithText text="Canvas" icon={IconArtboard} />
                 </Link>
                 <Link

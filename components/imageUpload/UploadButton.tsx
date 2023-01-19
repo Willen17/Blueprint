@@ -28,14 +28,14 @@ const UploadButton = (props: Props) => {
     }
   };
 
-  return (
+  return currentUser ? (
     <Box width="100%" mt={2} sx={{ display: 'flex', flexDirection: 'column' }}>
       <Button
-        sx={{ width: 'fit-content', mx: 'auto' }}
+        sx={{ mx: 'auto' }}
         onClick={handleClick}
         disabled={checkNoOfUpload()}
       >
-        Upload Your Own
+        Upload My Own
       </Button>
 
       {checkNoOfUpload() && (
@@ -50,6 +50,10 @@ const UploadButton = (props: Props) => {
       )}
 
       <ImageUploadModal for={props.for} />
+    </Box>
+  ) : (
+    <Box width="100%" mt={2} sx={{ display: 'flex', placeContent: 'center' }}>
+      <Button disabled>Login to upload images</Button>
     </Box>
   );
 };

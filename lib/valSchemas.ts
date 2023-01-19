@@ -22,6 +22,7 @@ export const posterCategories = [
   'Nature',
   'Painting',
   'Other',
+  'User upload',
 ];
 
 export const posterSizes = [
@@ -50,5 +51,6 @@ export const backgroundCategories = [
   'Color',
   'Office',
   'Other',
+  'User upload',
 ];
 export type BackgroundData = yup.InferType<typeof schemaBackground>;
