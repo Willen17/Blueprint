@@ -3,7 +3,9 @@ import { IconCheck } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { useUser } from '../../context/UserContext';
 import { backgroundCategories as bgCategories } from '../../lib/valSchemas';
+import { compareUserAndCreatedAt } from '../helper';
 import UploadButton from '../imageUpload/UploadButton';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
@@ -13,6 +15,7 @@ const BgSectionDetails = () => {
   const { setBackgroundCategories, backgroundCategories, allBackgrounds } =
     useSidebar();
   const mobile = useMediaQuery(theme.breakpoints.down(800));
+  const { currentUser } = useUser();
 
   function setCategory(category: string) {
     let newFilter = { ...backgroundCategories };
@@ -28,7 +31,11 @@ const BgSectionDetails = () => {
     (v) => v === false
   );
 
-  const filteredItems = allBackgrounds.filter((item) => {
+  const bgsFromSystemAndUser = allBackgrounds
+    .filter((bg) => !bg.user || bg.user === currentUser?.uid)
+    .sort(compareUserAndCreatedAt);
+
+  const filteredItems = bgsFromSystemAndUser.filter((item) => {
     const itemCategories = item.categories;
     return Object.keys(backgroundCategories).some((category) => {
       return (
@@ -97,7 +104,7 @@ const BgSectionDetails = () => {
         }}
       >
         {noCategory
-          ? allBackgrounds.map((bg, index) => (
+          ? bgsFromSystemAndUser.map((bg, index) => (
               <Box
                 key={index}
                 sx={{
