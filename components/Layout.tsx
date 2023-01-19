@@ -87,7 +87,9 @@ const Layout = (props: Props) => {
         ) : (
           props.children
         )}
-        {router.pathname === '/canvas' && !isPortrait && <Sidebar />}
+        {router.pathname === '/canvas' && (!isPortrait || !mobile) && (
+          <Sidebar />
+        )}
         <CustomSnackbar />
       </Box>
     </>
