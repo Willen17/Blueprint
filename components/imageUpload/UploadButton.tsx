@@ -35,7 +35,7 @@ const UploadButton = (props: Props) => {
         onClick={handleClick}
         disabled={checkNoOfUpload()}
       >
-        Upload Your Own
+        Upload My Own
       </Button>
 
       {checkNoOfUpload() && (

@@ -35,6 +35,7 @@ interface SidebarContextValue {
     Color: boolean;
     Office: boolean;
     Other: boolean;
+    'User upload': boolean;
   };
   setBackgroundCategories: Dispatch<
     SetStateAction<{
@@ -44,6 +45,7 @@ interface SidebarContextValue {
       Color: boolean;
       Office: boolean;
       Other: boolean;
+      'User upload': boolean;
     }>
   >;
   posterCategories: {
@@ -55,6 +57,7 @@ interface SidebarContextValue {
     Nature: boolean;
     Painting: boolean;
     Other: boolean;
+    'User upload': boolean;
   };
   setPosterCategories: Dispatch<
     SetStateAction<{
@@ -66,6 +69,7 @@ interface SidebarContextValue {
       Nature: boolean;
       Painting: boolean;
       Other: boolean;
+      'User upload': boolean;
     }>
   >;
   allFrames: Frame[];
@@ -102,6 +106,7 @@ export const SidebarContext = createContext<SidebarContextValue>({
     Color: false,
     Office: false,
     Other: false,
+    'User upload': false,
   },
   setBackgroundCategories: () => {},
   posterCategories: {
@@ -113,6 +118,7 @@ export const SidebarContext = createContext<SidebarContextValue>({
     Nature: false,
     Painting: false,
     Other: false,
+    'User upload': false,
   },
   setPosterCategories: () => {},
   allFrames: [],
@@ -148,6 +154,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     Color: false,
     Office: false,
     Other: false,
+    'User upload': false,
   });
   const [posterCategories, setPosterCategories] = useState({
     Abstract: false,
@@ -158,6 +165,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     Nature: false,
     Painting: false,
     Other: false,
+    'User upload': false,
   });
   const [allFrames, setAllFrames] = useState<Frame[]>([]);
   const [allBackgrounds, setAllBackgrounds] = useState<Background[]>([]);

@@ -88,7 +88,7 @@ const ImageUploadModal = (props: Props) => {
             }}
           />
           <Typography component="h3" variant="subtitle2" pb={1}>
-            Upload Your Own {props.for}
+            Upload My Own {props.for}
           </Typography>
           <List sx={{ m: 'auto', width: 250 }}>
             <Typography

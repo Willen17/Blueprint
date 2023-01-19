@@ -110,7 +110,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
           ? {
               // poster object
               title: file!.name + '_' + currentUser?.uid,
-              categories: ['Other'],
+              categories: ['User upload'],
               createdAt: serverTimestamp(),
               sizes: [
                 { width: 21, height: 30 },
@@ -128,7 +128,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
             }
           : {
               // background object
-              categories: ['Other'],
+              categories: ['User upload'],
               createdAt: serverTimestamp(),
               title: file!.name + '_' + currentUser?.uid,
               image: url,

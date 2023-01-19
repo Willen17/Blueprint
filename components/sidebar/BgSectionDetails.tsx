@@ -75,7 +75,7 @@ const BgSectionDetails = () => {
             }}
             onClick={() => setCategory(category)}
           >
-            {category}
+            {category === 'User upload' ? 'Uploaded by me' : category}
           </Button>
         ))}
       </Box>

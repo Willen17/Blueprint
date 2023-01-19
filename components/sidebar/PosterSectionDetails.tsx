@@ -61,11 +61,11 @@ const PosterSectionDetails = () => {
       (v) => v === false
     );
 
-    const posterFromSystemAndUser = allPosters
+    const postersFromSystemAndUser = allPosters
       .filter((poster) => !poster.user || poster.user === currentUser?.uid)
       .sort(compareUserAndCreatedAt);
 
-    const filteredBySize = posterFromSystemAndUser.flatMap((poster) =>
+    const filteredBySize = postersFromSystemAndUser.flatMap((poster) =>
       poster.sizes
         .filter(
           (size: Dimension) =>
@@ -155,7 +155,7 @@ const PosterSectionDetails = () => {
                 }}
                 onClick={() => setCategory(category)}
               >
-                {category}
+                {category === 'User upload' ? 'Uploaded by me' : category}
               </Button>
             ))}
           </Box>
