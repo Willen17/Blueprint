@@ -19,6 +19,7 @@ const Layout = (props: Props) => {
   const { isLoading } = useNotification();
 
   const [isPortrait, setIsPortrait] = useState(false);
+  const [mobile, setIsMobile] = useState<boolean>();
 
   useEffect(() => {
     if (window.screen.orientation) {
@@ -49,6 +50,16 @@ const Layout = (props: Props) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (navigator) {
+      setIsMobile(() =>
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+      );
+    }
+  }, []);
+
   return isLoading.isLoading ? (
     <Loader />
   ) : router.pathname === '/' ? (
@@ -56,7 +67,7 @@ const Layout = (props: Props) => {
   ) : (
     <>
       {router.pathname === '/404' ||
-      (router.pathname === '/canvas' && isPortrait) ? (
+      (router.pathname === '/canvas' && isPortrait && mobile) ? (
         <HomeHeader noLoginButton />
       ) : (
         <Header />
@@ -71,12 +82,14 @@ const Layout = (props: Props) => {
           maxHeight: 'calc(100vh - 50px)',
         }}
       >
-        {router.pathname === '/canvas' && isPortrait ? (
+        {router.pathname === '/canvas' && isPortrait && mobile ? (
           <RotateDevice />
         ) : (
           props.children
         )}
-        {router.pathname === '/canvas' && !isPortrait && <Sidebar />}
+        {router.pathname === '/canvas' && (!isPortrait || !mobile) && (
+          <Sidebar />
+        )}
         <CustomSnackbar />
       </Box>
     </>
