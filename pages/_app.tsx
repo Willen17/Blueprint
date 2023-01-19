@@ -5,6 +5,7 @@ import ProtectedRoute from '../components/Protected';
 import { theme } from '../components/theme';
 import CanvasContextProvider from '../context/CanvasContext';
 import NotificationContextProvider from '../context/NotificationContext';
+import SaveContextProvider from '../context/SaveContext';
 import SidebarContextProvider from '../context/SidebarContext';
 import UploadContextProvider from '../context/UploadContext';
 import UserContextProvider from '../context/UserContext';
@@ -15,17 +16,19 @@ export default function App({ Component, pageProps }: AppProps) {
     <ThemeProvider theme={theme}>
       <NotificationContextProvider>
         <SidebarContextProvider>
-          <CanvasContextProvider>
-            <UserContextProvider>
+          <UserContextProvider>
+            <CanvasContextProvider>
               <UploadContextProvider>
-                <ProtectedRoute>
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
-                </ProtectedRoute>
+                <SaveContextProvider>
+                  <ProtectedRoute>
+                    <Layout>
+                      <Component {...pageProps} />
+                    </Layout>
+                  </ProtectedRoute>
+                </SaveContextProvider>
               </UploadContextProvider>
-            </UserContextProvider>
-          </CanvasContextProvider>
+            </CanvasContextProvider>
+          </UserContextProvider>
         </SidebarContextProvider>
       </NotificationContextProvider>
     </ThemeProvider>
