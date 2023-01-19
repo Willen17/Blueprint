@@ -13,7 +13,12 @@ import { useCanvas } from '../../context/CanvasContext';
 import { useSave } from '../../context/SaveContext';
 
 const SaveModal = () => {
-  const { openSaveModal, setOpenSaveModal, setOpenLogoModal } = useSave();
+  const {
+    openSaveModal,
+    setOpenSaveModal,
+    setOpenLogoModal,
+    saveCanvasToDataBase,
+  } = useSave();
   const { canvas } = useCanvas();
   const [title, setTitle] = useState<string>(canvas.title || '');
   const [valError, setValError] = useState<{ message: string } | undefined>();
@@ -92,6 +97,7 @@ const SaveModal = () => {
                 <Button
                   disabled={!touched || valError !== undefined}
                   sx={{ padding: '2 4' }}
+                  onClick={() => saveCanvasToDataBase(title)}
                 >
                   Save canvas
                 </Button>

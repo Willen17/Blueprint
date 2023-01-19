@@ -33,7 +33,7 @@ export const SaveContext = createContext<SaveContextValue>({
 const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
   const { setNotification } = useNotification();
-  const { setCanvas, canvas } = useCanvas();
+  const { setCanvas, canvas, allCanvases } = useCanvas();
   const [openLogoModal, setOpenLogoModal] = useState<boolean>(false);
   const [openSaveModal, setOpenSaveModal] = useState<boolean>(false);
 
@@ -48,19 +48,25 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
         updatedAt: serverTimestamp(),
       });
       const dbCollectionRef = collection(db, 'canvas');
-      await addDoc(dbCollectionRef, canvas)
-        .then(() => {
-          setNotification({
-            message: `${canvas.title} has been saved`,
-            type: 'Success',
+      if (allCanvases.includes(canvas)) {
+        // logic for updating
+      } else {
+        await addDoc(dbCollectionRef, canvas)
+          .then(() => {
+            setOpenSaveModal(false),
+              setOpenLogoModal(false),
+              setNotification({
+                message: `${canvas.title} has been saved`,
+                type: 'Success',
+              });
+          })
+          .catch((error) => {
+            setNotification({
+              message: `${error.Code} - ${error}`,
+              type: 'Warning',
+            });
           });
-        })
-        .catch((error) => {
-          setNotification({
-            message: `${error.Code} - ${error}`,
-            type: 'Warning',
-          });
-        });
+      }
     } else
       setNotification({
         message: `You have to be signed in to save your canvas`,
