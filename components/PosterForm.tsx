@@ -119,6 +119,7 @@ const PosterForm = ({
           justifyContent: 'space-evenly',
           padding: 4,
           rowGap: 3,
+          height: 'fit-content',
         }}
       >
         <Box>
@@ -155,7 +156,7 @@ const PosterForm = ({
                       marginRight: 10,
                     }}
                   />
-                  <Typography variant="subtitle2">{file.name}</Typography>
+                  <Typography variant="body2">{file.name}</Typography>
                 </Box>
               )}
               <FormControl
@@ -258,7 +259,9 @@ const PosterForm = ({
                 row
               >
                 <PosterCheckBox
-                  categories={posterCategories}
+                  categories={posterCategories.filter(
+                    (c) => c !== 'User upload'
+                  )}
                   name="categories"
                   control={control}
                 />
