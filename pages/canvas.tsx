@@ -3,7 +3,7 @@ import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { Background, Frame, Poster } from '../components/types';
+import { Background, Canvas, Frame, Poster } from '../components/types';
 import { useCanvas } from '../context/CanvasContext';
 import { useSidebar } from '../context/SidebarContext';
 import { db } from '../firebase/firebaseConfig';
@@ -19,6 +19,8 @@ export const getStaticProps = async () => {
   const backgroundData = await getDocs(backgroundsCollectionRef);
   const postersCollectionRef = collection(db, 'posters');
   const posterData = await getDocs(postersCollectionRef);
+  const canvasesCollectionRef = collection(db, 'canvases');
+  const canvasesData = await getDocs(canvasesCollectionRef);
 
   return {
     props: {
@@ -36,6 +38,11 @@ export const getStaticProps = async () => {
         id: doc.id,
         createdAt: doc.data().createdAt.toDate().toDateString(),
       })),
+      canvases: canvasesData.docs.map((doc) => ({
+        ...(doc.data() as Canvas),
+        createdAt: doc.data().createdAt.toDate().toDateString(),
+        updatedAt: doc.data().updatedAt.toDate().toDateString(),
+      })),
     },
   };
 };
@@ -44,15 +51,17 @@ const CanvasPage = ({
   frames,
   backgrounds,
   posters,
+  canvases,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
-  const { canvas } = useCanvas();
+  const { canvas, setAllCanvases } = useCanvas();
   useEffect(
     () => setAllBackgrounds(backgrounds),
     [backgrounds, setAllBackgrounds]
   );
   useEffect(() => setAllFrames(frames), [frames, setAllFrames]);
   useEffect(() => setAllPosters(posters), [posters, setAllPosters]);
+  useEffect(() => setAllCanvases(canvases), [canvases, setAllCanvases]);
 
   return (
     <>
