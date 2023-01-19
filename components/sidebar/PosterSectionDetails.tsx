@@ -184,49 +184,32 @@ const PosterSectionDetails = () => {
               },
             }}
           >
-            {filteredPosters().map((p, index) => (
-              <Box
-                key={index}
-                sx={{
-                  cursor: 'pointer',
-                  position: 'relative',
-                  height: p.orientation === 'Portrait' ? 65 : 55,
-                  boxShadow:
-                    poster.id === p.id
-                      ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
-                      : null,
-                }}
-              >
-                <Image
-                  width={p.orientation === 'Portrait' ? 55 : 65}
-                  height={p.orientation === 'Portrait' ? 65 : 55}
-                  alt={p.title}
-                  src={p.image}
-                  onClick={() => {
-                    isEditingFrame.item?.poster.id
-                      ? (updateItem({
-                          frame: isEqual(frameSet, {
-                            id: '',
-                            title: '',
-                            size: '',
-                          })
-                            ? isEditingFrame.item.frame
-                            : frameSet,
-                          id: isEditingFrame.item.id,
-                          position: isEditingFrame.item.position,
-                          poster: {
-                            id: p.id!,
-                            image: p.image,
-                            isPortrait:
-                              p.orientation === 'Portrait' ? true : false,
-                            sizes: p.sizes,
-                          },
-                          withPassepartout:
-                            isEditingFrame.item.withPassepartout,
-                        }),
-                        setIsEditingFrame({
-                          ...isEditingFrame,
-                          item: {
+            {filteredPosters().length < 1 ? (
+              <Typography mt={3} textAlign="center">
+                No images found under this category
+              </Typography>
+            ) : (
+              filteredPosters().map((p, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    cursor: 'pointer',
+                    position: 'relative',
+                    height: p.orientation === 'Portrait' ? 65 : 55,
+                    boxShadow:
+                      poster.id === p.id
+                        ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
+                        : null,
+                  }}
+                >
+                  <Image
+                    width={p.orientation === 'Portrait' ? 55 : 65}
+                    height={p.orientation === 'Portrait' ? 65 : 55}
+                    alt={p.title}
+                    src={p.image}
+                    onClick={() => {
+                      isEditingFrame.item?.poster.id
+                        ? (updateItem({
                             frame: isEqual(frameSet, {
                               id: '',
                               title: '',
@@ -245,39 +228,62 @@ const PosterSectionDetails = () => {
                             },
                             withPassepartout:
                               isEditingFrame.item.withPassepartout,
-                          },
-                        }))
-                      : (setPoster({
-                          id: p.id!,
-                          image: p.image,
-                          isPortrait:
-                            p.orientation === 'Portrait' ? true : false,
-                          sizes: p.sizes,
-                        }),
-                        setAnchorSidebar(false));
-                  }}
-                />
-                {(isEditingFrame.item &&
-                  isEditingFrame.item.poster.id === p.id) ||
-                poster.id === p.id ? (
-                  <IconCheck
-                    stroke={1}
-                    color={theme.palette.primary.contrastText}
-                    size={15}
-                    style={{
-                      background: theme.palette.primary.main,
-                      opacity: 0.7,
-                      borderRadius: 50,
-                      padding: 2,
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
+                          }),
+                          setIsEditingFrame({
+                            ...isEditingFrame,
+                            item: {
+                              frame: isEqual(frameSet, {
+                                id: '',
+                                title: '',
+                                size: '',
+                              })
+                                ? isEditingFrame.item.frame
+                                : frameSet,
+                              id: isEditingFrame.item.id,
+                              position: isEditingFrame.item.position,
+                              poster: {
+                                id: p.id!,
+                                image: p.image,
+                                isPortrait:
+                                  p.orientation === 'Portrait' ? true : false,
+                                sizes: p.sizes,
+                              },
+                              withPassepartout:
+                                isEditingFrame.item.withPassepartout,
+                            },
+                          }))
+                        : (setPoster({
+                            id: p.id!,
+                            image: p.image,
+                            isPortrait:
+                              p.orientation === 'Portrait' ? true : false,
+                            sizes: p.sizes,
+                          }),
+                          setAnchorSidebar(false));
                     }}
                   />
-                ) : null}
-              </Box>
-            ))}
+                  {(isEditingFrame.item &&
+                    isEditingFrame.item.poster.id === p.id) ||
+                  poster.id === p.id ? (
+                    <IconCheck
+                      stroke={1}
+                      color={theme.palette.primary.contrastText}
+                      size={15}
+                      style={{
+                        background: theme.palette.primary.main,
+                        opacity: 0.7,
+                        borderRadius: 50,
+                        padding: 2,
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                      }}
+                    />
+                  ) : null}
+                </Box>
+              ))
+            )}
             <UploadButton for="Poster" />
           </Box>
         </>
