@@ -35,7 +35,6 @@ export default function FormTest() {
   const submit = (data: PosterData) => {
     if (!file) setImageError({ message: 'An image is required' });
     else if (!imageError) {
-      console.log({ ...data }, file);
       handleUpload(file, data);
     }
   };

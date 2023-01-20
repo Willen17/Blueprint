@@ -10,7 +10,9 @@ import {
 } from '@tabler/icons';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useCanvas } from '../context/CanvasContext';
+import { useSave } from '../context/SaveContext';
 import { useUser } from '../context/UserContext';
 import bpLogo from '../public/logo/bp-logo-light.png';
 import IconWithText from './shared/IconWithText';
@@ -19,21 +21,35 @@ import { theme } from './theme';
 const Header = () => {
   const { currentUser, handleGoogleSignIn, handleSignOut, isAuthenticated } =
     useUser();
+  const {
+    setOpenSaveModal,
+    setOpenLogoModal,
+    openLogoModal,
+    saveCanvasToDataBase,
+  } = useSave();
+  const { canvas } = useCanvas();
   const [openUser, setOpenUser] = useState<boolean>(false);
-  const [openSave, setOpenSave] = useState<boolean>(false);
   const [isHovering, setIsHovered] = useState(false);
   const onMouseEnter = () => setIsHovered(true);
   const onMouseLeave = () => setIsHovered(false);
 
+  const [title, setTitle] = useState<string>('Untitled');
+
   const handleClose = () => {
     setOpenUser(false);
-    setOpenSave(false);
+    setOpenLogoModal(false);
   };
 
   const handleClickSignOut = () => {
     setOpenUser(false);
     handleSignOut();
   };
+
+  useEffect(() => {
+    if (canvas.title) {
+      setTitle(canvas.title);
+    }
+  }, [canvas]);
 
   return (
     <>
@@ -56,7 +72,7 @@ const Header = () => {
           height={isHovering ? 26 : 25}
           alt="Blueprint Logo"
           src={bpLogo}
-          onClick={() => setOpenSave(true)}
+          onClick={() => setOpenLogoModal(true)}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           style={{
@@ -65,9 +81,7 @@ const Header = () => {
             transition: '.5s',
           }}
         />
-        <Typography variant="body2">
-          Untitled {/* TODO: insert from canvas data */}
-        </Typography>
+        <Typography variant="body2">{title ? title : 'Untitled'}</Typography>
         {currentUser ? (
           <Avatar
             onClick={() => setOpenUser(true)}
@@ -99,7 +113,7 @@ const Header = () => {
       </AppBar>
 
       {/* Below are modals displaying by clicking logo or user icon */}
-      <Modal open={openSave} onClose={handleClose}>
+      <Modal open={openLogoModal} onClose={handleClose}>
         <Box
           sx={{
             position: 'absolute',
@@ -112,7 +126,15 @@ const Header = () => {
         >
           <Box sx={{ pl: 1, py: 0.5, textAlign: 'center' }}>
             {/* TODO: add onClick function to both buttons */}
-            <IconWithText text="Save" icon={IconDeviceFloppy} />
+            <IconWithText
+              text="Save"
+              icon={IconDeviceFloppy}
+              onClick={() => {
+                canvas.title
+                  ? saveCanvasToDataBase(canvas.title)
+                  : setOpenSaveModal(true);
+              }}
+            />
             <IconWithText text="Export" icon={IconDownload} />
           </Box>
         </Box>

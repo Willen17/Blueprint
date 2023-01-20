@@ -2,7 +2,9 @@ import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNotification } from '../context/NotificationContext';
+import { useSave } from '../context/SaveContext';
 import Home from '../pages';
+import SaveModal from './canvas/SaveModal';
 import Header from './Header';
 import HomeHeader from './home/HomeHeader';
 import CustomSnackbar from './shared/CustomSnackbar';
@@ -17,6 +19,7 @@ interface Props {
 const Layout = (props: Props) => {
   const router = useRouter();
   const { isLoading } = useNotification();
+  const { openSaveModal } = useSave();
 
   const [isPortrait, setIsPortrait] = useState(false);
   const [mobile, setIsMobile] = useState<boolean>();
@@ -82,6 +85,7 @@ const Layout = (props: Props) => {
           maxHeight: 'calc(100vh - 50px)',
         }}
       >
+        {openSaveModal && <SaveModal />}
         {router.pathname === '/canvas' && isPortrait && mobile ? (
           <RotateDevice />
         ) : (

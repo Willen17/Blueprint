@@ -36,7 +36,6 @@ export default function FormTest() {
     if (!file) setImageError({ message: 'An image is required' });
     else if (!imageError) {
       setIsLoading({ isLoading: true });
-      console.log({ ...data }, file);
       handleUpload(file, data);
     }
   };

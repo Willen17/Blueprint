@@ -13,6 +13,8 @@ import { Canvas, CanvasItem } from '../components/types';
 import { useSidebar } from './SidebarContext';
 
 interface CanvasContextValue {
+  allCanvases: Canvas[];
+  setAllCanvases: Dispatch<SetStateAction<Canvas[]>>;
   canvas: Canvas;
   setBackground: (background: { image: string; cmInPixels?: number }) => void;
   getBackground: () =>
@@ -29,6 +31,8 @@ interface CanvasContextValue {
 }
 
 export const CanvasContext = createContext<CanvasContextValue>({
+  allCanvases: [],
+  setAllCanvases: () => [],
   canvas: { user: undefined, items: [] },
   setBackground: () => {},
   getBackground: () => undefined,
@@ -50,6 +54,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     withPassepartout,
   } = useSidebar();
 
+  const [allCanvases, setAllCanvases] = useState<Canvas[]>([]);
   const [canvas, setCanvas] = useState<Canvas>(() => {
     if (typeof window !== 'undefined') {
       const localData = localStorage.getItem('canvas');
@@ -125,6 +130,8 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     <CanvasContext.Provider
       value={{
         // background,
+        setAllCanvases,
+        allCanvases,
         setBackground,
         getBackground,
         getItems,

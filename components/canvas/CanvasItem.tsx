@@ -139,7 +139,6 @@ const CanvasItem = ({
       if (isEqual(object, frameDimensions.lg))
         return 6.5 * pixelsInCm + frameBorder;
       else {
-        console.log('default' + JSON.stringify(object));
         return 8.1 * pixelsInCm + frameBorder;
       }
     });
@@ -160,7 +159,6 @@ const CanvasItem = ({
     if (isEqual(object, frameDimensions.lg))
       return 6.5 * pixelsInCm + frameBorder;
     else {
-      console.log('default' + JSON.stringify(object));
       return 8.1 * pixelsInCm + frameBorder;
     }
   });
