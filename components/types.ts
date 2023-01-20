@@ -40,8 +40,8 @@ export interface CanvasPoster {
 }
 
 export interface Poster {
-  categories: string[];
-  createdAt?: typeof posterCategories;
+  categories: typeof posterCategories;
+  createdAt?: Timestamp;
   image: string;
   id?: string;
   title: string;
