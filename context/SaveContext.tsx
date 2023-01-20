@@ -2,7 +2,6 @@ import {
   addDoc,
   collection,
   doc,
-  FieldValue,
   getDocs,
   serverTimestamp,
   updateDoc,
@@ -45,11 +44,7 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [openLogoModal, setOpenLogoModal] = useState<boolean>(false);
   const [openSaveModal, setOpenSaveModal] = useState<boolean>(false);
 
-  const saveToDataBase = async (
-    title: string,
-    createdAt: FieldValue,
-    updatedAt: FieldValue
-  ) => {
+  const saveToDataBase = async (title: string) => {
     if (currentUser) {
       const dbCollectionRef = collection(db, 'canvas');
       const canvasesData = await getDocs(dbCollectionRef);
@@ -61,7 +56,10 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
       if (canvases && canvases.some((item) => item.id === canvas.id)) {
         // logic for updating
         const currentCanvasRef = doc(db, 'canvas', canvas.id!);
-        await updateDoc(currentCanvasRef, { ...canvas })
+        await updateDoc(currentCanvasRef, {
+          ...canvas,
+          updatedAt: serverTimestamp(),
+        })
           .then(() => {
             setNotification({
               message: `${title} has been updated`,
@@ -83,16 +81,14 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
           ...canvas,
           title: title,
           user: currentUser.uid,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
+          createdAt: canvas.createdAt || serverTimestamp(),
+          updatedAt: serverTimestamp(),
         })
           .then((canvasFromDb) => {
             setCanvas({
               ...canvas,
               title: title,
               user: currentUser.uid,
-              createdAt: createdAt,
-              updatedAt: updatedAt,
               id: canvasFromDb.id,
             });
 
@@ -119,16 +115,12 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const saveCanvasToDataBase = (title: string) => {
     if (currentUser) {
-      const createdAt = canvas.createdAt || serverTimestamp();
-      const updatedAt = serverTimestamp();
       setCanvas({
         ...canvas,
         title: title,
         user: currentUser.uid,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
       });
-      saveToDataBase(title, createdAt, updatedAt);
+      saveToDataBase(title);
     } else
       setNotification({
         message: `You have to be signed in to save your canvas`,
