@@ -27,6 +27,7 @@ interface UploadContextValue {
   handleImageChange: (event: ChangeEvent) => void;
   imageError: string[];
   setImageError: Dispatch<SetStateAction<string[]>>;
+  resetAllUploadStates: () => void;
 }
 
 export const UploadContext = createContext<UploadContextValue>({
@@ -40,6 +41,7 @@ export const UploadContext = createContext<UploadContextValue>({
   handleImageChange: () => {},
   imageError: [],
   setImageError: () => [],
+  resetAllUploadStates: () => {},
 });
 
 const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -49,21 +51,9 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [preview, setPreview] = useState<string>();
   const [file, setFile] = useState<File | undefined>(undefined);
   const [imageError, setImageError] = useState<string[]>([]);
-
   const [imgDimension, setImgDimension] = useState<
     { width: number; height: number } | undefined
   >();
-
-  // /* create a preview whenever file is changed */
-  // useEffect(() => {
-  //   if (!file) return setPreview(undefined);
-
-  //   const objectUrl = URL.createObjectURL(file);
-  //   setPreview(objectUrl);
-  //   console.log('called use Effect');
-
-  //   return () => URL.revokeObjectURL(objectUrl);
-  // }, [file, setPreview]);
 
   /* Handle form submission */
   const submit = (imageFor: string) => {
@@ -148,8 +138,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
             message: `${imageFor} ${file!.name} is added`,
             type: 'Success',
           });
-          setFile(undefined);
-          setImageError([]);
+          resetAllUploadStates();
         })
         .catch((error) => {
           setNotification({
@@ -163,10 +152,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   /* Check if image meets the requirements */
   const handleImageChange = async (event: ChangeEvent) => {
-    // clear all states
-    setFile(undefined);
-    setImgDimension(undefined);
-    setImageError([]);
+    resetAllUploadStates();
 
     // set current file, return if no file
     const target = event.target as HTMLInputElement;
@@ -204,6 +190,14 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
     return acceptedImageTypes.includes(file['type']);
   };
 
+  /* Reset all states in the upload context except for openModal */
+  const resetAllUploadStates = () => {
+    setFile(undefined);
+    setPreview(undefined);
+    setImgDimension(undefined);
+    setImageError([]);
+  };
+
   return (
     <UploadContext.Provider
       value={{
@@ -217,6 +211,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         handleImageChange,
         imageError,
         setImageError,
+        resetAllUploadStates,
       }}
     >
       {children}

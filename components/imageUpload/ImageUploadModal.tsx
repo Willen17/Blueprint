@@ -20,16 +20,14 @@ const ImageUploadModal = (props: Props) => {
     setOpenUploadModal,
     openUploadModal,
     file,
-    setFile,
     imageError,
-    setImageError,
+    resetAllUploadStates,
   } = useUpload();
 
   /* Closes modal  */
   const handleClose = () => {
     setOpenUploadModal(false);
-    setFile(undefined);
-    setImageError([]);
+    resetAllUploadStates();
   };
 
   const backgroundInstructions = [
