@@ -1,4 +1,12 @@
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  FieldValue,
+  getDocs,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore';
 import {
   createContext,
   Dispatch,
@@ -8,7 +16,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { Canvas } from '../components/types';
 import { db } from '../firebase/firebaseConfig';
 import { useCanvas } from './CanvasContext';
 import { useNotification } from './NotificationContext';
@@ -37,28 +45,66 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [openLogoModal, setOpenLogoModal] = useState<boolean>(false);
   const [openSaveModal, setOpenSaveModal] = useState<boolean>(false);
 
-  const saveToDataBase = async (title: string) => {
+  const saveToDataBase = async (
+    title: string,
+    createdAt: FieldValue,
+    updatedAt: FieldValue
+  ) => {
     if (currentUser) {
-      setCanvas({
-        ...canvas,
-        id: canvas.id || uuidv4(),
-        title: canvas.title || title,
-        user: canvas.user || currentUser,
-        createdAt: canvas.createdAt || serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      console.log(canvas);
       const dbCollectionRef = collection(db, 'canvas');
-      if (allCanvases.includes(canvas)) {
+      const canvasesData = await getDocs(dbCollectionRef);
+      const canvases = canvasesData.docs.map((doc) => ({
+        ...(doc.data() as Canvas),
+        id: doc.id,
+      }));
+
+      if (canvases && canvases.some((item) => item.id === canvas.id)) {
         // logic for updating
-      } else {
-        await addDoc(dbCollectionRef, canvas)
+        const currentCanvasRef = doc(db, 'canvas', canvas.id!);
+        await updateDoc(currentCanvasRef, { ...canvas })
           .then(() => {
-            setOpenSaveModal(false),
-              setOpenLogoModal(false),
-              setNotification({
-                message: `${canvas.title} has been saved`,
-                type: 'Success',
-              });
+            setNotification({
+              message: `${title} has been updated`,
+              type: 'Success',
+            });
+            setOpenSaveModal(false);
+            setOpenLogoModal(false);
+          })
+          .catch((error) => {
+            setNotification({
+              message: `${error.Code} - ${error}`,
+              type: 'Warning',
+            });
+          });
+
+        canvases.find((item) => item.id === canvas.id);
+      } else {
+        console.log('running add doc');
+
+        await addDoc(dbCollectionRef, {
+          ...canvas,
+          title: title,
+          user: currentUser.uid,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+        })
+          .then((canvasFromDb) => {
+            setCanvas({
+              ...canvas,
+              title: title,
+              user: currentUser.uid,
+              createdAt: createdAt,
+              updatedAt: updatedAt,
+              id: canvasFromDb.id,
+            });
+
+            setNotification({
+              message: `${title} has been saved`,
+              type: 'Success',
+            });
+            setOpenSaveModal(false);
+            setOpenLogoModal(false);
           })
           .catch((error) => {
             setNotification({
@@ -76,7 +122,16 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const saveCanvasToDataBase = (title: string) => {
     if (currentUser) {
-      saveToDataBase(title);
+      const createdAt = canvas.createdAt || serverTimestamp();
+      const updatedAt = serverTimestamp();
+      setCanvas({
+        ...canvas,
+        title: title,
+        user: currentUser.uid,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+      });
+      saveToDataBase(title, createdAt, updatedAt);
     } else
       setNotification({
         message: `You have to be signed in to save your canvas`,

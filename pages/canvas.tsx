@@ -40,6 +40,7 @@ export const getStaticProps = async () => {
       })),
       canvases: canvasesData.docs.map((doc) => ({
         ...(doc.data() as Canvas),
+        id: doc.id,
         createdAt: doc.data().createdAt.toDate().toDateString(),
         updatedAt: doc.data().updatedAt.toDate().toDateString(),
       })),
