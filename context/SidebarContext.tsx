@@ -1,9 +1,11 @@
+import { collection, getDocs } from 'firebase/firestore';
 import {
   createContext,
   Dispatch,
   FC,
   PropsWithChildren,
   SetStateAction,
+  useCallback,
   useContext,
   useState,
 } from 'react';
@@ -17,6 +19,7 @@ import {
   Frame,
   Poster,
 } from '../components/types';
+import { db } from '../firebase/firebaseConfig';
 import { sidebarSections } from '../lib/valSchemas';
 
 interface SidebarContextValue {
@@ -88,6 +91,8 @@ interface SidebarContextValue {
   setPosterOrientation: Dispatch<SetStateAction<string>>;
   frameSet: CanvasFrameSet;
   setFrameSet: Dispatch<SetStateAction<CanvasFrameSet>>;
+  getAllBackgrounds: () => void;
+  getAllPosters: () => void;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -137,6 +142,8 @@ export const SidebarContext = createContext<SidebarContextValue>({
   setPosterOrientation: () => '',
   frameSet: { id: '', title: '', size: '' },
   setFrameSet: () => {},
+  getAllBackgrounds: () => {},
+  getAllPosters: () => {},
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -207,6 +214,30 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setPosterOrientation('');
   };
 
+  const getAllBackgrounds = useCallback(async () => {
+    const backgroundsCollectionRef = collection(db, 'backgrounds');
+    const backgroundData = await getDocs(backgroundsCollectionRef);
+    setAllBackgrounds(
+      backgroundData.docs.map((doc) => ({
+        ...(doc.data() as Background),
+        id: doc.id,
+        createdAt: doc.data().createdAt.toDate().toDateString(),
+      }))
+    );
+  }, [setAllBackgrounds]);
+
+  const getAllPosters = useCallback(async () => {
+    const postersCollectionRef = collection(db, 'posters');
+    const posterData = await getDocs(postersCollectionRef);
+    setAllPosters(
+      posterData.docs.map((doc) => ({
+        ...(doc.data() as Poster),
+        id: doc.id,
+        createdAt: doc.data().createdAt.toDate().toDateString(),
+      }))
+    );
+  }, [setAllPosters]);
+
   return (
     <SidebarContext.Provider
       value={{
@@ -238,6 +269,8 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setPosterOrientation,
         frameSet,
         setFrameSet,
+        getAllBackgrounds,
+        getAllPosters,
       }}
     >
       {children}

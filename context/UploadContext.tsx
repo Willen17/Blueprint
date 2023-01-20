@@ -14,6 +14,7 @@ import {
 import { getImageSize } from 'react-image-size';
 import { db, storage } from '../firebase/firebaseConfig';
 import { useNotification } from './NotificationContext';
+import { useSidebar } from './SidebarContext';
 import { useUser } from './UserContext';
 
 interface UploadContextValue {
@@ -52,6 +53,7 @@ export const UploadContext = createContext<UploadContextValue>({
 
 const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
+  const { getAllBackgrounds, getAllPosters } = useSidebar();
   const { setNotification } = useNotification();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [preview, setPreview] = useState<string>();
@@ -142,6 +144,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
       await addDoc(dbCollectionRef, newImage)
         .then(() => {
+          uploadOption === 'Poster' ? getAllPosters() : getAllBackgrounds();
           setOpenUploadModal(false);
           setUploadOption(undefined);
           setNotification({
@@ -157,7 +160,15 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
           });
         });
     },
-    [currentUser, file, imgDimension, setNotification, uploadOption]
+    [
+      currentUser,
+      file,
+      getAllBackgrounds,
+      getAllPosters,
+      imgDimension,
+      setNotification,
+      uploadOption,
+    ]
   );
 
   /* Check if image meets the requirements */
