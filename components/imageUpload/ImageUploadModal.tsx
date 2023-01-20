@@ -103,7 +103,7 @@ const ImageUploadModal = (props: Props) => {
                 <ListItemIcon sx={{ minWidth: 20 }}>
                   {file && imageError?.includes(instruction.type) ? (
                     <IconX size={12} color="#E23A22" />
-                  ) : (file && !imageError) ||
+                  ) : (file && imageError.length < 1) ||
                     (file && imageError?.indexOf(instruction.type) === -1) ? (
                     <IconCheck size={12} color="#3086B7" />
                   ) : (

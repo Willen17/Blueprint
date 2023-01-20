@@ -67,7 +67,7 @@ const ImageUploadForm = (props: Props) => {
               onChange={(event) => handleImageChange(event)}
             />
           </Button>
-          {file && !imageError && preview && (
+          {file && imageError.length < 1 && preview && (
             <Button
               type="submit"
               sx={{
