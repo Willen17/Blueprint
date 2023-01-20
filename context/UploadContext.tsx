@@ -9,10 +9,9 @@ import {
   SetStateAction,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from 'react';
-import useImage from 'use-image';
+import { getImageSize } from 'react-image-size';
 import { db, storage } from '../firebase/firebaseConfig';
 import { useNotification } from './NotificationContext';
 import { useUser } from './UserContext';
@@ -50,15 +49,21 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [preview, setPreview] = useState<string>();
   const [file, setFile] = useState<File | undefined>(undefined);
   const [imageError, setImageError] = useState<string[]>([]);
-  const [image] = useImage(preview || '');
+
   const [imgDimension, setImgDimension] = useState<
     { width: number; height: number } | undefined
   >();
 
-  useEffect(() => {
-    if (preview && image)
-      setImgDimension({ width: image.width, height: image.height });
-  }, [image, preview]);
+  // /* create a preview whenever file is changed */
+  // useEffect(() => {
+  //   if (!file) return setPreview(undefined);
+
+  //   const objectUrl = URL.createObjectURL(file);
+  //   setPreview(objectUrl);
+  //   console.log('called use Effect');
+
+  //   return () => URL.revokeObjectURL(objectUrl);
+  // }, [file, setPreview]);
 
   /* Handle form submission */
   const submit = (imageFor: string) => {
@@ -157,28 +162,46 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 
   /* Check if image meets the requirements */
-  const handleImageChange = (event: ChangeEvent) => {
+  const handleImageChange = async (event: ChangeEvent) => {
+    // clear all states
+    setFile(undefined);
+    setImgDimension(undefined);
+    setImageError([]);
+
+    // set current file, return if no file
     const target = event.target as HTMLInputElement;
+    const currentFile = target.files![0];
+    if (!currentFile) return;
 
-    if (target.files) {
-      const currentFile = target.files[0];
-      const oversized = currentFile.size > 3000000;
-      const notImage = !isImageFile(currentFile);
-      const exceedDimension =
-        (imgDimension && imgDimension.width > 3000) ||
-        (imgDimension && imgDimension.height > 3000);
+    // generate object url
+    const objectUrl = URL.createObjectURL(currentFile);
+    setFile(currentFile);
+    setPreview(objectUrl);
+    () => URL.revokeObjectURL(objectUrl);
 
-      oversized && setImageError([...imageError, 'size']);
-      notImage && setImageError([...imageError, 'format']);
-      exceedDimension && setImageError([...imageError, 'dimension']);
-      return setFile(currentFile);
+    // check size limit, despite file type
+    const oversized = currentFile.size > 3000000;
+    if (oversized) setImageError((prevState) => [...prevState, 'size']);
+
+    // check file type
+    const isImage = isImageFile(currentFile);
+    if (!isImage) setImageError((prevState) => [...prevState, 'format']);
+
+    // check dimension
+    if (isImage) {
+      const { width, height } = await getImageSize(objectUrl);
+      setImgDimension({ width, height });
+
+      const exceedDimension = width > 3000 || height > 3000;
+      exceedDimension &&
+        setImageError((prevState) => [...prevState, 'dimension']);
     }
   };
 
   /* Check image format */
   const isImageFile = (file: File) => {
     const acceptedImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-    return file && acceptedImageTypes.includes(file['type']);
+    return acceptedImageTypes.includes(file['type']);
   };
 
   return (
