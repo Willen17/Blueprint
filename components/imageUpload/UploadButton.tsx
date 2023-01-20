@@ -10,11 +10,15 @@ interface Props {
 }
 
 const UploadButton = (props: Props) => {
-  const { setOpenUploadModal } = useUpload();
+  const { setOpenUploadModal, setUploadOption } = useUpload();
   const { allPosters, allBackgrounds } = useSidebar();
   const { currentUser } = useUser();
 
-  const handleClick = () => setOpenUploadModal(true);
+  const handleClick = () => {
+    if (props.for === 'Poster') setUploadOption('Poster');
+    if (props.for === 'Background') setUploadOption('Background');
+    setOpenUploadModal(true);
+  };
 
   /* Check how many backgrounds and posters the user has uploaded based on props */
   const checkNoOfUpload = () => {
@@ -49,7 +53,7 @@ const UploadButton = (props: Props) => {
         </Typography>
       )}
 
-      <ImageUploadModal for={props.for} />
+      <ImageUploadModal />
     </Box>
   ) : (
     <Box width="100%" mt={2} sx={{ display: 'flex', placeContent: 'center' }}>

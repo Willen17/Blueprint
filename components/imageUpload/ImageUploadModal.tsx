@@ -11,25 +11,22 @@ import { IconCheck, IconChevronRight, IconX } from '@tabler/icons';
 import { useUpload } from '../../context/UploadContext';
 import ImageUploadForm from './ImageUploadForm';
 
-interface Props {
-  for: 'Poster' | 'Background';
-}
-
-const ImageUploadModal = (props: Props) => {
+const ImageUploadModal = () => {
   const {
     setOpenUploadModal,
     openUploadModal,
     file,
-    setFile,
     imageError,
-    setImageError,
+    resetAllUploadStates,
+    uploadOption,
+    setUploadOption,
   } = useUpload();
 
   /* Closes modal  */
   const handleClose = () => {
     setOpenUploadModal(false);
-    setFile(undefined);
-    setImageError([]);
+    setUploadOption(undefined);
+    resetAllUploadStates();
   };
 
   const backgroundInstructions = [
@@ -52,8 +49,8 @@ const ImageUploadModal = (props: Props) => {
 
   /* Check props and display the correct instuctions */
   const getInstructions = () => {
-    if (props.for === 'Background') return backgroundInstructions;
-    if (props.for === 'Poster') return posterInstructions;
+    if (uploadOption === 'Background') return backgroundInstructions;
+    if (uploadOption === 'Poster') return posterInstructions;
   };
 
   return (
@@ -88,7 +85,7 @@ const ImageUploadModal = (props: Props) => {
             }}
           />
           <Typography component="h3" variant="subtitle2" pb={1}>
-            Upload My Own {props.for}
+            Upload My Own {uploadOption}
           </Typography>
           <List sx={{ m: 'auto', width: 250 }}>
             <Typography
@@ -103,7 +100,7 @@ const ImageUploadModal = (props: Props) => {
                 <ListItemIcon sx={{ minWidth: 20 }}>
                   {file && imageError?.includes(instruction.type) ? (
                     <IconX size={12} color="#E23A22" />
-                  ) : (file && !imageError) ||
+                  ) : (file && imageError.length < 1) ||
                     (file && imageError?.indexOf(instruction.type) === -1) ? (
                     <IconCheck size={12} color="#3086B7" />
                   ) : (
@@ -126,7 +123,7 @@ const ImageUploadModal = (props: Props) => {
               </ListItem>
             ))}
           </List>
-          <ImageUploadForm for={props.for} />
+          <ImageUploadForm />
         </Box>
       </Box>
     </Modal>

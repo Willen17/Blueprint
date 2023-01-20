@@ -9,12 +9,12 @@ import {
   SetStateAction,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from 'react';
-import useImage from 'use-image';
+import { getImageSize } from 'react-image-size';
 import { db, storage } from '../firebase/firebaseConfig';
 import { useNotification } from './NotificationContext';
+import { useSidebar } from './SidebarContext';
 import { useUser } from './UserContext';
 
 interface UploadContextValue {
@@ -22,12 +22,17 @@ interface UploadContextValue {
   setOpenUploadModal: Dispatch<SetStateAction<boolean>>;
   file: File | undefined;
   setFile: Dispatch<SetStateAction<File | undefined>>;
-  submit: (imageFor: string) => void;
+  submit: () => void;
   preview: string | undefined;
   setPreview: Dispatch<SetStateAction<string | undefined>>;
   handleImageChange: (event: ChangeEvent) => void;
   imageError: string[];
   setImageError: Dispatch<SetStateAction<string[]>>;
+  resetAllUploadStates: () => void;
+  uploadOption: 'Poster' | 'Background' | undefined;
+  setUploadOption: Dispatch<
+    SetStateAction<'Poster' | 'Background' | undefined>
+  >;
 }
 
 export const UploadContext = createContext<UploadContextValue>({
@@ -41,43 +46,44 @@ export const UploadContext = createContext<UploadContextValue>({
   handleImageChange: () => {},
   imageError: [],
   setImageError: () => [],
+  resetAllUploadStates: () => {},
+  uploadOption: undefined,
+  setUploadOption: () => undefined,
 });
 
 const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
+  const { getAllBackgrounds, getAllPosters } = useSidebar();
   const { setNotification } = useNotification();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [preview, setPreview] = useState<string>();
   const [file, setFile] = useState<File | undefined>(undefined);
   const [imageError, setImageError] = useState<string[]>([]);
-  const [image] = useImage(preview || '');
   const [imgDimension, setImgDimension] = useState<
     { width: number; height: number } | undefined
   >();
-
-  useEffect(() => {
-    if (preview && image)
-      setImgDimension({ width: image.width, height: image.height });
-  }, [image, preview]);
+  const [uploadOption, setUploadOption] = useState<
+    'Poster' | 'Background' | undefined
+  >();
 
   /* Handle form submission */
-  const submit = (imageFor: string) => {
+  const submit = () => {
     if (!file) return; // this is being covered in the client since the upload button only displays when there is a file
-    if (imageError)
+    if (imageError.length)
       return setNotification({
         message: 'Please select a image that meets the requirement.',
         type: 'Warning',
       });
-    if (file && imageFor && !imageError) uploadImage(file, imageFor);
+    if (file && uploadOption && !imageError.length) uploadImage();
   };
 
   /* Handle image upload */
-  const uploadImage = (file: File, imageFor: string) => {
+  const uploadImage = () => {
     const storageRef =
-      imageFor === 'Poster'
-        ? ref(storage, `/posters/${currentUser?.uid}_${file.name}`)
-        : ref(storage, `/backgrounds/${currentUser?.uid}_${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadOption === 'Poster'
+        ? ref(storage, `/posters/${currentUser?.uid}_${file!.name}`)
+        : ref(storage, `/backgrounds/${currentUser?.uid}_${file!.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file!);
 
     uploadTask.on(
       'state_changed',
@@ -93,20 +99,20 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         }),
       () =>
         getDownloadURL(uploadTask.snapshot.ref).then((url) =>
-          addImageObjToDb(url, imageFor)
+          addImageObjToDb(url)
         )
     );
   };
 
   /* Add a new document to db poster or background collection */
   const addImageObjToDb = useCallback(
-    async (url: string, imageFor: string) => {
+    async (url: string) => {
       const dbCollectionRef = collection(
         db,
-        imageFor === 'Poster' ? 'posters' : 'backgrounds'
+        uploadOption === 'Poster' ? 'posters' : 'backgrounds'
       );
       const newImage =
-        imageFor === 'Poster'
+        uploadOption === 'Poster'
           ? {
               // poster object
               title: file!.name + '_' + currentUser?.uid,
@@ -132,19 +138,20 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
               createdAt: serverTimestamp(),
               title: file!.name + '_' + currentUser?.uid,
               image: url,
-              cmInPixels: 3.5, // TODO: correct this
+              cmInPixels: 3.5,
               user: currentUser!.uid,
             };
 
       await addDoc(dbCollectionRef, newImage)
         .then(() => {
+          uploadOption === 'Poster' ? getAllPosters() : getAllBackgrounds();
           setOpenUploadModal(false);
+          setUploadOption(undefined);
           setNotification({
-            message: `${imageFor} ${file!.name} is added`,
+            message: `${uploadOption} ${file!.name} is added`,
             type: 'Success',
           });
-          setFile(undefined);
-          setImageError([]);
+          resetAllUploadStates();
         })
         .catch((error) => {
           setNotification({
@@ -153,32 +160,63 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
           });
         });
     },
-    [currentUser, file, imgDimension, setNotification]
+    [
+      currentUser,
+      file,
+      getAllBackgrounds,
+      getAllPosters,
+      imgDimension,
+      setNotification,
+      uploadOption,
+    ]
   );
 
   /* Check if image meets the requirements */
-  const handleImageChange = (event: ChangeEvent) => {
+  const handleImageChange = async (event: ChangeEvent) => {
+    resetAllUploadStates();
+
+    // set current file, return if no file
     const target = event.target as HTMLInputElement;
+    const currentFile = target.files![0];
+    if (!currentFile) return;
 
-    if (target.files) {
-      const currentFile = target.files[0];
-      const oversized = currentFile.size > 3000000;
-      const notImage = !isImageFile(currentFile);
-      const exceedDimension =
-        (imgDimension && imgDimension.width > 3000) ||
-        (imgDimension && imgDimension.height > 3000);
+    // generate object url
+    const objectUrl = URL.createObjectURL(currentFile);
+    setFile(currentFile);
+    setPreview(objectUrl);
+    () => URL.revokeObjectURL(objectUrl);
 
-      oversized && setImageError([...imageError, 'size']);
-      notImage && setImageError([...imageError, 'format']);
-      exceedDimension && setImageError([...imageError, 'dimension']);
-      return setFile(currentFile);
+    // check size limit, despite file type
+    const oversized = currentFile.size > 3000000;
+    if (oversized) setImageError((prevState) => [...prevState, 'size']);
+
+    // check file type
+    const isImage = isImageFile(currentFile);
+    if (!isImage) setImageError((prevState) => [...prevState, 'format']);
+
+    // check dimension
+    if (isImage) {
+      const { width, height } = await getImageSize(objectUrl);
+      setImgDimension({ width, height });
+
+      const exceedDimension = width > 3000 || height > 3000;
+      exceedDimension &&
+        setImageError((prevState) => [...prevState, 'dimension']);
     }
   };
 
   /* Check image format */
   const isImageFile = (file: File) => {
     const acceptedImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-    return file && acceptedImageTypes.includes(file['type']);
+    return acceptedImageTypes.includes(file['type']);
+  };
+
+  /* Reset all states in the upload context except for openModal */
+  const resetAllUploadStates = () => {
+    setFile(undefined);
+    setPreview(undefined);
+    setImgDimension(undefined);
+    setImageError([]);
   };
 
   return (
@@ -194,6 +232,9 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         handleImageChange,
         imageError,
         setImageError,
+        resetAllUploadStates,
+        uploadOption,
+        setUploadOption,
       }}
     >
       {children}
