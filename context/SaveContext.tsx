@@ -40,7 +40,7 @@ export const SaveContext = createContext<SaveContextValue>({
 const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
   const { setNotification } = useNotification();
-  const { setCanvas, canvas, allCanvases } = useCanvas();
+  const { setCanvas, canvas, allCanvases, setAllCanvases } = useCanvas();
   const [openLogoModal, setOpenLogoModal] = useState<boolean>(false);
   const [openSaveModal, setOpenSaveModal] = useState<boolean>(false);
 
@@ -60,13 +60,19 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
           ...canvas,
           updatedAt: serverTimestamp(),
         })
-          .then(() => {
+          .then(async () => {
             setNotification({
               message: `${title} has been updated`,
               type: 'Success',
             });
             setOpenSaveModal(false);
             setOpenLogoModal(false);
+            const canvasesData = await getDocs(dbCollectionRef);
+            const canvases = canvasesData.docs.map((doc) => ({
+              ...(doc.data() as Canvas),
+              id: doc.id,
+            }));
+            setAllCanvases(canvases);
           })
           .catch((error) => {
             setNotification({
@@ -84,7 +90,7 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
           createdAt: canvas.createdAt || serverTimestamp(),
           updatedAt: serverTimestamp(),
         })
-          .then((canvasFromDb) => {
+          .then(async (canvasFromDb) => {
             setCanvas({
               ...canvas,
               title: title,
@@ -98,6 +104,12 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
             });
             setOpenSaveModal(false);
             setOpenLogoModal(false);
+            const canvasesData = await getDocs(dbCollectionRef);
+            const canvases = canvasesData.docs.map((doc) => ({
+              ...(doc.data() as Canvas),
+              id: doc.id,
+            }));
+            setAllCanvases(canvases);
           })
           .catch((error) => {
             setNotification({
