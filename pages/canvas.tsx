@@ -7,6 +7,7 @@ import router from 'next/router';
 import { useEffect, useState } from 'react';
 import { Background, Canvas, Frame, Poster } from '../components/types';
 import { useCanvas } from '../context/CanvasContext';
+import { useSave } from '../context/SaveContext';
 import { useSidebar } from '../context/SidebarContext';
 import { db } from '../firebase/firebaseConfig';
 
@@ -57,6 +58,7 @@ const CanvasPage = ({
   canvases,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
+  const { saveCanvasToDataBase } = useSave();
   const { canvas, setAllCanvases, allCanvases } = useCanvas();
   useEffect(
     () => setAllBackgrounds(backgrounds),
@@ -85,16 +87,13 @@ const CanvasPage = ({
     }
   }, [canvas, allCanvases]);
 
-  useEffect(() => {
-    console.log(unsavedChanges);
-  }, [unsavedChanges]);
-
   // warn the user if they try and leave and have unsaved changes
   useEffect(() => {
     const warningText =
       'You have unsaved changes - are you sure you wish to leave this page?';
     const handleWindowClose = (e: BeforeUnloadEvent) => {
       if (!unsavedChanges) return;
+      handleEndSession();
       e.preventDefault();
       return (e.returnValue = warningText);
     };
@@ -109,14 +108,19 @@ const CanvasPage = ({
       }
       throw 'routeChange aborted.';
     };
+
     window.addEventListener('beforeunload', handleWindowClose);
     router.events.on('routeChangeStart', handleBrowseAway);
     return () => {
       window.removeEventListener('beforeunload', handleWindowClose);
       router.events.off('routeChangeStart', handleBrowseAway);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unsavedChanges]);
 
+  const handleEndSession = async () => {
+    saveCanvasToDataBase(canvas.title!);
+  };
   return (
     <>
       <Head>
