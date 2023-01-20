@@ -51,7 +51,6 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
     updatedAt: FieldValue
   ) => {
     if (currentUser) {
-      console.log(canvas);
       const dbCollectionRef = collection(db, 'canvas');
       const canvasesData = await getDocs(dbCollectionRef);
       const canvases = canvasesData.docs.map((doc) => ({
@@ -80,8 +79,6 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
         canvases.find((item) => item.id === canvas.id);
       } else {
-        console.log('running add doc');
-
         await addDoc(dbCollectionRef, {
           ...canvas,
           title: title,
