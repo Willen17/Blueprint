@@ -1,5 +1,4 @@
-import { User as FirebaseUser } from 'firebase/auth';
-import { Timestamp } from 'firebase/firestore';
+import { FieldValue, Timestamp } from 'firebase/firestore';
 import { backgroundCategories, posterCategories } from '../lib/valSchemas';
 
 export interface Dimension {
@@ -61,9 +60,9 @@ export interface CanvasItem {
 export interface Canvas {
   title?: string;
   id?: string;
-  user: FirebaseUser | undefined;
-  createdAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
-  updatedAt?: Timestamp; // TODO: change. Optional for now as this is not what im working on in this issue
+  user: string | undefined;
+  createdAt?: FieldValue; // TODO: change. Optional for now as this is not what im working on in this issue
+  updatedAt?: FieldValue; // TODO: change. Optional for now as this is not what im working on in this issue
   background?: { image: string; cmInPixels?: number }; // TODO: put the correct type. Wille is working on this so i dont bother the type here
   items: CanvasItem[];
 }
