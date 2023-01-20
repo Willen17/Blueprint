@@ -11,22 +11,21 @@ import { IconCheck, IconChevronRight, IconX } from '@tabler/icons';
 import { useUpload } from '../../context/UploadContext';
 import ImageUploadForm from './ImageUploadForm';
 
-interface Props {
-  for: 'Poster' | 'Background';
-}
-
-const ImageUploadModal = (props: Props) => {
+const ImageUploadModal = () => {
   const {
     setOpenUploadModal,
     openUploadModal,
     file,
     imageError,
     resetAllUploadStates,
+    uploadOption,
+    setUploadOption,
   } = useUpload();
 
   /* Closes modal  */
   const handleClose = () => {
     setOpenUploadModal(false);
+    setUploadOption(undefined);
     resetAllUploadStates();
   };
 
@@ -50,8 +49,8 @@ const ImageUploadModal = (props: Props) => {
 
   /* Check props and display the correct instuctions */
   const getInstructions = () => {
-    if (props.for === 'Background') return backgroundInstructions;
-    if (props.for === 'Poster') return posterInstructions;
+    if (uploadOption === 'Background') return backgroundInstructions;
+    if (uploadOption === 'Poster') return posterInstructions;
   };
 
   return (
@@ -86,7 +85,7 @@ const ImageUploadModal = (props: Props) => {
             }}
           />
           <Typography component="h3" variant="subtitle2" pb={1}>
-            Upload My Own {props.for}
+            Upload My Own {uploadOption}
           </Typography>
           <List sx={{ m: 'auto', width: 250 }}>
             <Typography
@@ -124,7 +123,7 @@ const ImageUploadModal = (props: Props) => {
               </ListItem>
             ))}
           </List>
-          <ImageUploadForm for={props.for} />
+          <ImageUploadForm />
         </Box>
       </Box>
     </Modal>

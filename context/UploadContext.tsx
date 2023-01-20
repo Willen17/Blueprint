@@ -21,13 +21,17 @@ interface UploadContextValue {
   setOpenUploadModal: Dispatch<SetStateAction<boolean>>;
   file: File | undefined;
   setFile: Dispatch<SetStateAction<File | undefined>>;
-  submit: (imageFor: string) => void;
+  submit: () => void;
   preview: string | undefined;
   setPreview: Dispatch<SetStateAction<string | undefined>>;
   handleImageChange: (event: ChangeEvent) => void;
   imageError: string[];
   setImageError: Dispatch<SetStateAction<string[]>>;
   resetAllUploadStates: () => void;
+  uploadOption: 'Poster' | 'Background' | undefined;
+  setUploadOption: Dispatch<
+    SetStateAction<'Poster' | 'Background' | undefined>
+  >;
 }
 
 export const UploadContext = createContext<UploadContextValue>({
@@ -42,6 +46,8 @@ export const UploadContext = createContext<UploadContextValue>({
   imageError: [],
   setImageError: () => [],
   resetAllUploadStates: () => {},
+  uploadOption: undefined,
+  setUploadOption: () => undefined,
 });
 
 const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -54,25 +60,28 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [imgDimension, setImgDimension] = useState<
     { width: number; height: number } | undefined
   >();
+  const [uploadOption, setUploadOption] = useState<
+    'Poster' | 'Background' | undefined
+  >();
 
   /* Handle form submission */
-  const submit = (imageFor: string) => {
+  const submit = () => {
     if (!file) return; // this is being covered in the client since the upload button only displays when there is a file
-    if (imageError)
+    if (imageError.length)
       return setNotification({
         message: 'Please select a image that meets the requirement.',
         type: 'Warning',
       });
-    if (file && imageFor && !imageError) uploadImage(file, imageFor);
+    if (file && uploadOption && !imageError.length) uploadImage();
   };
 
   /* Handle image upload */
-  const uploadImage = (file: File, imageFor: string) => {
+  const uploadImage = () => {
     const storageRef =
-      imageFor === 'Poster'
-        ? ref(storage, `/posters/${currentUser?.uid}_${file.name}`)
-        : ref(storage, `/backgrounds/${currentUser?.uid}_${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadOption === 'Poster'
+        ? ref(storage, `/posters/${currentUser?.uid}_${file!.name}`)
+        : ref(storage, `/backgrounds/${currentUser?.uid}_${file!.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file!);
 
     uploadTask.on(
       'state_changed',
@@ -88,20 +97,20 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         }),
       () =>
         getDownloadURL(uploadTask.snapshot.ref).then((url) =>
-          addImageObjToDb(url, imageFor)
+          addImageObjToDb(url)
         )
     );
   };
 
   /* Add a new document to db poster or background collection */
   const addImageObjToDb = useCallback(
-    async (url: string, imageFor: string) => {
+    async (url: string) => {
       const dbCollectionRef = collection(
         db,
-        imageFor === 'Poster' ? 'posters' : 'backgrounds'
+        uploadOption === 'Poster' ? 'posters' : 'backgrounds'
       );
       const newImage =
-        imageFor === 'Poster'
+        uploadOption === 'Poster'
           ? {
               // poster object
               title: file!.name + '_' + currentUser?.uid,
@@ -127,15 +136,16 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
               createdAt: serverTimestamp(),
               title: file!.name + '_' + currentUser?.uid,
               image: url,
-              cmInPixels: 3.5, // TODO: correct this
+              cmInPixels: 3.5,
               user: currentUser!.uid,
             };
 
       await addDoc(dbCollectionRef, newImage)
         .then(() => {
           setOpenUploadModal(false);
+          setUploadOption(undefined);
           setNotification({
-            message: `${imageFor} ${file!.name} is added`,
+            message: `${uploadOption} ${file!.name} is added`,
             type: 'Success',
           });
           resetAllUploadStates();
@@ -147,7 +157,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
           });
         });
     },
-    [currentUser, file, imgDimension, setNotification]
+    [currentUser, file, imgDimension, setNotification, uploadOption]
   );
 
   /* Check if image meets the requirements */
@@ -212,6 +222,8 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         imageError,
         setImageError,
         resetAllUploadStates,
+        uploadOption,
+        setUploadOption,
       }}
     >
       {children}

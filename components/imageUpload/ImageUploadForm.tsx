@@ -3,20 +3,23 @@ import Image from 'next/image';
 import { useUpload } from '../../context/UploadContext';
 import { theme } from '../theme';
 
-interface Props {
-  for: 'Poster' | 'Background';
-}
-
-const ImageUploadForm = (props: Props) => {
-  const { preview, setPreview, handleImageChange, file, imageError, submit } =
-    useUpload();
+const ImageUploadForm = () => {
+  const {
+    preview,
+    setPreview,
+    handleImageChange,
+    file,
+    imageError,
+    submit,
+    uploadOption,
+  } = useUpload();
 
   return (
     <Box
       component="form"
       onSubmit={(e) => {
         e.preventDefault();
-        submit(props.for);
+        submit();
       }}
       sx={{ display: 'flex', flexDirection: 'column' }}
     >
