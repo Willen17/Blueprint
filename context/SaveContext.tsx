@@ -4,7 +4,7 @@ import {
   doc,
   getDocs,
   serverTimestamp,
-  updateDoc,
+  setDoc,
 } from 'firebase/firestore';
 import {
   createContext,
@@ -55,11 +55,19 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
       if (canvases && canvases.some((item) => item.id === canvas.id)) {
         // logic for updating
+
+        const bg = JSON.parse(localStorage.getItem('canvas')!).background;
+        const items = JSON.parse(localStorage.getItem('canvas')!).items;
         const currentCanvasRef = doc(db, 'canvas', canvas.id!);
-        await updateDoc(currentCanvasRef, {
-          ...canvas,
-          updatedAt: serverTimestamp(),
-        })
+        await setDoc(
+          currentCanvasRef,
+          {
+            background: bg,
+            items: items,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        )
           .then(async () => {
             setNotification({
               message: `${title} has been updated`,
@@ -80,14 +88,12 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
               type: 'Warning',
             });
           });
-
-        canvases.find((item) => item.id === canvas.id);
       } else {
         await addDoc(dbCollectionRef, {
           ...canvas,
           title: title,
           user: currentUser.uid,
-          createdAt: canvas.createdAt || serverTimestamp(),
+          createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         })
           .then(async (canvasFromDb) => {
@@ -127,11 +133,6 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const saveCanvasToDataBase = (title: string) => {
     if (currentUser) {
-      setCanvas({
-        ...canvas,
-        title: title,
-        user: currentUser.uid,
-      });
       saveToDataBase(title);
     } else
       setNotification({
