@@ -10,7 +10,8 @@ import {
 } from '@tabler/icons';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useCanvas } from '../context/CanvasContext';
 import { useSave } from '../context/SaveContext';
 import { useUser } from '../context/UserContext';
 import bpLogo from '../public/logo/bp-logo-light.png';
@@ -20,11 +21,19 @@ import { theme } from './theme';
 const Header = () => {
   const { currentUser, handleGoogleSignIn, handleSignOut, isAuthenticated } =
     useUser();
-  const { setOpenSaveModal, setOpenLogoModal, openLogoModal } = useSave();
+  const {
+    setOpenSaveModal,
+    setOpenLogoModal,
+    openLogoModal,
+    saveCanvasToDataBase,
+  } = useSave();
+  const { canvas } = useCanvas();
   const [openUser, setOpenUser] = useState<boolean>(false);
   const [isHovering, setIsHovered] = useState(false);
   const onMouseEnter = () => setIsHovered(true);
   const onMouseLeave = () => setIsHovered(false);
+
+  const [title, setTitle] = useState<string>('Untitled');
 
   const handleClose = () => {
     setOpenUser(false);
@@ -35,6 +44,12 @@ const Header = () => {
     setOpenUser(false);
     handleSignOut();
   };
+
+  useEffect(() => {
+    if (canvas.title) {
+      setTitle(canvas.title);
+    }
+  }, [canvas]);
 
   return (
     <>
@@ -66,9 +81,7 @@ const Header = () => {
             transition: '.5s',
           }}
         />
-        <Typography variant="body2">
-          Untitled {/* TODO: insert from canvas data */}
-        </Typography>
+        <Typography variant="body2">{title ? title : 'Untitled'}</Typography>
         {currentUser ? (
           <Avatar
             onClick={() => setOpenUser(true)}
@@ -116,7 +129,11 @@ const Header = () => {
             <IconWithText
               text="Save"
               icon={IconDeviceFloppy}
-              onClick={() => setOpenSaveModal(true)}
+              onClick={() => {
+                canvas.title
+                  ? saveCanvasToDataBase(canvas.title)
+                  : setOpenSaveModal(true);
+              }}
             />
             <IconWithText text="Export" icon={IconDownload} />
           </Box>
