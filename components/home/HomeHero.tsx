@@ -29,8 +29,8 @@ const HomeHero = () => {
       >
         <Box mt={5} sx={{ position: !tablet ? 'absolute' : 'static' }}>
           <SectionTitle
-            title="Lorem Ipsum is simply dummy?"
-            summary="Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+            title="Unlock the designer within with Blueprint - The ultimate frame visualization app"
+            summary="Transform your walls in seconds with our frame visualization app. Preview before you buy for a perfect fit. Upgrade your decor now!"
             isH1
             withButton
           />
