@@ -107,7 +107,7 @@ const PosterForm = ({
   return (
     <>
       <Head>
-        <title>Upload A New Poster | Blue print | Visualize your frames</title>
+        <title>Upload A New Poster | Blueprint | Visualize your frames</title>
         <meta name="description" content="Post your posters to the database" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
