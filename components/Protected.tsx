@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useNotification } from '../context/NotificationContext';
 import { useUser } from '../context/UserContext';
-import Header from './Header';
+import HomeHeader from './home/HomeHeader';
 import UnauthorisedAccess from './shared/403';
 import Loader from './shared/Loader';
 
@@ -15,11 +15,12 @@ const ProtectedRoute = (props: Props) => {
   const { isLoading } = useNotification();
   const protectedRoutes = ['/admin/createBackground', '/admin/createPoster'];
   const pathIsProtected = protectedRoutes.indexOf(router.pathname) !== -1;
+
   if (!isAuthenticated && pathIsProtected)
     return (
       <>
-        <Header />
-        {isLoading ? <Loader /> : <UnauthorisedAccess />}
+        <HomeHeader noLoginButton />
+        {!isLoading.isLoading ? <UnauthorisedAccess /> : <Loader />}
       </>
     );
   return props.children;

@@ -4,6 +4,8 @@ import { theme } from '../theme';
 
 const UnauthorisedAccess = () => {
   const XsScreen = useMediaQuery(theme.breakpoints.down(485));
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Container
       sx={{
@@ -12,7 +14,7 @@ const UnauthorisedAccess = () => {
         placeItems: 'center',
         columnGap: 2,
         flexWrap: 'wrap',
-        height: '100%',
+        height: !mobile ? 'calc(100vh - 100px)' : 'calc(100vh - 200px)',
       }}
     >
       <Typography
