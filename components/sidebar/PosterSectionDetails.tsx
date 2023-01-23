@@ -1,5 +1,10 @@
 import { Box, Button, Typography } from '@mui/material';
-import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
+import {
+  IconCheck,
+  IconRectangle,
+  IconRectangleVertical,
+  IconX,
+} from '@tabler/icons';
 import { isEqual } from 'lodash';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
@@ -9,6 +14,7 @@ import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
 import { compareUserAndCreatedAt } from '../helper';
 import UploadButton from '../imageUpload/UploadButton';
+import DeleteUploadModal from '../shared/DeleteUploadModal';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 import { Dimension } from '../types';
@@ -26,6 +32,8 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
     setPosterOrientation,
     frameSet,
     setIsEditingFrame,
+    setOpenRemoveImgModal,
+    setObjToRemove,
   } = useSidebar();
   const { updateItem } = useCanvas();
   const { currentUser } = useUser();
@@ -183,7 +191,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
               },
             }}
           >
-            {filteredPosters().length < 1 ? (
+            {!filteredPosters().length ? (
               <Typography mt={3} textAlign="center">
                 No images found under this category
               </Typography>
@@ -263,23 +271,47 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                   />
                   {(isEditingFrame.item &&
                     isEditingFrame.item.poster.id === p.id) ||
-                  poster.id === p.id ? (
-                    <IconCheck
-                      stroke={1}
-                      color={theme.palette.primary.contrastText}
-                      size={15}
-                      style={{
-                        background: theme.palette.primary.main,
-                        opacity: 0.7,
-                        borderRadius: 50,
-                        padding: 2,
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
+                    (poster.id === p.id && (
+                      <IconCheck
+                        stroke={1}
+                        color={theme.palette.primary.contrastText}
+                        size={15}
+                        style={{
+                          background: theme.palette.primary.main,
+                          opacity: 0.7,
+                          borderRadius: 50,
+                          padding: 2,
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                      />
+                    ))}
+                  {p.user === currentUser?.uid && (
+                    <Box
+                      sx={{
+                        color: theme.palette.primary.main,
+                        '&:hover': { color: '#E23A22' },
                       }}
-                    />
-                  ) : null}
+                    >
+                      <IconX
+                        size={14}
+                        style={{
+                          position: 'absolute',
+                          right: 0,
+                          top: 0,
+                          background: theme.palette.secondary.light,
+                          opacity: 0.5,
+                          zIndex: 999,
+                        }}
+                        onClick={() => {
+                          setOpenRemoveImgModal(true);
+                          setObjToRemove(p);
+                        }}
+                      />
+                    </Box>
+                  )}
                 </Box>
               ))
             )}
@@ -294,6 +326,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
           <UploadButton for="Poster" />
         </>
       )}
+      <DeleteUploadModal />
     </>
   );
 };

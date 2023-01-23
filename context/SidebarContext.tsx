@@ -93,6 +93,11 @@ interface SidebarContextValue {
   setFrameSet: Dispatch<SetStateAction<CanvasFrameSet>>;
   getAllBackgrounds: () => void;
   getAllPosters: () => void;
+  removeUploadedObj: () => void;
+  openRemoveImgModal: boolean;
+  setOpenRemoveImgModal: Dispatch<SetStateAction<boolean>>;
+  objToRemove: (Poster | Background) | undefined;
+  setObjToRemove: Dispatch<SetStateAction<Poster | Background | undefined>>;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -144,6 +149,11 @@ export const SidebarContext = createContext<SidebarContextValue>({
   setFrameSet: () => {},
   getAllBackgrounds: () => {},
   getAllPosters: () => {},
+  removeUploadedObj: () => {},
+  openRemoveImgModal: false,
+  setOpenRemoveImgModal: () => false,
+  objToRemove: undefined,
+  setObjToRemove: () => undefined,
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -180,7 +190,6 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isEditingFrame, setIsEditingFrame] = useState<EditingFrame>({
     isEditing: false,
   });
-
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [poster, setPoster] = useState<CanvasPoster>({
     id: '',
@@ -194,6 +203,10 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     title: '',
     size: '',
   });
+  const [openRemoveImgModal, setOpenRemoveImgModal] = useState<boolean>(false);
+  const [objToRemove, setObjToRemove] = useState<
+    (Poster | Background) | undefined
+  >(undefined);
 
   const handleSelectItem = (item: CanvasItem) => {
     setAnchorSidebar(true);
@@ -238,6 +251,10 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     );
   }, [setAllPosters]);
 
+  const removeUploadedObj = () => {
+    console.log('called remove', objToRemove);
+  };
+
   return (
     <SidebarContext.Provider
       value={{
@@ -271,6 +288,11 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setFrameSet,
         getAllBackgrounds,
         getAllPosters,
+        removeUploadedObj,
+        openRemoveImgModal,
+        setOpenRemoveImgModal,
+        objToRemove,
+        setObjToRemove,
       }}
     >
       {children}
