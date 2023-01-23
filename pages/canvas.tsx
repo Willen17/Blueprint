@@ -77,7 +77,6 @@ const CanvasPage = ({
     if (allCanvases && canvas) {
       if (allCanvases.some((item) => item.id === canvas.id)) {
         const currentItem = allCanvases.find((item) => item.id === canvas.id);
-        console.log('db', currentItem?.background, 'ls', canvas.background);
         if (
           isEqual(currentItem!.background, canvas.background) &&
           isEqual(currentItem!.items, canvas.items)

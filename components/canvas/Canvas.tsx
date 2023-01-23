@@ -1,4 +1,12 @@
-import { Box, Container, Slider, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Container,
+  IconButton,
+  Slider,
+  Tooltip,
+  useMediaQuery,
+} from '@mui/material';
+import { IconResize } from '@tabler/icons';
 import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
 import { Group, Image, Layer, Stage } from 'react-konva';
@@ -118,17 +126,25 @@ const Canvas = () => {
             alignItems: 'center',
             height: 50,
             px: XsScreen ? 2.5 : 5,
+            columnGap: 2,
           }}
         >
           <Slider
+            size="small"
             onChange={handleChange}
             value={value}
-            aria-label="Size"
+            aria-label="Multiply size"
+            aria-valuetext={`${value} multiply size`}
             defaultValue={30}
             color="primary"
             min={10}
             step={5}
           />
+          <Tooltip title="Drag slider to resize frames">
+            <IconButton color="primary">
+              <IconResize size={30} strokeWidth={1.2} />
+            </IconButton>
+          </Tooltip>
         </Box>
       )}
       <Container sx={{ height: '100%' }} ref={stageCanvasRef}>
