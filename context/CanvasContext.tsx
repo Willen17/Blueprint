@@ -11,6 +11,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { Canvas, CanvasItem } from '../components/types';
 import { useSidebar } from './SidebarContext';
+import { useUser } from './UserContext';
 
 interface CanvasContextValue {
   allCanvases: Canvas[];
@@ -53,6 +54,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     frameSet,
     withPassepartout,
   } = useSidebar();
+  const { currentUser } = useUser();
 
   const [allCanvases, setAllCanvases] = useState<Canvas[]>([]);
   const [canvas, setCanvas] = useState<Canvas>(() => {
@@ -69,6 +71,16 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
           };
     }
   });
+
+  useEffect(() => {
+    if (currentUser) {
+      if (allCanvases.find((item) => item.user === currentUser.uid)) {
+        //right now this solution only supports one canvas/user.
+        setCanvas(allCanvases.find((item) => item.user === currentUser.uid)!);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
 
   const setBackground = (background: {
     image: string;

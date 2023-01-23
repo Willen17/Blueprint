@@ -9,6 +9,7 @@ import { Background, Canvas, Frame, Poster } from '../components/types';
 import { useCanvas } from '../context/CanvasContext';
 import { useSave } from '../context/SaveContext';
 import { useSidebar } from '../context/SidebarContext';
+import { useUser } from '../context/UserContext';
 import { db } from '../firebase/firebaseConfig';
 
 const Canvas = dynamic(() => import('../components/canvas/Canvas'), {
@@ -44,7 +45,7 @@ export const getStaticProps = async () => {
       canvases: canvasesData.docs.map((doc) => ({
         ...(doc.data() as Canvas),
         id: doc.id,
-        createdAt: doc.data().createdAt.toDate().toDateString(),
+        createdAt: JSON.parse(JSON.stringify(doc.data().createdAt)),
         updatedAt: doc.data().updatedAt.toDate().toDateString(),
       })),
     },
@@ -60,6 +61,8 @@ const CanvasPage = ({
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
   const { saveCanvasToDataBase } = useSave();
   const { canvas, setAllCanvases, allCanvases } = useCanvas();
+  const { currentUser } = useUser();
+
   useEffect(
     () => setAllBackgrounds(backgrounds),
     [backgrounds, setAllBackgrounds]
@@ -108,12 +111,15 @@ const CanvasPage = ({
       }
       throw 'routeChange aborted.';
     };
-
-    window.addEventListener('beforeunload', handleWindowClose);
-    router.events.on('routeChangeStart', handleBrowseAway);
+    if (currentUser) {
+      window.addEventListener('beforeunload', handleWindowClose);
+      router.events.on('routeChangeStart', handleBrowseAway);
+    }
     return () => {
-      window.removeEventListener('beforeunload', handleWindowClose);
-      router.events.off('routeChangeStart', handleBrowseAway);
+      if (currentUser) {
+        window.removeEventListener('beforeunload', handleWindowClose);
+        router.events.off('routeChangeStart', handleBrowseAway);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unsavedChanges]);
