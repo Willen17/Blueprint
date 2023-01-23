@@ -7,12 +7,12 @@ const UnauthorisedAccess = () => {
   return (
     <Container
       sx={{
-        height: 'calc(100vh - 50px)',
         display: 'flex',
         placeContent: 'center',
         placeItems: 'center',
         columnGap: 2,
         flexWrap: 'wrap',
+        height: '100%',
       }}
     >
       <Typography
