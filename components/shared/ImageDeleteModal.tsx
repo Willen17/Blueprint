@@ -2,9 +2,11 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import { IconX } from '@tabler/icons';
 import Image from 'next/image';
 import { useSidebar } from '../../context/SidebarContext';
+import { theme } from '../theme';
 
-const DeleteUploadModal = () => {
+const ImageDeleteModal = () => {
   const {
+    removeUploadedObj,
     openRemoveImgModal,
     setOpenRemoveImgModal,
     setObjToRemove,
@@ -27,6 +29,7 @@ const DeleteUploadModal = () => {
           width: 300,
           bgcolor: '#fff',
           boxShadow: 24,
+          outline: 'none',
         }}
       >
         <Box
@@ -48,28 +51,39 @@ const DeleteUploadModal = () => {
             }}
           />
           <Typography component="h3" variant="subtitle2">
-            Are you sure to delete this image?
+            Are you sure to delete the image?
           </Typography>
-          <Typography variant="body2" pb={1}>
+          <Typography variant="body2" pb={2}>
             This action cannot be undone.
           </Typography>
           <Box
-            width={50}
-            height={50}
-            sx={{ boxSizing: 'border-box', position: 'relative' }}
+            width={70}
+            height={70}
+            sx={{ boxSizing: 'border-box', position: 'relative', m: 'auto' }}
           >
             <Image
               fill
               alt={objToRemove.title}
               src={objToRemove.image}
-
-              // alt={objToRemove ? objToRemove?.title : 'no error damn you'}
-              // src={objToRemove ? objToRemove?.image : 'no error damn you'}
+              style={{ objectFit: 'contain' }}
             />
           </Box>
-          <Box>
-            <Button>Confirm</Button>
-            <Button>Cancel</Button>
+          <Box
+            pt={2}
+            sx={{ display: 'flex', justifyContent: 'center', columnGap: 1 }}
+          >
+            <Button
+              onClick={removeUploadedObj}
+              sx={{
+                '&:hover': {
+                  bgcolor: '#E23A22',
+                  color: theme.palette.primary.contrastText,
+                },
+              }}
+            >
+              Confirm
+            </Button>
+            <Button onClick={handleClose}>Cancel</Button>
           </Box>
         </Box>
       </Box>
@@ -77,4 +91,4 @@ const DeleteUploadModal = () => {
   ) : null;
 };
 
-export default DeleteUploadModal;
+export default ImageDeleteModal;

@@ -14,7 +14,7 @@ import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
 import { compareUserAndCreatedAt } from '../helper';
 import UploadButton from '../imageUpload/UploadButton';
-import DeleteUploadModal from '../shared/DeleteUploadModal';
+import ImageDeleteModal from '../shared/ImageDeleteModal';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
 import { Dimension } from '../types';
@@ -34,6 +34,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
     setIsEditingFrame,
     setOpenRemoveImgModal,
     setObjToRemove,
+    objToRemove,
   } = useSidebar();
   const { updateItem } = useCanvas();
   const { currentUser } = useUser();
@@ -177,9 +178,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
               my: 2.5,
               height: '100%',
               overflowY: !mobile ? 'scroll' : null,
-              '&::-webkit-scrollbar': {
-                width: '0.4em',
-              },
+              '&::-webkit-scrollbar': { width: '0.4em' },
               '&::-webkit-scrollbar-track': {
                 boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
                 webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
@@ -203,15 +202,19 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                     cursor: 'pointer',
                     position: 'relative',
                     height: p.orientation === 'Portrait' ? 65 : 55,
+                    width: p.orientation === 'Portrait' ? 55 : 65,
                     boxShadow:
                       poster.id === p.id
                         ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
-                        : null,
+                        : 'none',
                   }}
                 >
                   <Image
-                    width={p.orientation === 'Portrait' ? 55 : 65}
-                    height={p.orientation === 'Portrait' ? 65 : 55}
+                    fill
+                    style={{
+                      objectFit: 'contain',
+                      objectPosition: 'top right',
+                    }}
                     alt={p.title}
                     src={p.image}
                     onClick={() => {
@@ -271,23 +274,23 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                   />
                   {(isEditingFrame.item &&
                     isEditingFrame.item.poster.id === p.id) ||
-                    (poster.id === p.id && (
-                      <IconCheck
-                        stroke={1}
-                        color={theme.palette.primary.contrastText}
-                        size={15}
-                        style={{
-                          background: theme.palette.primary.main,
-                          opacity: 0.7,
-                          borderRadius: 50,
-                          padding: 2,
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                        }}
-                      />
-                    ))}
+                  poster.id === p.id ? (
+                    <IconCheck
+                      stroke={1}
+                      color={theme.palette.primary.contrastText}
+                      size={15}
+                      style={{
+                        background: theme.palette.primary.main,
+                        opacity: 0.7,
+                        borderRadius: 50,
+                        padding: 2,
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                      }}
+                    />
+                  ) : null}
                   {p.user === currentUser?.uid && (
                     <Box
                       sx={{
@@ -299,6 +302,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                         size={14}
                         style={{
                           position: 'absolute',
+
                           right: 0,
                           top: 0,
                           background: theme.palette.secondary.light,
@@ -326,7 +330,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
           <UploadButton for="Poster" />
         </>
       )}
-      <DeleteUploadModal />
+      <ImageDeleteModal />
     </>
   );
 };
