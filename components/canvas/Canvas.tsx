@@ -117,7 +117,7 @@ const Canvas = () => {
           sx={{
             width: XsScreen ? 195 : 295,
             position: 'absolute',
-            bottom: 10,
+            bottom: 0,
             left: XsScreen ? 'calc(50% - 127.5px)' : 'calc(50% - 187.5px)',
             zIndex: 10,
             overflow: 'hidden',
@@ -138,6 +138,7 @@ const Canvas = () => {
             defaultValue={30}
             color="primary"
             min={10}
+            max={300}
             step={5}
           />
           <Tooltip title="Drag slider to resize frames">
