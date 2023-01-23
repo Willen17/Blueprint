@@ -15,11 +15,12 @@ const ProtectedRoute = (props: Props) => {
   const { isLoading } = useNotification();
   const protectedRoutes = ['/admin/createBackground', '/admin/createPoster'];
   const pathIsProtected = protectedRoutes.indexOf(router.pathname) !== -1;
+
   if (!isAuthenticated && pathIsProtected)
     return (
       <>
         <HomeHeader noLoginButton />
-        {isLoading.isLoading ? <Loader /> : <UnauthorisedAccess />}
+        {!isLoading.isLoading ? <UnauthorisedAccess /> : <Loader />}
       </>
     );
   return props.children;
