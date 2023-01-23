@@ -29,7 +29,7 @@ const HomeHero = () => {
       >
         <Box mt={5} sx={{ position: !tablet ? 'absolute' : 'static' }}>
           <SectionTitle
-            title="Unlock the designer within with Blueprint - The ultimate frame visualization app"
+            title="Unlock the designer within with blueprint"
             summary="Transform your walls in seconds with our frame visualization app. Preview before you buy for a perfect fit. Upgrade your decor now!"
             isH1
             withButton

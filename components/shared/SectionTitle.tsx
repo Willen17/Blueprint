@@ -34,7 +34,7 @@ const SectionTitle = (props: Props) => {
         fontSize={props.isH1 ? (!mobile ? 30 : 28) : !mobile ? 18 : 16}
         fontFamily="Comfortaa"
         fontWeight={600}
-        width={props.isH1 ? 250 : 'fit-content'}
+        width={props.isH1 ? 290 : 'fit-content'}
         lineHeight={1.15}
         sx={{ letterSpacing: props.isH1 ? -1.5 : -0.5 }}
       >
@@ -43,6 +43,8 @@ const SectionTitle = (props: Props) => {
       {props.summary ? (
         <Typography
           fontSize={props.isH1 ? 14 : 12}
+          width={props.isH1 ? 550 : 'unset'}
+          maxWidth="100%"
           fontFamily="Comfortaa"
           color="#888686"
           fontWeight={300}
