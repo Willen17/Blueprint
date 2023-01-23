@@ -63,7 +63,7 @@ export interface Canvas {
   user: string | undefined;
   createdAt?: FieldValue; // TODO: change. Optional for now as this is not what im working on in this issue
   updatedAt?: FieldValue; // TODO: change. Optional for now as this is not what im working on in this issue
-  background?: { image: string; cmInPixels?: number }; // TODO: put the correct type. Wille is working on this so i dont bother the type here
+  background?: Background; // TODO: put the correct type. Wille is working on this so i dont bother the type here
   items: CanvasItem[];
 }
 

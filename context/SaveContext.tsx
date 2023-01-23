@@ -1,10 +1,11 @@
 import {
   addDoc,
   collection,
+  deleteField,
   doc,
   getDocs,
   serverTimestamp,
-  setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import {
   createContext,
@@ -59,15 +60,12 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
         const bg = JSON.parse(localStorage.getItem('canvas')!).background;
         const items = JSON.parse(localStorage.getItem('canvas')!).items;
         const currentCanvasRef = doc(db, 'canvas', canvas.id!);
-        await setDoc(
-          currentCanvasRef,
-          {
-            background: bg,
-            items: items,
-            updatedAt: serverTimestamp(),
-          },
-          { merge: true }
-        )
+        await updateDoc(currentCanvasRef, {
+          background: bg,
+          items: items,
+          updatedAt: serverTimestamp(),
+          user: bg.user ? bg.user : deleteField(),
+        })
           .then(async () => {
             setNotification({
               message: `${title} has been updated`,
