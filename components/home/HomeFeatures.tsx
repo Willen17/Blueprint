@@ -27,8 +27,8 @@ const HomeFeatures = () => {
         }}
       >
         <SectionTitle
-          title="Lorem Ipsum is simply background"
-          summary="We know everyone has their own decor home style so we provide a wide variety of backgrounds for our users to choose from."
+          title="Make your decor decisions easy with our wide range of backgrounds"
+          summary="Design your space with ease using Blueprint's pre-set background feature. Choose from a wide range of backgrounds to preview your frames and make your decor decisions with precision."
         />
         <Image
           alt="image for background features"
@@ -54,8 +54,8 @@ const HomeFeatures = () => {
         }}
       >
         <SectionTitle
-          title="Wonder how your wall looks like with different frames? "
-          summary="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
+          title="Curious to see how different frames would look on your walls?"
+          summary="Bring your decor vision to life with our frame customization feature. We provide a wide range of frames in various colors and styles to preview on your walls."
         />
         <Image
           alt="image for frame features"
@@ -80,8 +80,8 @@ const HomeFeatures = () => {
         }}
       >
         <SectionTitle
-          title="Add your favourite posters xyz"
-          summary="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
+          title="Add a final touch to your wall with your favorite poster"
+          summary="Select from our curated collection of popular posters, and visualize them on your wall in your chosen frame to achieve your ideal design."
         />
         <Image
           alt="image for poster features"
@@ -119,8 +119,8 @@ const HomeFeatures = () => {
           }}
         />
         <SectionTitle
-          title="Cannot find a favourite?"
-          summary="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
+          title="Unable to find your perfect design?"
+          summary="Customize your design to perfection by uploading your own photos of your walls and posters with Blueprint's upload feature."
         />
         <Image
           alt="image for upload features"

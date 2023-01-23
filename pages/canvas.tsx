@@ -132,12 +132,12 @@ const CanvasPage = ({
       <Head>
         <title>
           {/* TODO: if the canvas has default title as "untitled", the below if statment can be deleted */}
-          {canvas?.title ? canvas.title : 'Untitled'} | Blue print | Visualize
+          {canvas?.title ? canvas.title : 'Untitled'} | Blueprint | Visualize
           your frames
         </title>
         <meta
           name="description"
-          content="Visualize your frames in the blue print canvas"
+          content="Visualize your frames in the blueprint canvas"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

@@ -8,7 +8,7 @@ const Custom404 = () => {
   return (
     <>
       <Head>
-        <title>404 Page Not Found | Blue print | Visualize your frames</title>
+        <title>404 Page Not Found | Blueprint | Visualize your frames</title>
         <meta name="description" content="404 Page Not Found" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

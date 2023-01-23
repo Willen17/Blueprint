@@ -9,8 +9,11 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Blue print | Visualize your frames</title>
-        <meta name="description" content="Visualize your frames" />
+        <title>Blueprint | Visualize your frames</title>
+        <meta
+          name="description"
+          content="Unlock the designer within with blueprint. Transform your walls in seconds with our frame visualization app"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

@@ -106,7 +106,7 @@ const BackgroundForm = ({
     <>
       <Head>
         <title>
-          Upload A New Background | Blue print | Visualize your frames
+          Upload A New Background | Blueprint | Visualize your frames
         </title>
         <meta
           name="description"
