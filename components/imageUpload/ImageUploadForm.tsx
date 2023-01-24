@@ -37,6 +37,7 @@ const ImageUploadForm = () => {
             >
               <Image
                 fill
+                sizes="100%"
                 alt={file.name}
                 src={preview}
                 onError={() => setPreview('/otherImages/broken-img.jpg')}

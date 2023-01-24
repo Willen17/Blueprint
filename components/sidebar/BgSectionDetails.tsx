@@ -153,7 +153,6 @@ const BgSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                     size={14}
                     style={{
                       position: 'absolute',
-
                       right: 0,
                       top: 0,
                       background: theme.palette.secondary.light,
@@ -222,7 +221,6 @@ const BgSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                     size={14}
                     style={{
                       position: 'absolute',
-
                       right: 0,
                       top: 0,
                       background: theme.palette.secondary.light,
