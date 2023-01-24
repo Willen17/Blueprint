@@ -9,6 +9,7 @@ import { isEqual } from 'lodash';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { useUpload } from '../../context/UploadContext';
 import { useUser } from '../../context/UserContext';
 import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
@@ -32,12 +33,10 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
     setPosterOrientation,
     frameSet,
     setIsEditingFrame,
-    setOpenRemoveImgModal,
-    setObjToRemove,
-    objToRemove,
   } = useSidebar();
   const { updateItem } = useCanvas();
   const { currentUser } = useUser();
+  const { setOpenRemoveImgModal, setObjToRemove } = useUpload();
 
   /** Handles change of orientation state */
   const handleOrientationChange = (value: string) => {
@@ -215,6 +214,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                     style={{
                       objectFit: 'contain',
                       objectPosition: 'top right',
+                      position: 'absolute',
                     }}
                     alt={p.title}
                     src={p.image}
@@ -292,7 +292,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                       }}
                     />
                   ) : null}
-                  {p.user === currentUser?.uid && (
+                  {currentUser?.uid && p.user === currentUser.uid && (
                     <Box
                       sx={{
                         color: theme.palette.primary.main,

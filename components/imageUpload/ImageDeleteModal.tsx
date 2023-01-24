@@ -1,7 +1,7 @@
 import { Box, Button, Modal, Typography } from '@mui/material';
 import { IconX } from '@tabler/icons';
 import Image from 'next/image';
-import { useSidebar } from '../../context/SidebarContext';
+import { useUpload } from '../../context/UploadContext';
 import { theme } from '../theme';
 
 const ImageDeleteModal = () => {
@@ -11,7 +11,7 @@ const ImageDeleteModal = () => {
     setOpenRemoveImgModal,
     setObjToRemove,
     objToRemove,
-  } = useSidebar();
+  } = useUpload();
 
   const handleClose = () => {
     setObjToRemove(undefined);
@@ -75,6 +75,7 @@ const ImageDeleteModal = () => {
           >
             <Image
               fill
+              sizes="100%"
               alt={objToRemove.title}
               src={objToRemove.image}
               style={{ objectFit: 'contain' }}
