@@ -81,8 +81,12 @@ const Layout = (props: Props) => {
         p={0}
         sx={{
           width: '100%',
-          height: isPortrait ? 'calc(100vh - 100px)' : 'calc(100vh - 50px)',
-          maxHeight: 'calc(100vh - 50px)',
+          height:
+            isPortrait && mobile
+              ? 'calc(100vh - 200px)'
+              : router.pathname === '/canvas'
+              ? 'calc(100vh - 50px)'
+              : 'calc(100vh - 100px)',
         }}
       >
         {openSaveModal && <SaveModal />}

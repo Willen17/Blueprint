@@ -11,12 +11,12 @@ const RotateDevice = () => {
   return (
     <Container
       sx={{
-        height: 'calc(100vh-100px)',
         display: 'flex',
         placeContent: 'center',
         placeItems: 'center',
         columnGap: 2,
         flexDirection: 'column',
+        height: '100%',
       }}
     >
       <Box className={styles.rotateDevice} sx={{ position: 'relative' }}>

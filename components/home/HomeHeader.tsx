@@ -22,7 +22,7 @@ const HomeHeader = (props: Props) => {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        placeItems: ' center',
+        placeItems: 'center',
       }}
     >
       <Link href="/">

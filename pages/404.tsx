@@ -5,6 +5,8 @@ import { theme } from '../components/theme';
 
 const Custom404 = () => {
   const XsScreen = useMediaQuery(theme.breakpoints.down(485));
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <>
       <Head>
@@ -16,12 +18,12 @@ const Custom404 = () => {
 
       <Container
         sx={{
-          height: 'calc(100vh - 100px)',
           display: 'flex',
           placeContent: 'center',
           placeItems: 'center',
           columnGap: 2,
           flexWrap: 'wrap',
+          height: '100%',
         }}
       >
         <Typography
