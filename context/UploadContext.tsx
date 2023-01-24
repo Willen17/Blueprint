@@ -294,7 +294,6 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
             id: doc.id,
           }));
           if (canvases && canvases.some((item) => item.id === canvas.id)) {
-            console.log('in first if');
             const currentCanvasRef = doc(db, 'canvas', canvas.id!);
             await updateDoc(currentCanvasRef, {
               background: {
