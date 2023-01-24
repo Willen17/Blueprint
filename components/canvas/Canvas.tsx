@@ -111,22 +111,68 @@ const Canvas = () => {
   }, [canvas, value]);
 
   return (
-    <>
+    <Container
+      sx={{ height: '100%', position: 'relative' }}
+      ref={stageCanvasRef}
+    >
+      <Stage
+        height={dimensions.height}
+        width={dimensions.width}
+        onMouseDown={checkDeselect}
+        onTouchStart={checkDeselect}
+      >
+        <Layer>
+          {canvasBackground && (
+            <Group scaleX={scale} scaleY={scale} x={x} y={y}>
+              <Image
+                height={canvasBackground.height}
+                width={canvasBackground.width}
+                alt="background"
+                image={canvasBackground}
+              />
+              {canvas.items.map(
+                (item) =>
+                  item.frame.id.length > 0 &&
+                  item.poster.id.length > 0 && (
+                    <CanvasItem
+                      key={item.id}
+                      item={item}
+                      pixelsInCm={canvas.background!.cmInPixels || 3.5}
+                      bg={{
+                        x,
+                        y,
+                        width: canvasBackground.width * scale,
+                        height: canvasBackground.height * scale,
+                        scale,
+                      }}
+                      selectShape={selectShape}
+                      isSelected={item.id === selectedId}
+                    />
+                  )
+              )}
+            </Group>
+          )}
+        </Layer>
+      </Stage>
       {canvas.background && canvas.background.user && (
         <Box
           sx={{
             width: XsScreen ? 195 : 295,
             position: 'absolute',
-            bottom: 0,
-            left: XsScreen ? 'calc(50% - 127.5px)' : 'calc(50% - 187.5px)',
+            bottom: 10,
+            left: '50%',
+            transform: 'translateX(-50%)',
             zIndex: 10,
-            overflow: 'hidden',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: 50,
-            px: XsScreen ? 2.5 : 5,
-            columnGap: 2,
+            height: 40,
+            pl: XsScreen ? 2 : 3,
+            pr: XsScreen ? 2 : 1,
+            columnGap: 1.5,
+            bgcolor: theme.palette.secondary.light,
+            opacity: 0.65,
+            borderRadius: 50,
           }}
         >
           <Slider
@@ -143,53 +189,12 @@ const Canvas = () => {
           />
           <Tooltip title="Drag slider to resize frames">
             <IconButton color="primary">
-              <IconResize size={30} strokeWidth={1.2} />
+              <IconResize size={24} strokeWidth={1.2} />
             </IconButton>
           </Tooltip>
         </Box>
       )}
-      <Container sx={{ height: '100%' }} ref={stageCanvasRef}>
-        <Stage
-          height={dimensions.height}
-          width={dimensions.width}
-          onMouseDown={checkDeselect}
-          onTouchStart={checkDeselect}
-        >
-          <Layer>
-            {canvasBackground && (
-              <Group scaleX={scale} scaleY={scale} x={x} y={y}>
-                <Image
-                  height={canvasBackground.height}
-                  width={canvasBackground.width}
-                  alt="background"
-                  image={canvasBackground}
-                />
-                {canvas.items.map(
-                  (item) =>
-                    item.frame.id.length > 0 &&
-                    item.poster.id.length > 0 && (
-                      <CanvasItem
-                        key={item.id}
-                        item={item}
-                        pixelsInCm={canvas.background!.cmInPixels || 3.5}
-                        bg={{
-                          x,
-                          y,
-                          width: canvasBackground.width * scale,
-                          height: canvasBackground.height * scale,
-                          scale,
-                        }}
-                        selectShape={selectShape}
-                        isSelected={item.id === selectedId}
-                      />
-                    )
-                )}
-              </Group>
-            )}
-          </Layer>
-        </Stage>
-      </Container>
-    </>
+    </Container>
   );
 };
 

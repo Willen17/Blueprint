@@ -81,7 +81,9 @@ const Header = () => {
             transition: '.5s',
           }}
         />
-        <Typography variant="body2">{title ? title : 'Untitled'}</Typography>
+        <Typography variant="body1" component="h1">
+          {title ? title : 'Untitled'}
+        </Typography>
         {currentUser ? (
           <Avatar
             onClick={() => setOpenUser(true)}

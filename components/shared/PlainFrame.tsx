@@ -42,10 +42,10 @@ const PlainFrame = (props: Props) => {
       {props.bgImg ? (
         <Image
           fill
+          sizes="100%"
           alt={props.bgImg.alt}
           src={props.bgImg.src}
           style={{ zIndex: '-2' }}
-          sizes="100%"
         />
       ) : null}
       {/* Inner */}
