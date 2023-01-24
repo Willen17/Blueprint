@@ -1,10 +1,11 @@
 import { collection, getDocs } from '@firebase/firestore';
 import { isEqual } from 'lodash';
-import { InferGetStaticPropsType } from 'next';
+import { InferGetServerSidePropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import router from 'next/router';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import Loader from '../components/shared/Loader';
 import { Background, Canvas, Frame, Poster } from '../components/types';
 import { useCanvas } from '../context/CanvasContext';
 import { useSave } from '../context/SaveContext';
@@ -14,9 +15,10 @@ import { db } from '../firebase/firebaseConfig';
 
 const Canvas = dynamic(() => import('../components/canvas/Canvas'), {
   ssr: false,
+  loading: () => <Loader />,
 }); // do not adjust this - M1 mac needs this to run canvas
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const framesCollectionRef = collection(db, 'frames');
   const frameData = await getDocs(framesCollectionRef);
   const backgroundsCollectionRef = collection(db, 'backgrounds');
@@ -57,7 +59,7 @@ const CanvasPage = ({
   backgrounds,
   posters,
   canvases,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
   const { saveCanvasToDataBase } = useSave();
   const { canvas, setAllCanvases, allCanvases, setBackground } = useCanvas();
@@ -131,7 +133,6 @@ const CanvasPage = ({
     <>
       <Head>
         <title>
-          {/* TODO: if the canvas has default title as "untitled", the below if statment can be deleted */}
           {canvas?.title ? canvas.title : 'Untitled'} | Blueprint | Visualize
           your frames
         </title>
@@ -143,7 +144,9 @@ const CanvasPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <>
-        <Canvas />
+        <Suspense fallback={<Loader />}>
+          <Canvas />
+        </Suspense>
       </>
     </>
   );
