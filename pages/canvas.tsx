@@ -63,6 +63,9 @@ const CanvasPage = ({
   const { canvas, setAllCanvases, allCanvases } = useCanvas();
   const { currentUser } = useUser();
 
+  const canvasTitle = canvas ? canvas.title : 'Untitled';
+  const pageTitle = canvasTitle + ' | Blueprint | Visualize your frames';
+
   useEffect(
     () => setAllBackgrounds(backgrounds),
     [backgrounds, setAllBackgrounds]
@@ -127,14 +130,11 @@ const CanvasPage = ({
   const handleEndSession = async () => {
     saveCanvasToDataBase(canvas.title!);
   };
+
   return (
     <>
       <Head>
-        <title>
-          {/* TODO: if the canvas has default title as "untitled", the below if statment can be deleted */}
-          {canvas?.title ? canvas.title : 'Untitled'} | Blueprint | Visualize
-          your frames
-        </title>
+        <title>{pageTitle}</title>
         <meta
           name="description"
           content="Visualize your frames in the blueprint canvas"
