@@ -57,20 +57,25 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
 
   const [allCanvases, setAllCanvases] = useState<Canvas[]>([]);
-  const [canvas, setCanvas] = useState<Canvas>(() => {
-    if (typeof window !== 'undefined') {
-      const localData = localStorage.getItem('canvas');
-      return localData
-        ? JSON.parse(localData)
-        : {
-            title: '',
-            background: '',
-            id: '',
-            user: undefined,
-            items: [],
-          };
-    }
-  });
+  const initialState = {
+    title: '',
+    background: undefined,
+    id: '',
+    user: undefined,
+    items: [],
+  };
+  const [canvas, setCanvas] = useState<Canvas>(initialState);
+
+  useEffect(() => {
+    const localData = localStorage.getItem('canvas');
+    if (localData) setCanvas(JSON.parse(localData));
+  }, []);
+
+  useEffect(() => {
+    if (canvas !== initialState)
+      localStorage.setItem('canvas', JSON.stringify(canvas));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvas]);
 
   useEffect(() => {
     if (currentUser) {
@@ -115,10 +120,6 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     if (newItems.length > 0) setAnchorSidebar(false);
     endEditMode();
   };
-
-  useEffect(() => {
-    localStorage.setItem('canvas', JSON.stringify(canvas));
-  }, [canvas]);
 
   useEffect(() => {
     if (poster.id && frameSet.id) {
