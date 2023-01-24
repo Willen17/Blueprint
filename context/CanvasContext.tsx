@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Canvas, CanvasItem } from '../components/types';
+import { Background, Canvas, CanvasItem } from '../components/types';
 import { useSidebar } from './SidebarContext';
 import { useUser } from './UserContext';
 
@@ -17,7 +17,7 @@ interface CanvasContextValue {
   allCanvases: Canvas[];
   setAllCanvases: Dispatch<SetStateAction<Canvas[]>>;
   canvas: Canvas;
-  setBackground: (background: { image: string; cmInPixels?: number }) => void;
+  setBackground: (background: Background) => void;
   getBackground: () =>
     | {
         image: string;
@@ -82,11 +82,7 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
-  const setBackground = (background: {
-    image: string;
-    cmInPixels?: number;
-  }) => {
-    const newCanvas = { ...canvas, background: background };
+  const setBackground = (background: Background) => {
     setCanvas({ ...canvas, background });
   };
 
