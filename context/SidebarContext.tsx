@@ -9,7 +9,6 @@ import {
   useContext,
   useState,
 } from 'react';
-
 import {
   Background,
   CanvasFrameSet,
@@ -93,11 +92,6 @@ interface SidebarContextValue {
   setFrameSet: Dispatch<SetStateAction<CanvasFrameSet>>;
   getAllBackgrounds: () => void;
   getAllPosters: () => void;
-  removeUploadedObj: () => void;
-  openRemoveImgModal: boolean;
-  setOpenRemoveImgModal: Dispatch<SetStateAction<boolean>>;
-  objToRemove: (Poster | Background) | undefined;
-  setObjToRemove: Dispatch<SetStateAction<Poster | Background | undefined>>;
 }
 
 export const SidebarContext = createContext<SidebarContextValue>({
@@ -149,11 +143,6 @@ export const SidebarContext = createContext<SidebarContextValue>({
   setFrameSet: () => {},
   getAllBackgrounds: () => {},
   getAllPosters: () => {},
-  removeUploadedObj: () => {},
-  openRemoveImgModal: false,
-  setOpenRemoveImgModal: () => false,
-  objToRemove: undefined,
-  setObjToRemove: () => undefined,
 });
 
 const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -203,11 +192,8 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     title: '',
     size: '',
   });
-  const [openRemoveImgModal, setOpenRemoveImgModal] = useState<boolean>(false);
-  const [objToRemove, setObjToRemove] = useState<
-    (Poster | Background) | undefined
-  >(undefined);
 
+  /* Handle click of a frame in the canvas */
   const handleSelectItem = (item: CanvasItem) => {
     setAnchorSidebar(true);
     setIsEditingFrame({ isEditing: true, item });
@@ -215,6 +201,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setExpandedAccordion(sidebarSections[2]);
   };
 
+  /* Reset stages when the user is longer editing a frame */
   const endEditMode = () => {
     if (isEditingFrame) setIsEditingFrame({ isEditing: false });
     setFrameSet({ id: '', title: '', size: '' });
@@ -227,6 +214,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setPosterOrientation('');
   };
 
+  /* Get all the docs from the backgrounds collection */
   const getAllBackgrounds = useCallback(async () => {
     const backgroundsCollectionRef = collection(db, 'backgrounds');
     const backgroundData = await getDocs(backgroundsCollectionRef);
@@ -239,6 +227,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     );
   }, [setAllBackgrounds]);
 
+  /* Get all the docs from the posters collection */
   const getAllPosters = useCallback(async () => {
     const postersCollectionRef = collection(db, 'posters');
     const posterData = await getDocs(postersCollectionRef);
@@ -250,10 +239,6 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
       }))
     );
   }, [setAllPosters]);
-
-  const removeUploadedObj = () => {
-    console.log('called remove', objToRemove);
-  };
 
   return (
     <SidebarContext.Provider
@@ -288,11 +273,6 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setFrameSet,
         getAllBackgrounds,
         getAllPosters,
-        removeUploadedObj,
-        openRemoveImgModal,
-        setOpenRemoveImgModal,
-        objToRemove,
-        setObjToRemove,
       }}
     >
       {children}
