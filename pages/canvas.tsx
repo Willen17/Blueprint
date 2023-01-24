@@ -145,7 +145,7 @@ const CanvasPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <>
-        <Suspense>
+        <Suspense fallback={Loader('a')}>
           <Canvas />
         </Suspense>
       </>
