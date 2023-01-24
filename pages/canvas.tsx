@@ -132,7 +132,10 @@ const CanvasPage = ({
   return (
     <>
       <Head>
-        <title>Editing canvas | Blueprint | Visualize your frames</title>
+        <title>
+          {canvas?.title ? canvas.title : 'Untitled'} | Blueprint | Visualize
+          your frames
+        </title>
         <meta
           name="description"
           content="Visualize your frames in the blueprint canvas"

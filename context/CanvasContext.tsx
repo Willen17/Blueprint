@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash';
 import {
   createContext,
   Dispatch,
@@ -58,40 +57,21 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
 
   const [allCanvases, setAllCanvases] = useState<Canvas[]>([]);
-  const initialState = () => {
-    if (
-      currentUser &&
-      allCanvases.find((item) => item.user === currentUser.uid)
-    ) {
-      //right now this solution only supports one canvas/user.
-      return allCanvases.find(
-        (item) => item.user === currentUser.uid
-      ) as Canvas;
-    } else {
-      return {
-        title: '',
-        background: undefined,
-        id: '',
-        user: undefined,
-        items: [],
-      };
+  const [canvas, setCanvas] = useState<Canvas>(() => {
+    if (typeof window !== 'undefined') {
+      const localData = localStorage.getItem('canvas');
+      return localData
+        ? JSON.parse(localData)
+        : {
+            title: '',
+            background: '',
+            id: '',
+            user: undefined,
+            items: [],
+          };
     }
-  };
-  const [canvas, setCanvas] = useState<Canvas>(initialState);
+  });
 
-  useEffect(() => {
-    if (
-      currentUser &&
-      allCanvases.find((item) => item.user === currentUser.uid)
-    ) {
-      //right now this solution only supports one canvas/user.
-      setCanvas(allCanvases.find((item) => item.user === currentUser.uid)!);
-    } else if (localStorage.getItem('canvas')) {
-      setCanvas(JSON.parse(localStorage.getItem('canvas')!));
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   useEffect(() => {
     if (currentUser) {
       if (allCanvases.find((item) => item.user === currentUser.uid)) {
@@ -101,20 +81,6 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
-
-  useEffect(() => {
-    if (
-      !isEqual(canvas, {
-        title: '',
-        background: undefined,
-        id: '',
-        user: undefined,
-        items: [],
-      })
-    )
-      localStorage.setItem('canvas', JSON.stringify(canvas));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvas]);
 
   const setBackground = (background: Background) => {
     setCanvas({ ...canvas, background });
@@ -149,6 +115,10 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     if (newItems.length > 0) setAnchorSidebar(false);
     endEditMode();
   };
+
+  useEffect(() => {
+    localStorage.setItem('canvas', JSON.stringify(canvas));
+  }, [canvas]);
 
   useEffect(() => {
     if (poster.id && frameSet.id) {
