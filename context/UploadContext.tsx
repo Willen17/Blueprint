@@ -295,7 +295,30 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
           }));
           if (canvases && canvases.some((item) => item.id === canvas.id)) {
             const currentCanvasRef = doc(db, 'canvas', canvas.id!);
-            await updateDoc(currentCanvasRef, {
+            if (
+              canvases.find((item) => item.id === canvas.id)!.background!
+                .title === fileTitle
+            ) {
+              await updateDoc(currentCanvasRef, {
+                background: {
+                  image:
+                    'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
+                  cmInPixels: 3.5,
+                  title: 'nobg',
+                  user: '',
+                  id: '0',
+                },
+              }).catch((err) => {
+                setNotification({
+                  message: `${err.code} - ${err.message}`,
+                  type: 'Warning',
+                });
+              });
+            }
+          }
+          if (canvas.background!.title === fileTitle) {
+            setCanvas({
+              ...canvas,
               background: {
                 image:
                   'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
@@ -303,26 +326,10 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
                 title: 'nobg',
                 user: '',
                 id: '0',
+                categories: canvas.background!.categories,
               },
-            }).catch((err) => {
-              setNotification({
-                message: `${err.code} - ${err.message}`,
-                type: 'Warning',
-              });
             });
           }
-          setCanvas({
-            ...canvas,
-            background: {
-              image:
-                'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
-              cmInPixels: 3.5,
-              title: 'nobg',
-              user: '',
-              id: '0',
-              categories: canvas.background!.categories,
-            },
-          });
         }
         setOpenRemoveImgModal(false);
         setNotification({
