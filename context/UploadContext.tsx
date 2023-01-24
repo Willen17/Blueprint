@@ -159,7 +159,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
                 { width: 70, height: 100 },
               ],
               orientation:
-                imgDimension && imgDimension.height > imgDimension.width
+                imgDimension && imgDimension.height >= imgDimension.width
                   ? 'Portrait'
                   : 'Landscape',
               image: url,
