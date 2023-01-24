@@ -30,6 +30,8 @@ const ImageDeleteModal = () => {
           bgcolor: '#fff',
           boxShadow: 24,
           outline: 'none',
+          maxHeight: '70%',
+          overflowY: 'scroll',
         }}
       >
         <Box

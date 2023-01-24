@@ -64,6 +64,8 @@ const ImageUploadModal = () => {
           width: 300,
           bgcolor: '#fff',
           boxShadow: 24,
+          maxHeight: '70%',
+          overflowY: 'scroll',
         }}
       >
         <Box
