@@ -1,8 +1,9 @@
 import { Box, Button, Typography } from '@mui/material';
-import { IconCheck } from '@tabler/icons';
+import { IconCheck, IconX } from '@tabler/icons';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { useUpload } from '../../context/UploadContext';
 import { useUser } from '../../context/UserContext';
 import { backgroundCategories as bgCategories } from '../../lib/valSchemas';
 import { compareUserAndCreatedAt } from '../helper';
@@ -12,10 +13,10 @@ import { theme } from '../theme';
 
 const BgSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
   const { getBackground, setBackground } = useCanvas();
+  const { setOpenRemoveImgModal, setObjToRemove } = useUpload();
+  const { currentUser } = useUser();
   const { setBackgroundCategories, backgroundCategories, allBackgrounds } =
     useSidebar();
-
-  const { currentUser } = useUser();
 
   function setCategory(category: string) {
     let newFilter = { ...backgroundCategories };
@@ -141,6 +142,31 @@ const BgSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                   }}
                 />
               ) : null}
+              {currentUser?.uid && bg.user === currentUser.uid && (
+                <Box
+                  sx={{
+                    color: theme.palette.primary.main,
+                    '&:hover': { color: '#E23A22' },
+                  }}
+                >
+                  <IconX
+                    size={14}
+                    style={{
+                      position: 'absolute',
+
+                      right: 0,
+                      top: 0,
+                      background: theme.palette.secondary.light,
+                      opacity: 0.5,
+                      zIndex: 999,
+                    }}
+                    onClick={() => {
+                      setOpenRemoveImgModal(true);
+                      setObjToRemove(bg);
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           ))
         ) : filteredItems.length < 1 ? (
@@ -185,6 +211,31 @@ const BgSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                   }}
                 />
               ) : null}
+              {currentUser?.uid && bg.user === currentUser.uid && (
+                <Box
+                  sx={{
+                    color: theme.palette.primary.main,
+                    '&:hover': { color: '#E23A22' },
+                  }}
+                >
+                  <IconX
+                    size={14}
+                    style={{
+                      position: 'absolute',
+
+                      right: 0,
+                      top: 0,
+                      background: theme.palette.secondary.light,
+                      opacity: 0.5,
+                      zIndex: 999,
+                    }}
+                    onClick={() => {
+                      setOpenRemoveImgModal(true);
+                      setObjToRemove(bg);
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           ))
         )}

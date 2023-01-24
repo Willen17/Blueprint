@@ -65,6 +65,9 @@ const CanvasPage = ({
   const { canvas, setAllCanvases, allCanvases, setBackground } = useCanvas();
   const { currentUser } = useUser();
 
+  const canvasTitle = canvas ? canvas.title : 'Untitled';
+  const pageTitle = canvasTitle + ' | Blueprint | Visualize your frames';
+
   useEffect(
     () => setAllBackgrounds(backgrounds),
     [backgrounds, setAllBackgrounds]
@@ -132,10 +135,7 @@ const CanvasPage = ({
   return (
     <>
       <Head>
-        <title>
-          {canvas?.title ? canvas.title : 'Untitled'} | Blueprint | Visualize
-          your frames
-        </title>
+        <title>{pageTitle}</title>
         <meta
           name="description"
           content="Visualize your frames in the blueprint canvas"

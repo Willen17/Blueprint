@@ -9,7 +9,6 @@ import {
   useContext,
   useState,
 } from 'react';
-
 import {
   Background,
   CanvasFrameSet,
@@ -180,7 +179,6 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isEditingFrame, setIsEditingFrame] = useState<EditingFrame>({
     isEditing: false,
   });
-
   const [withPassepartout, setWithPassepartout] = useState<boolean>(true);
   const [poster, setPoster] = useState<CanvasPoster>({
     id: '',
@@ -195,6 +193,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     size: '',
   });
 
+  /* Handle click of a frame in the canvas */
   const handleSelectItem = (item: CanvasItem) => {
     setAnchorSidebar(true);
     setIsEditingFrame({ isEditing: true, item });
@@ -202,6 +201,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setExpandedAccordion(sidebarSections[2]);
   };
 
+  /* Reset stages when the user is longer editing a frame */
   const endEditMode = () => {
     if (isEditingFrame) setIsEditingFrame({ isEditing: false });
     setFrameSet({ id: '', title: '', size: '' });
@@ -214,6 +214,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setPosterOrientation('');
   };
 
+  /* Get all the docs from the backgrounds collection */
   const getAllBackgrounds = useCallback(async () => {
     const backgroundsCollectionRef = collection(db, 'backgrounds');
     const backgroundData = await getDocs(backgroundsCollectionRef);
@@ -226,6 +227,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     );
   }, [setAllBackgrounds]);
 
+  /* Get all the docs from the posters collection */
   const getAllPosters = useCallback(async () => {
     const postersCollectionRef = collection(db, 'posters');
     const posterData = await getDocs(postersCollectionRef);

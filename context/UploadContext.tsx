@@ -1,5 +1,17 @@
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+} from 'firebase/firestore';
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage';
 import {
   ChangeEvent,
   createContext,
@@ -12,6 +24,8 @@ import {
   useState,
 } from 'react';
 import { getImageSize } from 'react-image-size';
+import { v4 as uuidv4 } from 'uuid';
+import { Background, Poster } from '../components/types';
 import { db, storage } from '../firebase/firebaseConfig';
 import { useNotification } from './NotificationContext';
 import { useSidebar } from './SidebarContext';
@@ -33,6 +47,11 @@ interface UploadContextValue {
   setUploadOption: Dispatch<
     SetStateAction<'Poster' | 'Background' | undefined>
   >;
+  removeUploadedObj: () => void;
+  openRemoveImgModal: boolean;
+  setOpenRemoveImgModal: Dispatch<SetStateAction<boolean>>;
+  objToRemove: (Poster | Background) | undefined;
+  setObjToRemove: Dispatch<SetStateAction<Poster | Background | undefined>>;
 }
 
 export const UploadContext = createContext<UploadContextValue>({
@@ -49,11 +68,16 @@ export const UploadContext = createContext<UploadContextValue>({
   resetAllUploadStates: () => {},
   uploadOption: undefined,
   setUploadOption: () => undefined,
+  removeUploadedObj: () => {},
+  openRemoveImgModal: false,
+  setOpenRemoveImgModal: () => false,
+  objToRemove: undefined,
+  setObjToRemove: () => undefined,
 });
 
 const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
-  const { getAllBackgrounds, getAllPosters } = useSidebar();
+  const { getAllBackgrounds, getAllPosters, allBackgrounds } = useSidebar();
   const { setNotification } = useNotification();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [preview, setPreview] = useState<string>();
@@ -65,6 +89,10 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [uploadOption, setUploadOption] = useState<
     'Poster' | 'Background' | undefined
   >();
+  const [openRemoveImgModal, setOpenRemoveImgModal] = useState<boolean>(false);
+  const [objToRemove, setObjToRemove] = useState<
+    (Poster | Background) | undefined
+  >(undefined);
 
   /* Handle form submission */
   const submit = () => {
@@ -79,10 +107,11 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   /* Handle image upload */
   const uploadImage = () => {
+    const uniqueFileName = uuidv4();
     const storageRef =
       uploadOption === 'Poster'
-        ? ref(storage, `/posters/${currentUser?.uid}_${file!.name}`)
-        : ref(storage, `/backgrounds/${currentUser?.uid}_${file!.name}`);
+        ? ref(storage, `/posters/${uniqueFileName}`)
+        : ref(storage, `/backgrounds/${uniqueFileName}`);
     const uploadTask = uploadBytesResumable(storageRef, file!);
 
     uploadTask.on(
@@ -99,14 +128,14 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         }),
       () =>
         getDownloadURL(uploadTask.snapshot.ref).then((url) =>
-          addImageObjToDb(url)
+          addImageObjToDb(url, uniqueFileName)
         )
     );
   };
 
   /* Add a new document to db poster or background collection */
   const addImageObjToDb = useCallback(
-    async (url: string) => {
+    async (url: string, fileTitle: string) => {
       const dbCollectionRef = collection(
         db,
         uploadOption === 'Poster' ? 'posters' : 'backgrounds'
@@ -115,7 +144,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         uploadOption === 'Poster'
           ? {
               // poster object
-              title: file!.name + '_' + currentUser?.uid,
+              title: fileTitle,
               categories: ['User upload'],
               createdAt: serverTimestamp(),
               sizes: [
@@ -136,7 +165,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
               // background object
               categories: ['User upload'],
               createdAt: serverTimestamp(),
-              title: file!.name + '_' + currentUser?.uid,
+              title: fileTitle,
               image: url,
               cmInPixels: 3.5,
               user: currentUser!.uid,
@@ -219,6 +248,56 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setImageError([]);
   };
 
+  /* Remove the selected image object from firestore */
+  const removeUploadedObj = async () => {
+    let collection = '';
+    if (!objToRemove) return;
+    if (objToRemove.user !== currentUser?.uid)
+      return setNotification({
+        message: 'You have no permission to delete this image',
+        type: 'Warning',
+      });
+
+    // check if the objToRemove is under backgrounds or posters
+    allBackgrounds.includes(objToRemove)
+      ? (collection = 'backgrounds')
+      : (collection = 'posters');
+
+    const docRef = doc(db, collection, objToRemove.id!);
+    await deleteDoc(docRef)
+      .then(() => {
+        removeUploadedImage(objToRemove.title, collection);
+      })
+      .catch((err) => {
+        setNotification({
+          message: `${err.code} - ${err.message}`,
+          type: 'Warning',
+        });
+      });
+  };
+
+  /* Remove the selected file from firestore cloud storage */
+  const removeUploadedImage = (fileTitle: string, collection: string) => {
+    const storage = getStorage();
+    const imgRef = ref(storage, collection + '/' + fileTitle);
+    deleteObject(imgRef)
+      .then(() => {
+        setOpenRemoveImgModal(false);
+        setNotification({
+          message: 'The file has been removed',
+          type: 'Success',
+        });
+        collection === 'backgrounds' ? getAllBackgrounds() : getAllPosters();
+        setObjToRemove(undefined);
+      })
+      .catch((err) => {
+        setNotification({
+          message: `${err.code} - ${err.message}`,
+          type: 'Warning',
+        });
+      });
+  };
+
   return (
     <UploadContext.Provider
       value={{
@@ -235,6 +314,11 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         resetAllUploadStates,
         uploadOption,
         setUploadOption,
+        removeUploadedObj,
+        openRemoveImgModal,
+        setOpenRemoveImgModal,
+        objToRemove,
+        setObjToRemove,
       }}
     >
       {children}

@@ -1,13 +1,20 @@
 import { Box, Button, Typography } from '@mui/material';
-import { IconCheck, IconRectangle, IconRectangleVertical } from '@tabler/icons';
+import {
+  IconCheck,
+  IconRectangle,
+  IconRectangleVertical,
+  IconX,
+} from '@tabler/icons';
 import { isEqual } from 'lodash';
 import Image from 'next/image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { useUpload } from '../../context/UploadContext';
 import { useUser } from '../../context/UserContext';
 import { frameDimensions } from '../../data/frameData';
 import { posterCategories as pCategories } from '../../lib/valSchemas';
 import { compareUserAndCreatedAt } from '../helper';
+import ImageDeleteModal from '../imageUpload/ImageDeleteModal';
 import UploadButton from '../imageUpload/UploadButton';
 import SidebarSubtitle from '../shared/SidebarSubtitle';
 import { theme } from '../theme';
@@ -29,6 +36,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
   } = useSidebar();
   const { updateItem } = useCanvas();
   const { currentUser } = useUser();
+  const { setOpenRemoveImgModal, setObjToRemove } = useUpload();
 
   /** Handles change of orientation state */
   const handleOrientationChange = (value: string) => {
@@ -169,9 +177,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
               my: 2.5,
               height: '100%',
               overflowY: !mobile ? 'scroll' : null,
-              '&::-webkit-scrollbar': {
-                width: '0.4em',
-              },
+              '&::-webkit-scrollbar': { width: '0.4em' },
               '&::-webkit-scrollbar-track': {
                 boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
                 webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
@@ -183,7 +189,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
               },
             }}
           >
-            {filteredPosters().length < 1 ? (
+            {!filteredPosters().length ? (
               <Typography mt={3} textAlign="center">
                 No images found under this category
               </Typography>
@@ -195,15 +201,21 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                     cursor: 'pointer',
                     position: 'relative',
                     height: p.orientation === 'Portrait' ? 65 : 55,
+                    width: p.orientation === 'Portrait' ? 55 : 65,
                     boxShadow:
                       poster.id === p.id
                         ? '0px 2px 5px rgba(0, 0, 0, 0.25)'
-                        : null,
+                        : 'none',
                   }}
                 >
                   <Image
-                    width={p.orientation === 'Portrait' ? 55 : 65}
-                    height={p.orientation === 'Portrait' ? 65 : 55}
+                    fill
+                    sizes="100%"
+                    style={{
+                      objectFit: 'contain',
+                      objectPosition: 'top right',
+                      position: 'absolute',
+                    }}
                     alt={p.title}
                     src={p.image}
                     onClick={() => {
@@ -280,6 +292,31 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                       }}
                     />
                   ) : null}
+                  {currentUser?.uid && p.user === currentUser.uid && (
+                    <Box
+                      sx={{
+                        color: theme.palette.primary.main,
+                        '&:hover': { color: '#E23A22' },
+                      }}
+                    >
+                      <IconX
+                        size={14}
+                        style={{
+                          position: 'absolute',
+
+                          right: 0,
+                          top: 0,
+                          background: theme.palette.secondary.light,
+                          opacity: 0.5,
+                          zIndex: 999,
+                        }}
+                        onClick={() => {
+                          setOpenRemoveImgModal(true);
+                          setObjToRemove(p);
+                        }}
+                      />
+                    </Box>
+                  )}
                 </Box>
               ))
             )}
@@ -294,6 +331,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
           <UploadButton for="Poster" />
         </>
       )}
+      <ImageDeleteModal />
     </>
   );
 };
