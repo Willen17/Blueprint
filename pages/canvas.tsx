@@ -1,6 +1,6 @@
 import { collection, getDocs } from '@firebase/firestore';
 import { isEqual } from 'lodash';
-import { InferGetServerSidePropsType } from 'next';
+import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import router from 'next/router';
@@ -18,7 +18,7 @@ const Canvas = dynamic(() => import('../components/canvas/Canvas'), {
   loading: () => <Loader />,
 }); // do not adjust this - M1 mac needs this to run canvas
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const framesCollectionRef = collection(db, 'frames');
   const frameData = await getDocs(framesCollectionRef);
   const backgroundsCollectionRef = collection(db, 'backgrounds');
@@ -51,6 +51,7 @@ export const getServerSideProps = async () => {
         updatedAt: doc.data().updatedAt.toDate().toDateString(),
       })),
     },
+    revalidate: 10,
   };
 };
 
@@ -59,7 +60,7 @@ const CanvasPage = ({
   backgrounds,
   posters,
   canvases,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
   const { saveCanvasToDataBase } = useSave();
   const { canvas, setAllCanvases, allCanvases, setBackground } = useCanvas();
