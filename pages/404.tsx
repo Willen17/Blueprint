@@ -23,7 +23,7 @@ const Custom404 = () => {
           placeItems: 'center',
           columnGap: 2,
           flexWrap: 'wrap',
-          height: !mobile ? 'calc(100vh - 50px)' : '100%',
+          height: '100%',
         }}
       >
         <Typography
