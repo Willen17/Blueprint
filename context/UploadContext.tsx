@@ -258,7 +258,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
         type: 'Warning',
       });
 
-    // check if the objToRemove is under background or poster
+    // check if the objToRemove is under backgrounds or posters
     allBackgrounds.includes(objToRemove)
       ? (collection = 'backgrounds')
       : (collection = 'posters');
