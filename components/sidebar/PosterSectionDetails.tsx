@@ -211,6 +211,7 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
                 >
                   <Image
                     fill
+                    sizes="100%"
                     style={{
                       objectFit: 'contain',
                       objectPosition: 'top right',
