@@ -18,7 +18,7 @@ const Canvas = dynamic(() => import('../components/canvas/Canvas'), {
   loading: () => <Loader />,
 }); // do not adjust this - M1 mac needs this to run canvas
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const framesCollectionRef = collection(db, 'frames');
   const frameData = await getDocs(framesCollectionRef);
   const backgroundsCollectionRef = collection(db, 'backgrounds');
@@ -59,7 +59,7 @@ const CanvasPage = ({
   backgrounds,
   posters,
   canvases,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+}: InferGetStaticPropsType<typeof getServerSideProps>) => {
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
   const { saveCanvasToDataBase } = useSave();
   const { canvas, setAllCanvases, allCanvases, setBackground } = useCanvas();
