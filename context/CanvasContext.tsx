@@ -67,16 +67,20 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [canvas, setCanvas] = useState<Canvas>(initialState);
 
   useEffect(() => {
-    const localData = localStorage.getItem('canvas');
-    if (localData) setCanvas(JSON.parse(localData));
-  }, []);
-
-  useEffect(() => {
-    if (canvas !== initialState)
-      localStorage.setItem('canvas', JSON.stringify(canvas));
+    if (currentUser) {
+      if (allCanvases.find((item) => item.user === currentUser.uid)) {
+        //right now this solution only supports one canvas/user.
+        setCanvas(allCanvases.find((item) => item.user === currentUser.uid)!);
+      } else {
+        const localData = localStorage.getItem('canvas');
+        if (localData) setCanvas(JSON.parse(localData));
+      }
+    } else {
+      const localData = localStorage.getItem('canvas');
+      if (localData) setCanvas(JSON.parse(localData));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvas]);
-
+  }, []);
   useEffect(() => {
     if (currentUser) {
       if (allCanvases.find((item) => item.user === currentUser.uid)) {
@@ -86,6 +90,12 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
+
+  useEffect(() => {
+    if (canvas !== initialState)
+      localStorage.setItem('canvas', JSON.stringify(canvas));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvas]);
 
   const setBackground = (background: Background) => {
     setCanvas({ ...canvas, background });
