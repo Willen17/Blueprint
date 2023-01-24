@@ -60,7 +60,7 @@ const CanvasPage = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
   const { saveCanvasToDataBase } = useSave();
-  const { canvas, setAllCanvases, allCanvases } = useCanvas();
+  const { canvas, setAllCanvases, allCanvases, setBackground } = useCanvas();
   const { currentUser } = useUser();
 
   const canvasTitle = canvas ? canvas.title : 'Untitled';
@@ -80,7 +80,6 @@ const CanvasPage = ({
     if (allCanvases && canvas) {
       if (allCanvases.some((item) => item.id === canvas.id)) {
         const currentItem = allCanvases.find((item) => item.id === canvas.id);
-
         if (
           isEqual(currentItem!.background, canvas.background) &&
           isEqual(currentItem!.items, canvas.items)
@@ -142,7 +141,9 @@ const CanvasPage = ({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Canvas />
+      <>
+        <Canvas />
+      </>
     </>
   );
 };

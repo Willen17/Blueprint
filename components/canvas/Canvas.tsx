@@ -1,14 +1,23 @@
-import { Container } from '@mui/material';
+import {
+  Box,
+  Container,
+  IconButton,
+  Slider,
+  Tooltip,
+  useMediaQuery,
+} from '@mui/material';
+import { IconResize } from '@tabler/icons';
 import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
 import { Group, Image, Layer, Stage } from 'react-konva';
 import useImage from 'use-image';
 import { useCanvas } from '../../context/CanvasContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { theme } from '../theme';
 import CanvasItem from './CanvasItem';
 
 const Canvas = () => {
-  const { canvas, getBackground } = useCanvas();
+  const { canvas, getBackground, setBackground } = useCanvas();
   const { endEditMode } = useSidebar();
   const stageCanvasRef = useRef<HTMLDivElement>(null);
 
@@ -57,6 +66,7 @@ const Canvas = () => {
     x = (dimensions.width - canvasBackground!.width * scale) / 2;
     y = (dimensions.height - canvasBackground!.height * scale) / 2;
   }
+  const XsScreen = useMediaQuery(theme.breakpoints.down(485));
 
   const checkDeselect = (
     e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>
@@ -69,49 +79,117 @@ const Canvas = () => {
       endEditMode();
     }
   };
+  const [value, setValue] = useState<number>(3.5);
+
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    if (
+      Math.round(((newValue as number) / 14.2857143) * 10) / 10 !==
+      canvas.background!.cmInPixels
+    ) {
+      if (canvas.background?.user) {
+        setBackground({
+          ...canvas.background!,
+          cmInPixels: Math.round(((newValue as number) / 14.2857143) * 10) / 10,
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (canvas.background) {
+      if (canvas.background.cmInPixels) {
+        if (canvas.background.user) {
+          if (
+            Math.round((value / 14.2857143) * 10) / 10 !==
+            canvas.background.cmInPixels
+          ) {
+            setValue(Math.round(canvas.background.cmInPixels * 14.2857143));
+          }
+        }
+      }
+    }
+  }, [canvas, value]);
 
   return (
-    <Container sx={{ height: '100%' }} ref={stageCanvasRef}>
-      <Stage
-        height={dimensions.height}
-        width={dimensions.width}
-        onMouseDown={checkDeselect}
-        onTouchStart={checkDeselect}
-      >
-        <Layer>
-          {canvasBackground && (
-            <Group scaleX={scale} scaleY={scale} x={x} y={y}>
-              <Image
-                height={canvasBackground.height}
-                width={canvasBackground.width}
-                alt="background"
-                image={canvasBackground}
-              />
-              {canvas.items.map(
-                (item) =>
-                  item.frame.id.length > 0 &&
-                  item.poster.id.length > 0 && (
-                    <CanvasItem
-                      key={item.id}
-                      item={item}
-                      pixelsInCm={canvas.background!.cmInPixels || 3.5}
-                      bg={{
-                        x,
-                        y,
-                        width: canvasBackground.width * scale,
-                        height: canvasBackground.height * scale,
-                        scale,
-                      }}
-                      selectShape={selectShape}
-                      isSelected={item.id === selectedId}
-                    />
-                  )
-              )}
-            </Group>
-          )}
-        </Layer>
-      </Stage>
-    </Container>
+    <>
+      {canvas.background && canvas.background.user && (
+        <Box
+          sx={{
+            width: XsScreen ? 195 : 295,
+            position: 'absolute',
+            bottom: 0,
+            left: XsScreen ? 'calc(50% - 127.5px)' : 'calc(50% - 187.5px)',
+            zIndex: 10,
+            overflow: 'hidden',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            px: XsScreen ? 2.5 : 5,
+            columnGap: 2,
+          }}
+        >
+          <Slider
+            size="small"
+            onChange={handleChange}
+            value={value}
+            aria-label="Multiply size"
+            aria-valuetext={`${value} multiply size`}
+            defaultValue={30}
+            color="primary"
+            min={10}
+            max={300}
+            step={5}
+          />
+          <Tooltip title="Drag slider to resize frames">
+            <IconButton color="primary">
+              <IconResize size={30} strokeWidth={1.2} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
+      <Container sx={{ height: '100%' }} ref={stageCanvasRef}>
+        <Stage
+          height={dimensions.height}
+          width={dimensions.width}
+          onMouseDown={checkDeselect}
+          onTouchStart={checkDeselect}
+        >
+          <Layer>
+            {canvasBackground && (
+              <Group scaleX={scale} scaleY={scale} x={x} y={y}>
+                <Image
+                  height={canvasBackground.height}
+                  width={canvasBackground.width}
+                  alt="background"
+                  image={canvasBackground}
+                />
+                {canvas.items.map(
+                  (item) =>
+                    item.frame.id.length > 0 &&
+                    item.poster.id.length > 0 && (
+                      <CanvasItem
+                        key={item.id}
+                        item={item}
+                        pixelsInCm={canvas.background!.cmInPixels || 3.5}
+                        bg={{
+                          x,
+                          y,
+                          width: canvasBackground.width * scale,
+                          height: canvasBackground.height * scale,
+                          scale,
+                        }}
+                        selectShape={selectShape}
+                        isSelected={item.id === selectedId}
+                      />
+                    )
+                )}
+              </Group>
+            )}
+          </Layer>
+        </Stage>
+      </Container>
+    </>
   );
 };
 

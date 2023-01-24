@@ -1,10 +1,11 @@
 import {
   addDoc,
   collection,
+  deleteField,
   doc,
   getDocs,
   serverTimestamp,
-  setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import {
   createContext,
@@ -15,10 +16,11 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Canvas } from '../components/types';
+import { Background, Canvas } from '../components/types';
 import { db } from '../firebase/firebaseConfig';
 import { useCanvas } from './CanvasContext';
 import { useNotification } from './NotificationContext';
+import { useSidebar } from './SidebarContext';
 import { useUser } from './UserContext';
 
 interface SaveContextValue {
@@ -41,6 +43,7 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
   const { setNotification } = useNotification();
   const { setCanvas, canvas, allCanvases, setAllCanvases } = useCanvas();
+  const { setAllBackgrounds } = useSidebar();
   const [openLogoModal, setOpenLogoModal] = useState<boolean>(false);
   const [openSaveModal, setOpenSaveModal] = useState<boolean>(false);
 
@@ -59,20 +62,19 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
         const bg = JSON.parse(localStorage.getItem('canvas')!).background;
         const items = JSON.parse(localStorage.getItem('canvas')!).items;
         const currentCanvasRef = doc(db, 'canvas', canvas.id!);
-        await setDoc(
-          currentCanvasRef,
-          {
-            background: bg,
-            items: items,
-            updatedAt: serverTimestamp(),
-          },
-          { merge: true }
-        )
+        await updateDoc(currentCanvasRef, {
+          background: bg,
+          items: items,
+          updatedAt: serverTimestamp(),
+          user: bg.user ? bg.user : deleteField(),
+        })
           .then(async () => {
-            setNotification({
-              message: `${title} has been updated`,
-              type: 'Success',
-            });
+            if (!bg.user) {
+              setNotification({
+                message: `${title} has been updated`,
+                type: 'Success',
+              });
+            }
             setOpenSaveModal(false);
             setOpenLogoModal(false);
             const canvasesData = await getDocs(dbCollectionRef);
@@ -81,6 +83,31 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
               id: doc.id,
             }));
             setAllCanvases(canvases);
+            if (bg.user) {
+              const currentBackgroundRef = doc(db, 'backgrounds', bg.id);
+              await updateDoc(currentBackgroundRef, {
+                cmInPixels: bg.cmInPixels,
+              })
+                .then(async () => {
+                  const bgCollectionRef = collection(db, 'backgrounds');
+                  const bgsData = await getDocs(bgCollectionRef);
+                  const bgs = bgsData.docs.map((doc) => ({
+                    ...(doc.data() as Background),
+                    id: doc.id,
+                  }));
+                  setAllBackgrounds(bgs);
+                  setNotification({
+                    message: `${title} has been updated`,
+                    type: 'Success',
+                  });
+                })
+                .catch((error) => {
+                  setNotification({
+                    message: `${error.Code} - ${error}`,
+                    type: 'Warning',
+                  });
+                });
+            }
           })
           .catch((error) => {
             setNotification({
