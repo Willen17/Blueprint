@@ -26,10 +26,8 @@ const SaveModal = () => {
 
   useEffect(() => {
     if (title) {
-      if (title.length > 20)
-        setValError({ message: 'Title cannot be more than 20 characters.' });
-      else if (title.length < 2)
-        setValError({ message: 'Title must be at least 2 characters' });
+      if (title.length < 2 || title.length > 20)
+        setValError({ message: 'Must be between 2 and 20 characters' });
       else setValError(undefined);
     }
   }, [title]);
@@ -80,18 +78,27 @@ const SaveModal = () => {
                   gap: 2,
                 }}
               >
-                <FormControl error={valError !== undefined}>
+                <FormControl
+                  error={valError !== undefined}
+                  sx={{ minWidth: 200, maxWidth: 200 }}
+                >
                   <TextField
+                    sx={{ minWidth: 200, maxWidth: 200 }}
                     label="Title"
                     value={title}
                     onChange={(e) => {
-                      setTitle(e.target.value), setTouched(true);
+                      setTitle(e.target.value);
+                      setTouched(true);
                     }}
                     error={valError !== undefined}
                     variant="standard"
                   />
                   <FormHelperText sx={{ ml: 0 }}>
-                    {valError ? valError.message : 'The title for the canvas'}
+                    {valError && (
+                      <Typography variant="body2">
+                        {valError.message}
+                      </Typography>
+                    )}
                   </FormHelperText>
                 </FormControl>
                 <Button
