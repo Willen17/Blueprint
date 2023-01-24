@@ -60,6 +60,7 @@ const HomeHero = () => {
               }}
             >
               <Image
+                priority
                 alt="Hero Banana Image"
                 src={banana}
                 style={{
@@ -85,6 +86,7 @@ const HomeHero = () => {
               }}
             >
               <Image
+                priority
                 alt="Hero Dog Image"
                 src={dog}
                 style={{
