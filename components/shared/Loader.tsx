@@ -1,12 +1,11 @@
 import { Container, Typography } from '@mui/material';
 import Image from 'next/image';
-import { Props } from 'next/script';
 import { useNotification } from '../../context/NotificationContext';
 import bpLogoLower from '../../public/logo/bp-logo-lower.png';
 import bpLogoUpper from '../../public/logo/bp-logo-upper.png';
 import styles from '../../stylesheet/loader.module.css';
 
-const Loader = (props: Props) => {
+const Loader = () => {
   const { isLoading } = useNotification();
   return (
     <Container
