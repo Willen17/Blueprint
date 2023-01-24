@@ -133,7 +133,6 @@ const CanvasPage = ({
     <>
       <Head>
         <title>
-          {/* TODO: if the canvas has default title as "untitled", the below if statment can be deleted */}
           {canvas?.title ? canvas.title : 'Untitled'} | Blueprint | Visualize
           your frames
         </title>
