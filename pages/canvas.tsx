@@ -1,6 +1,6 @@
 import { collection, getDocs } from '@firebase/firestore';
 import { isEqual } from 'lodash';
-import { InferGetStaticPropsType } from 'next';
+import { InferGetServerSidePropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import router from 'next/router';
@@ -59,7 +59,7 @@ const CanvasPage = ({
   backgrounds,
   posters,
   canvases,
-}: InferGetStaticPropsType<typeof getServerSideProps>) => {
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
   const { saveCanvasToDataBase } = useSave();
   const { canvas, setAllCanvases, allCanvases, setBackground } = useCanvas();
