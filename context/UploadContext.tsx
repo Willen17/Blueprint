@@ -3,7 +3,9 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDocs,
   serverTimestamp,
+  updateDoc,
 } from 'firebase/firestore';
 import {
   deleteObject,
@@ -25,8 +27,9 @@ import {
 } from 'react';
 import { getImageSize } from 'react-image-size';
 import { v4 as uuidv4 } from 'uuid';
-import { Background, Poster } from '../components/types';
+import { Background, Canvas, Poster } from '../components/types';
 import { db, storage } from '../firebase/firebaseConfig';
+import { useCanvas } from './CanvasContext';
 import { useNotification } from './NotificationContext';
 import { useSidebar } from './SidebarContext';
 import { useUser } from './UserContext';
@@ -78,6 +81,7 @@ export const UploadContext = createContext<UploadContextValue>({
 const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentUser } = useUser();
   const { getAllBackgrounds, getAllPosters, allBackgrounds } = useSidebar();
+  const { canvas, setCanvas } = useCanvas();
   const { setNotification } = useNotification();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [preview, setPreview] = useState<string>();
@@ -155,7 +159,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
                 { width: 70, height: 100 },
               ],
               orientation:
-                imgDimension && imgDimension.height > imgDimension.width
+                imgDimension && imgDimension.height >= imgDimension.width
                   ? 'Portrait'
                   : 'Landscape',
               image: url,
@@ -277,17 +281,64 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
   };
 
   /* Remove the selected file from firestore cloud storage */
-  const removeUploadedImage = (fileTitle: string, collection: string) => {
+  const removeUploadedImage = (fileTitle: string, imageCollection: string) => {
     const storage = getStorage();
-    const imgRef = ref(storage, collection + '/' + fileTitle);
+    const imgRef = ref(storage, imageCollection + '/' + fileTitle);
     deleteObject(imgRef)
-      .then(() => {
+      .then(async () => {
+        if (imageCollection === 'backgrounds') {
+          const dbCollectionRef = collection(db, 'canvas');
+          const canvasesData = await getDocs(dbCollectionRef);
+          const canvases = canvasesData.docs.map((doc) => ({
+            ...(doc.data() as Canvas),
+            id: doc.id,
+          }));
+          if (canvases && canvases.some((item) => item.id === canvas.id)) {
+            const currentCanvasRef = doc(db, 'canvas', canvas.id!);
+            if (
+              canvases.find((item) => item.id === canvas.id)!.background!
+                .title === fileTitle
+            ) {
+              await updateDoc(currentCanvasRef, {
+                background: {
+                  image:
+                    'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
+                  cmInPixels: 3.5,
+                  title: 'nobg',
+                  user: '',
+                  id: '0',
+                },
+              }).catch((err) => {
+                setNotification({
+                  message: `${err.code} - ${err.message}`,
+                  type: 'Warning',
+                });
+              });
+            }
+          }
+          if (canvas.background!.title === fileTitle) {
+            setCanvas({
+              ...canvas,
+              background: {
+                image:
+                  'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
+                cmInPixels: 3.5,
+                title: 'nobg',
+                user: '',
+                id: '0',
+                categories: canvas.background!.categories,
+              },
+            });
+          }
+        }
         setOpenRemoveImgModal(false);
         setNotification({
           message: 'The file has been removed',
           type: 'Success',
         });
-        collection === 'backgrounds' ? getAllBackgrounds() : getAllPosters();
+        imageCollection === 'backgrounds'
+          ? getAllBackgrounds()
+          : getAllPosters();
         setObjToRemove(undefined);
       })
       .catch((err) => {
