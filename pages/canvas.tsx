@@ -4,7 +4,8 @@ import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import router from 'next/router';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import Loader from '../components/shared/Loader';
 import { Background, Canvas, Frame, Poster } from '../components/types';
 import { useCanvas } from '../context/CanvasContext';
 import { useSave } from '../context/SaveContext';
@@ -14,6 +15,7 @@ import { db } from '../firebase/firebaseConfig';
 
 const Canvas = dynamic(() => import('../components/canvas/Canvas'), {
   ssr: false,
+  loading: () => <Loader />,
 }); // do not adjust this - M1 mac needs this to run canvas
 
 export const getStaticProps = async () => {
@@ -143,7 +145,9 @@ const CanvasPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <>
-        <Canvas />
+        <Suspense>
+          <Canvas />
+        </Suspense>
       </>
     </>
   );
