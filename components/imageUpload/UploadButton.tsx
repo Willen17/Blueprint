@@ -14,6 +14,7 @@ const UploadButton = (props: Props) => {
   const { allPosters, allBackgrounds } = useSidebar();
   const { currentUser } = useUser();
 
+  /* Handle click of the upload button (in both background and poster sections) */
   const handleClick = () => {
     if (props.for === 'Poster') setUploadOption('Poster');
     if (props.for === 'Background') setUploadOption('Background');

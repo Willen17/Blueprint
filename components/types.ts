@@ -61,13 +61,22 @@ export interface Canvas {
   title?: string;
   id?: string;
   user: string | undefined;
-  createdAt?: FieldValue; // TODO: change. Optional for now as this is not what im working on in this issue
-  updatedAt?: FieldValue; // TODO: change. Optional for now as this is not what im working on in this issue
-  background?: Background; // TODO: put the correct type. Wille is working on this so i dont bother the type here
+  createdAt?: FieldValue;
+  updatedAt?: FieldValue;
+  background?: Background;
   items: CanvasItem[];
 }
 
 export interface EditingFrame {
   isEditing: boolean;
   item?: CanvasItem;
+}
+
+export interface IsLoading {
+  isLoading: boolean;
+  message?: string;
+}
+export interface Notification {
+  message: string;
+  type: 'Warning' | 'Success' | 'Normal';
 }

@@ -51,6 +51,7 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setIsAuthenicated(true);
   }, [currentUser]);
 
+  /* Handles sign in via google */
   const handleGoogleSignIn = async () => {
     setIsLoading({
       isLoading: true,
@@ -75,6 +76,7 @@ const UserContextProvider: FC<PropsWithChildren> = ({ children }) => {
       });
   };
 
+  /* Handles sign out */
   const handleSignOut = async () => {
     setIsLoading({ isLoading: true });
     await signOut(auth).then(() => {

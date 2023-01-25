@@ -199,6 +199,7 @@ const SidebarContextProvider: FC<PropsWithChildren> = ({ children }) => {
     setIsEditingFrame({ isEditing: true, item });
     setWithPassepartout(item.withPassepartout);
     setExpandedAccordion(sidebarSections[2]);
+    setOpenMobileSection(sidebarSections[2]);
   };
 
   /* Reset stages when the user is longer editing a frame */

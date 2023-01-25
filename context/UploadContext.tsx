@@ -285,52 +285,8 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
     const storage = getStorage();
     const imgRef = ref(storage, imageCollection + '/' + fileTitle);
     deleteObject(imgRef)
-      .then(async () => {
-        if (imageCollection === 'backgrounds') {
-          const dbCollectionRef = collection(db, 'canvas');
-          const canvasesData = await getDocs(dbCollectionRef);
-          const canvases = canvasesData.docs.map((doc) => ({
-            ...(doc.data() as Canvas),
-            id: doc.id,
-          }));
-          if (canvases && canvases.some((item) => item.id === canvas.id)) {
-            const currentCanvasRef = doc(db, 'canvas', canvas.id!);
-            if (
-              canvases.find((item) => item.id === canvas.id)!.background!
-                .title === fileTitle
-            ) {
-              await updateDoc(currentCanvasRef, {
-                background: {
-                  image:
-                    'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
-                  cmInPixels: 3.5,
-                  title: 'nobg',
-                  user: '',
-                  id: '0',
-                },
-              }).catch((err) => {
-                setNotification({
-                  message: `${err.code} - ${err.message}`,
-                  type: 'Warning',
-                });
-              });
-            }
-          }
-          if (canvas.background!.title === fileTitle) {
-            setCanvas({
-              ...canvas,
-              background: {
-                image:
-                  'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
-                cmInPixels: 3.5,
-                title: 'nobg',
-                user: '',
-                id: '0',
-                categories: canvas.background!.categories,
-              },
-            });
-          }
-        }
+      .then(() => {
+        setSubstituteBackground(fileTitle, imageCollection);
         setOpenRemoveImgModal(false);
         setNotification({
           message: 'The file has been removed',
@@ -347,6 +303,57 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
           type: 'Warning',
         });
       });
+  };
+
+  const setSubstituteBackground = async (
+    fileTitle: string,
+    imageCollection: string
+  ) => {
+    if (imageCollection === 'backgrounds') {
+      const dbCollectionRef = collection(db, 'canvas');
+      const canvasesData = await getDocs(dbCollectionRef);
+      const canvases = canvasesData.docs.map((doc) => ({
+        ...(doc.data() as Canvas),
+        id: doc.id,
+      }));
+      if (canvases && canvases.some((item) => item.id === canvas.id)) {
+        const currentCanvasRef = doc(db, 'canvas', canvas.id!);
+        if (
+          canvases.find((item) => item.id === canvas.id)!.background!.title ===
+          fileTitle
+        ) {
+          await updateDoc(currentCanvasRef, {
+            background: {
+              image:
+                'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
+              cmInPixels: 3.5,
+              title: 'nobg',
+              user: '',
+              id: '0',
+            },
+          }).catch((err) => {
+            setNotification({
+              message: `${err.code} - ${err.message}`,
+              type: 'Warning',
+            });
+          });
+        }
+      }
+      if (canvas.background!.title === fileTitle) {
+        setCanvas({
+          ...canvas,
+          background: {
+            image:
+              'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b',
+            cmInPixels: 3.5,
+            title: 'nobg',
+            user: '',
+            id: '0',
+            categories: canvas.background!.categories,
+          },
+        });
+      }
+    }
   };
 
   return (

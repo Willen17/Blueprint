@@ -12,6 +12,7 @@ const FrameSectionDetails = () => {
   const {
     allFrames,
     setExpandedAccordion,
+    setOpenMobileSection,
     isEditingFrame,
     setIsEditingFrame,
     frameSet,
@@ -258,6 +259,7 @@ const FrameSectionDetails = () => {
                           ...prevState,
                           size: dimension.size,
                         })),
+                        setOpenMobileSection(sidebarSections[2]),
                         setExpandedAccordion(sidebarSections[2]));
                   }}
                 />

@@ -49,9 +49,6 @@ const Sidebar = () => {
             bgcolor: 'transparent',
             boxShadow: 0,
             overflowX: 'clip',
-            // the below scrollbar is not supposed to be seen on desktop
-            // it's here only because the user couldnt scroll to the delete button on iphone
-            // other phone models not tested
             overflowY: isEditingFrame && mobile ? 'scroll' : 'clip',
             '&::-webkit-scrollbar': {
               width: 0,

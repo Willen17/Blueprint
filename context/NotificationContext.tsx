@@ -7,21 +7,13 @@ import {
   useContext,
   useState,
 } from 'react';
+import { IsLoading, Notification } from '../components/types';
 
 interface NotificationContextValue {
   isLoading: IsLoading;
   setIsLoading: Dispatch<SetStateAction<IsLoading>>;
   notification: Notification | undefined;
   setNotification: Dispatch<SetStateAction<Notification | undefined>>;
-}
-
-interface IsLoading {
-  isLoading: boolean;
-  message?: string;
-}
-interface Notification {
-  message: string;
-  type: 'Warning' | 'Success' | 'Normal';
 }
 
 export const NotificationContext = createContext<NotificationContextValue>({

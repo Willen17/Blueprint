@@ -46,7 +46,6 @@ export const CanvasContext = createContext<CanvasContextValue>({
 
 const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const {
-    setIsEditingFrame,
     isEditingFrame,
     setAnchorSidebar,
     endEditMode,
@@ -148,18 +147,6 @@ const CanvasContextProvider: FC<PropsWithChildren> = ({ children }) => {
         deleteItem,
         canvas,
         setCanvas,
-        // withPassepartout,
-        // setWithPassepartout,
-        // poster,
-        // setPoster,
-        // posterOrientation,
-        // setPosterOrientation,
-        // frameSet,
-        // setFrameSet,
-
-        // deleteFrame,
-        // size,
-        // setSize,
       }}
     >
       {children}
