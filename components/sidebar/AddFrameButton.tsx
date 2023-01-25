@@ -6,11 +6,22 @@ import { sidebarSections } from '../../lib/valSchemas';
 import { theme } from '../theme';
 
 const AddFrameButton = () => {
-  const { setIsEditingFrame, setExpandedAccordion } = useSidebar();
+  const { setIsEditingFrame, setExpandedAccordion, setOpenMobileSection } =
+    useSidebar();
   const { getBackground } = useCanvas();
 
   const handleClick = () => {
-    if (getBackground()) setExpandedAccordion(sidebarSections[1]);
+    if (
+      getBackground() &&
+      getBackground()?.image !==
+        'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fnobg.jpg?alt=media&token=1f87fbca-5ba8-4720-b6a4-32e8c3ca6d8b'
+    ) {
+      setExpandedAccordion(sidebarSections[1]);
+      setOpenMobileSection(sidebarSections[1]);
+    } else {
+      setExpandedAccordion(sidebarSections[0]);
+      setOpenMobileSection(sidebarSections[0]);
+    }
     setIsEditingFrame({ isEditing: true });
   };
   return (
