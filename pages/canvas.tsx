@@ -8,6 +8,7 @@ import { Suspense, useEffect, useState } from 'react';
 import Loader from '../components/shared/Loader';
 import { Background, Canvas, Frame, Poster } from '../components/types';
 import { useCanvas } from '../context/CanvasContext';
+import { useNotification } from '../context/NotificationContext';
 import { useSave } from '../context/SaveContext';
 import { useSidebar } from '../context/SidebarContext';
 import { useUser } from '../context/UserContext';
@@ -62,8 +63,9 @@ const CanvasPage = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { setAllFrames, setAllBackgrounds, setAllPosters } = useSidebar();
   const { saveCanvasToDataBase } = useSave();
-  const { canvas, setAllCanvases, allCanvases, setBackground } = useCanvas();
+  const { canvas, setAllCanvases, allCanvases } = useCanvas();
   const { currentUser } = useUser();
+  const { setIsLoading } = useNotification();
 
   const canvasTitle = canvas ? canvas.title : 'Untitled';
   const pageTitle = canvasTitle + ' | Blueprint | Visualize your frames';
@@ -72,6 +74,7 @@ const CanvasPage = ({
     () => setAllBackgrounds(backgrounds),
     [backgrounds, setAllBackgrounds]
   );
+
   useEffect(() => setAllFrames(frames), [frames, setAllFrames]);
   useEffect(() => setAllPosters(posters), [posters, setAllPosters]);
   useEffect(() => setAllCanvases(canvases), [canvases, setAllCanvases]);
@@ -93,6 +96,16 @@ const CanvasPage = ({
       }
     }
   }, [canvas, allCanvases]);
+
+  useEffect(() => {
+    const onPageLoad = () => setIsLoading({ isLoading: true });
+
+    document.readyState === 'complete'
+      ? setIsLoading({ isLoading: false })
+      : window.addEventListener('load', onPageLoad);
+
+    return () => window.removeEventListener('load', onPageLoad);
+  }, [setIsLoading]);
 
   // warn the user if they try and leave and have unsaved changes
   useEffect(() => {
