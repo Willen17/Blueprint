@@ -1,7 +1,6 @@
 import {
   addDoc,
   collection,
-  deleteField,
   doc,
   getDocs,
   serverTimestamp,
@@ -66,7 +65,6 @@ const SaveContextProvider: FC<PropsWithChildren> = ({ children }) => {
           background: bg,
           items: items,
           updatedAt: serverTimestamp(),
-          user: bg.user ? bg.user : deleteField(),
         })
           .then(async () => {
             if (!bg.user) {
