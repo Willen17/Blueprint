@@ -172,10 +172,10 @@ const PosterSectionDetails = ({ mobile }: { mobile: boolean | undefined }) => {
               flexWrap: 'wrap',
               gap: 1.5,
               width: '100%',
+              height: 'fit-content',
               placeContent: 'start',
               justifyContent: 'center',
-              my: 2.5,
-              height: '100%',
+              py: 2.5,
               overflowY: !mobile ? 'scroll' : null,
               '&::-webkit-scrollbar': { width: '0.4em' },
               '&::-webkit-scrollbar-track': {
