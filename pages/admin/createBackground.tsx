@@ -81,13 +81,11 @@ export default function FormTest() {
       await addDoc(backgroundsCollectionRef, newBackground)
         .then(() => {
           setPercent(0);
-          router.reload(); // reloading not the best practice, should use reset() and setFile(undefined) instead
-          // but the checkbox (2 levels down) has a local state so we only improve this practice if we have more time
-          setIsLoading({ isLoading: false });
           setNotification({
             message: `Background ${title} was succesfully added to the database`,
             type: 'Success',
           });
+          setIsLoading({ isLoading: false });
         })
         .catch((error) => {
           setIsLoading({ isLoading: false });
@@ -97,7 +95,7 @@ export default function FormTest() {
           });
         });
     },
-    [backgroundsCollectionRef, router, setIsLoading, setNotification]
+    [backgroundsCollectionRef, setIsLoading, setNotification]
   );
   return (
     <>

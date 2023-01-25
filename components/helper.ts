@@ -52,12 +52,10 @@ export const compareUserAndCreatedAt = (
   a: Poster | Background,
   b: Poster | Background
 ) => {
-  if (a.user || b.user) {
-    if (
-      Date.parse(a.createdAt!.toString()) > Date.parse(b.createdAt!.toString())
-    )
+  if (a.categories.includes('User upload')) return -1;
+  if (a.createdAt && b.createdAt) {
+    if (new Date(a.createdAt.toString()) > new Date(b.createdAt.toString()))
       return -1;
-    return 1;
   }
   return 0;
 };

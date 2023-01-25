@@ -35,6 +35,7 @@ export default function FormTest() {
   const submit = (data: PosterData) => {
     if (!file) setImageError({ message: 'An image is required' });
     else if (!imageError) {
+      setIsLoading({ isLoading: true });
       handleUpload(file, data);
     }
   };
@@ -82,13 +83,11 @@ export default function FormTest() {
       await addDoc(postersCollectionRef, newPoster)
         .then(() => {
           setPercent(0);
-          router.reload(); // reloading not the best practice, should use reset() and setFile(undefined) instead
-          // but the checkbox (2 levels down) has a local state so we only improve this practice if we have more time
-          setIsLoading({ isLoading: false });
           setNotification({
             message: `Poster ${title} was succesfully added to the database`,
             type: 'Success',
           });
+          setIsLoading({ isLoading: false });
         })
         .catch((error) => {
           setIsLoading({ isLoading: false });
@@ -98,7 +97,7 @@ export default function FormTest() {
           });
         });
     },
-    [postersCollectionRef, router, setIsLoading, setNotification]
+    [postersCollectionRef, setIsLoading, setNotification]
   );
   return (
     <>
