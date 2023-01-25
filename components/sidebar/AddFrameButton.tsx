@@ -10,6 +10,7 @@ const AddFrameButton = () => {
     useSidebar();
   const { getBackground } = useCanvas();
 
+  /* Handle click of the "Add Frame" button */
   const handleClick = () => {
     if (
       getBackground() &&

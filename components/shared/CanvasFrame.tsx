@@ -48,6 +48,7 @@ const CanvasFrame = (props: Props) => {
   const [frameBorder, setFrameBorder] = useState(20);
   const [passepartout, setPassepartout] = useState(20);
 
+  /* Detect the frame type and render the correct frame background */
   const frameColor = () => {
     if (match[0].category.includes('Wooden')) {
       if (match[0].title.toLowerCase().includes('maple')) return maple;

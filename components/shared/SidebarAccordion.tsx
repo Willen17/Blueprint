@@ -19,10 +19,8 @@ const SidebarAccordion = (props: Props) => {
   const { expandedAccordion, setExpandedAccordion, isEditingFrame } =
     useSidebar();
 
-  // TODO: logic to be fixed for editing from existing canvas, now it is only for "creating new"
-  const handleCollapseAccordion = () => {
-    setExpandedAccordion(false);
-  };
+  /* Collapse the accordion */
+  const handleCollapseAccordion = () => setExpandedAccordion(false);
 
   return (
     <Accordion

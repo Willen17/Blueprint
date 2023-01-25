@@ -1,6 +1,7 @@
 import { frameDimensions } from '../data/frameData';
 import { Background, Dimension, Poster } from './types';
 
+/* Check the size (width and height) that passed in as an argument and return the size in string */
 export const getSizeString = (size: Dimension) => {
   if (
     (size.width === frameDimensions.xs.width ||
@@ -35,6 +36,7 @@ export const getSizeString = (size: Dimension) => {
   }
 };
 
+/* Find matches between 2 arrays */
 export const hasMatchingObjects = (arr1: any[], arr2: any[]): boolean => {
   return arr1.some((obj1) => {
     return arr2.some((obj2) => {

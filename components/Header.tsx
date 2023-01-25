@@ -35,11 +35,13 @@ const Header = () => {
 
   const [title, setTitle] = useState<string>('Untitled');
 
+  /* Handle modal close */
   const handleClose = () => {
     setOpenUser(false);
     setOpenLogoModal(false);
   };
 
+  /* Handle click of signout button */
   const handleClickSignOut = () => {
     setOpenUser(false);
     handleSignOut();
