@@ -286,7 +286,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
     const imgRef = ref(storage, imageCollection + '/' + fileTitle);
     deleteObject(imgRef)
       .then(() => {
-        setSubstituteBackground(fileTitle, imageCollection);
+        setSubstituteImage(fileTitle, imageCollection);
         setOpenRemoveImgModal(false);
         setNotification({
           message: 'The file has been removed',
@@ -305,17 +305,17 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
       });
   };
 
-  const setSubstituteBackground = async (
+  const setSubstituteImage = async (
     fileTitle: string,
     imageCollection: string
   ) => {
+    const dbCollectionRef = collection(db, 'canvas');
+    const canvasesData = await getDocs(dbCollectionRef);
+    const canvases = canvasesData.docs.map((doc) => ({
+      ...(doc.data() as Canvas),
+      id: doc.id,
+    }));
     if (imageCollection === 'backgrounds') {
-      const dbCollectionRef = collection(db, 'canvas');
-      const canvasesData = await getDocs(dbCollectionRef);
-      const canvases = canvasesData.docs.map((doc) => ({
-        ...(doc.data() as Canvas),
-        id: doc.id,
-      }));
       if (canvases && canvases.some((item) => item.id === canvas.id)) {
         const currentCanvasRef = doc(db, 'canvas', canvas.id!);
         if (
@@ -351,6 +351,63 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
             id: '0',
             categories: canvas.background!.categories,
           },
+        });
+      }
+    }
+    if (imageCollection === 'posters') {
+      if (canvases && canvases.some((item) => item.id === canvas.id)) {
+        const currentCanvasRef = doc(db, 'canvas', canvas.id!);
+        const currentCanvas = canvases.find((item) => item.id === canvas.id);
+        if (
+          currentCanvas!.items.find(
+            (item) => item.poster.image === objToRemove?.image
+          )
+        ) {
+          const currentCanvas = canvases.find((item) => item.id === canvas.id);
+          let newItems = currentCanvas!.items.map((item) => {
+            if (item.poster.id === objToRemove!.id) {
+              return {
+                ...item,
+                poster: {
+                  ...item.poster,
+                  id: '0',
+                  image: item.poster.isPortrait
+                    ? 'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fsubtitue-poster.jpg?alt=media&token=33978aab-f8b1-4552-8b94-b8373151a077'
+                    : 'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fsubstitute-poster-landscape.jpg?alt=media&token=ae438964-0990-4911-b9c5-f6bc4af3fef2',
+                },
+              };
+            }
+            return item;
+          });
+          await updateDoc(currentCanvasRef, {
+            items: { ...newItems },
+          }).catch((err) => {
+            setNotification({
+              message: `${err.code} - ${err.message}`,
+              type: 'Warning',
+            });
+          });
+        }
+      }
+      if (canvas.items.some((item) => item.poster.id === objToRemove!.id)) {
+        let newItems = canvas!.items.map((item) => {
+          if (item.poster.id === objToRemove!.id) {
+            return {
+              ...item,
+              poster: {
+                ...item.poster,
+                id: '0',
+                image: item.poster.isPortrait
+                  ? 'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fsubtitue-poster.jpg?alt=media&token=33978aab-f8b1-4552-8b94-b8373151a077'
+                  : 'https://firebasestorage.googleapis.com/v0/b/blueprint-298a2.appspot.com/o/posters%2Fsubstitute-poster-landscape.jpg?alt=media&token=ae438964-0990-4911-b9c5-f6bc4af3fef2',
+              },
+            };
+          }
+          return item;
+        });
+        setCanvas({
+          ...canvas,
+          items: newItems,
         });
       }
     }
