@@ -232,7 +232,7 @@ const UploadContextProvider: FC<PropsWithChildren> = ({ children }) => {
       const { width, height } = await getImageSize(objectUrl);
       setImgDimension({ width, height });
 
-      const exceedDimension = width > 3000 || height > 3000;
+      const exceedDimension = width > 4500 || height > 4500;
       exceedDimension &&
         setImageError((prevState) => [...prevState, 'dimension']);
     }
