@@ -34,7 +34,7 @@ const ImageUploadModal = () => {
     { type: 'size', requirement: 'File size must not exceed 3 MB' },
     {
       type: 'dimension',
-      requirement: 'Image must be at most 3000 x 3000 pixels',
+      requirement: 'Image must be at most 4500 x 4500 pixels',
     },
   ];
 
@@ -43,7 +43,7 @@ const ImageUploadModal = () => {
     { type: 'size', requirement: 'File size must not exceed 3 MB' },
     {
       type: 'dimension',
-      requirement: 'Image must be at most 3000 x 3000 pixels',
+      requirement: 'Image must be at most 4500 x 4500 pixels',
     },
   ];
 
